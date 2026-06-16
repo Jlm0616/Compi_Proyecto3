@@ -1,4 +1,4 @@
-# Proyecto #2 - Análisis Semántico y Generación Código Intermedio
+# Proyecto #3 - Generación Código Destino (MIPS)
 
 ## Descripción
 
