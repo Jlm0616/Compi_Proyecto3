@@ -1,0 +1,1732 @@
+// ===================================================================
+// 1. IMPORTACIONES Y CONFIGURACION INICIAL
+// ===================================================================
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+// ===================================================================
+// 2. CODIGO DE USUARIO (ACCIONES Y AUXILIARES)
+// ===================================================================
+parser code {:
+
+    // ===============================================================
+    // 2.0 CONSTANTES DE COLORES PARA CONSOLA
+    // ===============================================================
+    
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_BLUE_DARK = "\u001B[34;2m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+
+    // ===============================================================
+    // 2.1 ANALISIS SINTACTICO (Estructuras de datos)
+    // ===============================================================
+
+    // ---------------------------------------------------------------
+    // 2.1.1 SIMBOLO - Representa una variable en la tabla
+    // ---------------------------------------------------------------
+    // Almacena: nombre, tipo y linea donde se declara
+    static class Simbolo {
+        String nombre;
+        String tipo;
+        int linea;
+        String categoria;
+
+        Simbolo(String nombre, String tipo, int linea, String categoria) {
+            this.nombre    = nombre;
+            this.tipo      = tipo;
+            this.linea     = linea;
+            this.categoria = categoria;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // 2.1.2 TABLAS DE SIMBOLOS (Pila de ambitos)
+    // ---------------------------------------------------------------
+    
+    // Pila de tablas de simbolos (un HashMap por cada ambito)
+    static java.util.Stack<java.util.HashMap<String, Simbolo>> pilaTablas = new java.util.Stack<>();
+
+    // Tabla de parametros de funciones: funcion -> lista de tipos
+    static java.util.HashMap<String, java.util.ArrayList<String>> tablaParametros = new java.util.HashMap<>();
+    
+    // Lista de parametros de la funcion que se esta analizando
+    static java.util.ArrayList<String> parametrosActuales = new java.util.ArrayList<>();
+    
+    // Tabla de funciones: funcion -> tipo de retorno
+    static java.util.HashMap<String, String> tablaFunciones = new java.util.HashMap<>();
+    
+    // Lista de argumentos de la llamada a funcion que se esta analizando
+    static java.util.ArrayList<String> argumentosActuales = new java.util.ArrayList<>();
+    
+    static String ultimoTipo = "int";
+    static String nombreDeclaracionActual = "";
+
+    // Pila con los nombres de cada ambito (para reportes)   
+    static java.util.Stack<String> nombresAmbitos = new java.util.Stack<>();
+
+    // Tipo de la variable que se esta declarando actualmente
+    static String tipoDeclaracionActual = "";
+
+    // Tipo de retorno de la funcion actual
+    static String tipoFuncionActual = "";
+
+    // ---------------------------------------------------------------
+    // 2.1.3 CONTADORES PARA AMBITOS Y ESTRUCTURAS
+    // ---------------------------------------------------------------
+    
+    static int contadorBloques = 0;
+    static int contadorSwitch = 0;
+    static int contadorIf = 0;
+    static int contadorElse = 0;
+    static int contadorWhile = 0;
+    static int nivelBreak = 0;          // Nivel de anidamiento para break
+
+    // Nombre del bloque actual (ej: "IF 1", "SWITCH 2", etc.)
+    static String nombreBloqueActual = "BLOQUE";
+
+    // Switch y case que se estan procesando actualmente
+    static int switchActual = 0;
+    static int casoActual = 0;
+
+    // ---------------------------------------------------------------
+    // 2.1.4 ERRORES Y REPORTES
+    // ---------------------------------------------------------------
+    
+    public static int erroresSintacticos = 0;
+    
+    // Lista que guarda todas las tablas de simbolos para imprimir al final
+    static java.util.ArrayList<AmbitoInfo> todasLasTablas = new java.util.ArrayList<>();
+    
+    // Guarda la info de un ambito (nombre, tabla y nivel de anidamiento)
+    static class AmbitoInfo {
+        String nombre;
+        java.util.HashMap<String, Simbolo> tabla;
+        int nivel;
+        
+        AmbitoInfo(String nombre, java.util.HashMap<String, Simbolo> tabla, int nivel) {
+            this.nombre = nombre;
+            this.tabla = tabla;
+            this.nivel = nivel;
+        }
+    }
+
+    // ===============================================================
+    // 2.1.5 MANEJO DE AMBITOS
+    // ===============================================================
+
+    // Agrega un nuevo ambito a la pila
+    public static void pushScope(String nombre) {
+        pilaTablas.push(new java.util.HashMap<>());
+        nombresAmbitos.push(nombre);
+    }
+    
+    // Elimina el ambito actual y lo guarda para imprimir despues
+    public static void popScope() {
+        if (!pilaTablas.isEmpty()) {
+            java.util.HashMap<String, Simbolo> ambito = pilaTablas.pop();
+            String nombre = nombresAmbitos.pop();
+            int nivel = nombresAmbitos.size();
+            
+            todasLasTablas.add(new AmbitoInfo(nombre, ambito, nivel));
+        }
+    }
+
+    // Imprime todas las tablas de simbolos al final del analisis
+    public static void imprimirTodasLasTablas() {
+        for (int i = todasLasTablas.size() - 1; i >= 0; i--) {
+            AmbitoInfo a = todasLasTablas.get(i);
+            
+            String indentacion = "";
+            for (int j = 0; j < a.nivel; j++) {
+                indentacion += "               ";
+            }
+            
+            System.out.println("\n" + indentacion + "=== TABLA DE SIMBOLOS: " + a.nombre + " ===");
+            imprimirTabla(a.tabla, indentacion + "  ");
+        }
+        todasLasTablas.clear();
+    }
+
+    // ===============================================================
+    // 2.1.6 OPERACIONES CON SIMBOLOS
+    // ===============================================================
+
+    // Registra una nueva variable en la tabla del ambito actual
+    public static void agregarSimbolo(String nombre, String tipo, int linea) {
+        if (pilaTablas.isEmpty()) return;
+        java.util.HashMap<String, Simbolo> ambito = pilaTablas.peek();
+        if (ambito.containsKey(nombre)) {
+            errorSemantico("Linea " + linea + ": variable '" + nombre + "' ya fue declarada en este ambito.");
+        } else {
+            ambito.put(nombre, new Simbolo(nombre, tipo, linea, "variable"));
+        }
+    }
+
+    // Registra un parametro en la tabla del ambito actual
+    public static void agregarParametro(String nombre, String tipo, int linea) {
+        if (pilaTablas.isEmpty()) return;
+        java.util.HashMap<String, Simbolo> ambito = pilaTablas.peek();
+        if (ambito.containsKey(nombre)) {
+            errorSemantico("Linea " + linea + ": parametro '" + nombre + "' ya fue declarado en este ambito.");
+        } else {
+            ambito.put(nombre, new Simbolo(nombre, tipo, linea, "parametro"));
+        }
+    }
+
+    // Muestra el contenido de una tabla de simbolos
+    private static void imprimirTabla(java.util.HashMap<String, Simbolo> tabla, String indentacion) {
+        if (tabla.isEmpty()) {
+            System.out.println(indentacion + "(sin variables)");
+            return;
+        }
+        System.out.println(indentacion + String.format("%-20s %-10s %-12s %s", "Variable", "Tipo", "Categoria", "Linea"));
+        System.out.println(indentacion + String.format("%-20s %-10s %-12s %s", "--------", "----", "---------", "-----"));
+        for (java.util.Map.Entry<String, Simbolo> e : tabla.entrySet()) {
+            Simbolo s = e.getValue();
+            System.out.println(indentacion + String.format("%-20s %-10s %-12s %s", s.nombre, s.tipo, s.categoria, s.linea));
+        }
+    }
+    
+    // Actualiza el tipo de un simbolo existente (para arreglos)
+    public static void actualizarTipoSimbolo(String nombre, String nuevoTipo) {
+        for (java.util.HashMap<String, Simbolo> ambito : pilaTablas) {
+            if (ambito.containsKey(nombre)) {
+                ambito.get(nombre).tipo = nuevoTipo;
+                return;
+            }
+        }
+    }
+
+    // ===============================================================
+    // 2.1.7 MANEJADORES DE ERRORES SINTACTICOS
+    // ===============================================================
+
+    // Error sintactico: token inesperado
+    public void syntax_error(java_cup.runtime.Symbol s) {
+        erroresSintacticos++;
+        System.err.println(ANSI_BLUE + "[ERROR SINTACTICO] Linea " + s.left + ", columna " + s.right
+                + ": token inesperado -> '" + s.value + "'" + ANSI_RESET);
+    }
+
+    // Error sintactico irrecuperable
+    public void unrecovered_syntax_error(java_cup.runtime.Symbol s) {
+        erroresSintacticos++;
+        System.err.println(ANSI_BLUE_DARK + "[ERROR SINTACTICO IRRECUPERABLE] Linea " + s.left
+                + ": no se pudo continuar el analisis." + ANSI_RESET);
+    }
+
+    // Mensaje de recuperacion de error
+    public static void mensajeRecuperacion(String mensaje) {
+        System.err.println(ANSI_CYAN + "[RECUPERACION] " + mensaje + ANSI_RESET);
+    }
+
+    // ===============================================================
+    // 2.2 ANALISIS SEMANTICO
+    // ===============================================================
+
+    public static int erroresSemanticos = 0;
+
+    // Reporta un error semantico
+    public static void errorSemantico(String mensaje) {
+        erroresSemanticos++;
+        System.err.println(ANSI_RED + "[ERROR SEMANTICO] " + mensaje + ANSI_RESET);
+    }
+
+    // Busca un simbolo en toda la pila (de interno a externo)
+    public static Simbolo buscarSimbolo(String nombre) {
+        for (java.util.HashMap<String, Simbolo> ambito : pilaTablas) {
+            if (ambito.containsKey(nombre)) return ambito.get(nombre);
+        }
+        return null;
+    }
+
+    // Verifica que una variable exista antes de usarla
+    // Retorna: "tipo|nombre" o "error|?"
+    public static String verificarUso(String nombre, int linea) {
+        Simbolo s = buscarSimbolo(nombre);
+        if (s == null) {
+            errorSemantico("Linea " + linea + ": variable '" + nombre + "' no fue declarada.");
+            return "error|?";
+        }
+        return s.tipo + "|" + nombre;
+    }
+
+    // ===============================================================
+    // 2.2.1 VALIDACION DE TIPOS
+    // ===============================================================
+    // Compara dos tipos y valida compatibilidad
+    // Recibe: tipo1, tipo2, operacion, linea
+    // Retorna: el tipo resultante o "error|?"
+    
+    public static String validarTipos(String tipo1, String tipo2, String operacion, int linea) {
+        
+        String t1 = tipo1;
+        String t2 = tipo2;
+        
+        // Extraer solo el tipo si viene con temporal (formato "tipo|temp")
+        if (tipo1 != null && tipo1.contains("|")) {
+            t1 = tipo1.split("\\|")[0];
+        }
+        if (tipo2 != null && tipo2.contains("|")) {
+            t2 = tipo2.split("\\|")[0];
+        }
+        
+        // Si algun tipo es error, propagar error
+        if (t1.equals("error") || t2.equals("error")) return "error|?";
+        
+        // Tipos incompatibles
+        if (!t1.equals(t2)) {
+            if (operacion.equals("asignacion")) {
+                errorSemantico("Linea " + linea 
+                    + ": tipo incompatible en asignacion, se esperaba '" + t1 
+                    + "' pero se encontro '" + t2 + "'.");
+            } else if (operacion.equals("return")) {
+                errorSemantico("Linea " + linea 
+                    + ": tipo de retorno incorrecto, se esperaba '" + t1 
+                    + "' pero se encontro '" + t2 + "'.");
+            } else {
+                errorSemantico("Linea " + linea 
+                    + ": tipos incompatibles en operacion '" + operacion 
+                    + "', se encontraron '" + t1 + "' y '" + t2 + "'.");
+            }
+            return "error|?";
+        }
+        
+        // Para operadores relacionales, retorna bool
+        if (operacion.equals("less_t") || operacion.equals("less_te") || 
+            operacion.equals("greather_t") || operacion.equals("greather_te") ||
+            operacion.equals("equal") || operacion.equals("n_equal")) {
+            return "bool|?";
+        }
+        
+        // Para otros casos, retorna el mismo tipo
+        return t1 + "|?";
+    }
+
+    // ===============================================================
+    // 2.2.2 VALIDACIONES DE SWITCH
+    // ===============================================================
+
+    // Mapa: switchId -> tipo (int/char)
+    private static java.util.HashMap<Integer, String> mapaTipoSwitch = new java.util.HashMap<>();
+    
+    // Mapa: switchId -> lugar (temporal de la expresion)
+    private static java.util.HashMap<Integer, String> mapaLugarSwitch = new java.util.HashMap<>();
+
+    // Mapa: switchId -> tiene_default (true/false)
+    private static java.util.HashMap<Integer, Boolean> mapaDefaultSwitch = new java.util.HashMap<>();
+    
+    // Mapa: whileId -> etiqueta de inicio
+    private static java.util.HashMap<Integer, String> mapaEtqInicioWhile = new java.util.HashMap<>();
+
+    // Pilas para break anidados
+    static java.util.Stack<String> pilaBreak = new java.util.Stack<>();
+
+    static java.util.Stack<Integer> pilaContadorWhile = new java.util.Stack<>();
+
+    static java.util.Stack<java.util.ArrayList<String>> pilaArgumentos = new java.util.Stack<>();
+
+    // Guarda el tipo del switch
+    private void setTipoSwitch(int switchId, String tipo) {
+        mapaTipoSwitch.put(switchId, tipo);
+    }
+    
+    // Obtiene el tipo del switch
+    private String getTipoSwitch(int switchId) {
+        return mapaTipoSwitch.getOrDefault(switchId, "desconocido");
+    }
+    
+    // Mapa: switchId -> lista de constantes usadas en cases
+    private static java.util.HashMap<Integer, java.util.ArrayList<String>> mapaConstantesSwitch = new java.util.HashMap<>();
+    
+    // Valida que no haya constantes duplicadas en el mismo switch
+    private void agregarConstanteSwitch(int switchId, String constante, int linea) {
+        if (!mapaConstantesSwitch.containsKey(switchId)) {
+            mapaConstantesSwitch.put(switchId, new java.util.ArrayList<>());
+        }
+        java.util.ArrayList<String> constantes = mapaConstantesSwitch.get(switchId);
+        if (constantes.contains(constante)) {
+            errorSemantico("Linea " + linea + ": constante de case duplicada: " + constante);
+        } else {
+            constantes.add(constante);
+        }
+    }
+    
+    // Valida que solo haya un default por switch
+    private void marcarDefaultUsado(int switchId, int linea) {
+        if (mapaDefaultSwitch.getOrDefault(switchId, false)) {
+            errorSemantico("Linea " + linea + ": solo puede haber un 'default' por switch");
+        } else {
+            mapaDefaultSwitch.put(switchId, true);
+        }
+    }
+
+    // Guarda el lugar (temporal) de la expresion del switch
+    private void setLugarSwitch(int id, String lugar) { 
+        mapaLugarSwitch.put(id, lugar); 
+    }
+    
+    // Obtiene el lugar de la expresion del switch
+    private String getLugarSwitch(int id) { 
+        return mapaLugarSwitch.getOrDefault(id, "?"); 
+    }
+
+    // Mapa: switchId -> casoId -> etiqueta de fin del case
+    private static java.util.HashMap<Integer, java.util.HashMap<Integer, String>> mapaEtqCasos = new java.util.HashMap<>();
+
+    // Guarda la etiqueta de fin de un case especifico
+    private void setEtqCasoActual(int swId, int casoId, String etq) {
+        mapaEtqCasos.computeIfAbsent(swId, k -> new java.util.HashMap<>()).put(casoId, etq);
+    }
+    
+    // Obtiene la etiqueta de fin de un case
+    private String getEtqCasoActual(int swId, int casoId) {
+        return mapaEtqCasos.getOrDefault(swId, new java.util.HashMap<>())
+                           .getOrDefault(casoId, "_sw" + swId + "_end");
+    }
+
+    // Guarda la etiqueta de inicio de un do-while
+    private void setEtqInicioWhile(int id, String etq) {
+        mapaEtqInicioWhile.put(id, etq);
+    }
+
+    // Obtiene la etiqueta de inicio de un do-while
+    private String getEtqInicioWhile(int id) {
+        return mapaEtqInicioWhile.getOrDefault(id, "_dowhile" + id + "_start");
+    }
+
+    // ===============================================================
+    // 2.2.3 VALIDACIONES DE ARRAY
+    // ===============================================================
+
+    static java.util.ArrayList<String> temporalesArreglo = new java.util.ArrayList<>();
+:}
+
+// ===============================================================
+// 3. TERMINALES (TOKENS DEL LEXER)
+// ===============================================================
+// Los terminales son los tokens que el analizador lexico reconoce
+// y que el parser recibe como entrada.
+
+// ---------------------------------------------------------------
+// 3.1 PALABRAS RESERVADAS DEL LENGUAJE
+// ---------------------------------------------------------------
+terminal PALABRA_MAIN, INT, FLOAT, BOOL, CHAR, STRING;
+terminal IF, ELSE, DO, WHILE, SWITCH, CASE, DEFAULT;
+terminal RETURN, BREAK, CIN, COUT;
+terminal EMPTY;
+
+// ---------------------------------------------------------------
+// 3.2 OPERADORES RELACIONALES
+// ---------------------------------------------------------------
+terminal EQUAL, N_EQUAL;        // igual, no igual
+terminal LESS_T, LESS_TE;       // menor, menor o igual
+terminal GREATER_T, GREATER_TE; // mayor, mayor o igual
+
+// ---------------------------------------------------------------
+// 3.3 SIMBOLOS ESPECIALES DEL LENGUAJE
+// ---------------------------------------------------------------
+terminal ASIGNACION;            // <-
+terminal SEPARADOR;             // ~
+terminal DELIMITADOR_EXP;       // !
+terminal INICIO_BLOQUE, FIN_BLOQUE;  // |:  y  :|
+terminal INICIO_PARENTESIS, FIN_PARENTESIS;  // <|  y  |>
+terminal INICIO_INDICE, FIN_INDICE;          // <<  y  >>
+terminal COMA;                  // ,
+terminal DOS_PUNTOS;            // :
+
+// ---------------------------------------------------------------
+// 3.4 OPERADORES ARITMETICOS
+// ---------------------------------------------------------------
+terminal MAS, MENOS;                    // +  -
+terminal MULTIPLICACION, DIVISION;      // *  /
+terminal MODULO, POTENCIA;              // %  ^
+terminal INCREMENTO, DECREMENTO;        // ++ --
+
+// ---------------------------------------------------------------
+// 3.5 OPERADORES LOGICOS
+// ---------------------------------------------------------------
+terminal OPERADOR_LOGICO_BINARIO;   // @ (AND), # (OR)
+terminal OPERADOR_LOGICO_UNARIO;    // $ (NOT)
+
+// ---------------------------------------------------------------
+// 3.6 LITERALES Y VALORES PRIMITIVOS
+// ---------------------------------------------------------------
+terminal NUMERO_ENTERO;             // ej: 5, 42, 100
+terminal NUMERO_FLOTANTE;           // ej: 3.14, 2.718
+terminal NOTACION_CIENTIFICA;       // ej: 1e10, 2.5e-3
+terminal FRACCIONARIO;              // ej: 6//7, 1//2
+terminal CADENA;                    // ej: "hola mundo"
+terminal CARACTER;                  // ej: 'A', 'Z'
+terminal BOOLEANO;                  // true, false
+terminal IDENTIFICADOR;             // ej: _miVar, x, contador
+
+
+// ===============================================================
+// 4. NO TERMINALES (SIMBOLOS GRAMATICALES)
+// ===============================================================
+// Los no terminales representan estructuras sintacticas del lenguaje
+// Algunos tienen tipo de retorno (String) para propagar informacion
+
+// ---------------------------------------------------------------
+// 4.1 ESTRUCTURA GENERAL DEL PROGRAMA
+// ---------------------------------------------------------------
+non terminal programa;              // Punto de inicio de la gramatica
+non terminal funcion_main;          // Funcion principal __main__
+non terminal contenido_programa;    // Contenido del main
+
+// ---------------------------------------------------------------
+// 4.2 FUNCIONES
+// ---------------------------------------------------------------
+non terminal funcion;               // Declaracion de una funcion
+non terminal lista_funciones;       // Lista de 0 o mas funciones
+non terminal parametros;            // Lista de parametros de una funcion
+non terminal lista_parametros;      // Parametros separados por coma
+non terminal parametro;             // Un parametro individual
+non terminal parametro_resto;       // Valor por defecto (opcional)
+
+// ---------------------------------------------------------------
+// 4.3 SENTENCIAS
+// ---------------------------------------------------------------
+non terminal sentencia;             // Una sentencia del lenguaje
+non terminal lista_sentencias;      // Lista de 0 o mas sentencias
+
+// ---------------------------------------------------------------
+// 4.4 DECLARACIONES DE VARIABLES
+// ---------------------------------------------------------------
+non terminal declaracion;           // Declaracion de variable
+non terminal declaracion_variable_resto;  // Inicializacion opcional
+non terminal String declaracion_resto;    // Parte restante de declaracion
+non terminal String lista_valores;  // Lista de valores para inicializar arreglo
+non terminal String valor_lista;    // Un valor en la lista
+
+// ---------------------------------------------------------------
+// 4.5 ASIGNACION Y CONTROL DE FLUJO
+// ---------------------------------------------------------------
+non terminal asignacion;            // Asignacion variable = expresion
+non terminal return_sentencia;      // Return con/ sin expresion
+non terminal break_sentencia;       // Break dentro de switch/do-while
+
+// ---------------------------------------------------------------
+// 4.6 ENTRADA Y SALIDA
+// ---------------------------------------------------------------
+non terminal cin_sentencia;         // Lectura de consola
+non terminal cout_sentencia;        // Escritura a consola
+non terminal lista_escritura;       // Lista de elementos a escribir
+non terminal elemento_escritura;    // Un elemento (variable, numero, cadena, etc)
+
+// ---------------------------------------------------------------
+// 4.7 ESTRUCTURAS CONDICIONALES Y CICLOS
+// ---------------------------------------------------------------
+non terminal if_sentencia;          // If con else opcional
+non terminal do_while_sentencia;    // Ciclo do-while
+non terminal while_cabeza;          // Cabeza del do-while (DO)
+non terminal String if_cabeza;      // Cabeza del if (condicion)
+non terminal String else_cabeza;    // Cabeza del else
+
+// ---------------------------------------------------------------
+// 4.8 SENTENCIA SWITCH
+// ---------------------------------------------------------------
+non terminal String switch_sentencia;   // Switch (retorna String para codigo)
+non terminal lista_casos;               // Lista de cases + default opcional
+non terminal lista_caso_simple;         // Uno o mas cases
+non terminal caso;                      // Un case individual
+non terminal caso_default;              // Default (opcional)
+non terminal String casoConstante;      // Constante del case (int o char)
+
+// ---------------------------------------------------------------
+// 4.9 EXPRESIONES (JERARQUIA DE PRECEDENCIA)
+// ---------------------------------------------------------------
+non terminal String numero;
+non terminal String expresion;          // Expresion general
+non terminal String exp_logica;         // Operadores logicos (@, #)
+non terminal String resto_logica;       // Continuacion de operadores logicos
+non terminal String exp_relacional;     // Operadores relacionales (<, >, <=, >=, ==, !=)
+non terminal String exp_aritmetica;     // Suma y resta
+non terminal String resto_aritmetica;   // Continuacion de suma/resta
+non terminal String exp_termino;        // Multiplicacion, division, modulo
+non terminal String resto_termino;      // Continuacion de termino
+non terminal String exp_potencia;       // Potencia (^)
+non terminal String resto_potencia;     // Continuacion de potencia
+non terminal String exp_factor;         // Factores (literales, variables, parentesis)
+non terminal String valor;              // Valores atomicos (literales, variables, llamadas)
+
+// ---------------------------------------------------------------
+// 4.10 ARREGLOS Y ACCESOS
+// ---------------------------------------------------------------
+non terminal String array;              // Dimension de arreglo [[N1]][[N2]]
+non terminal String acceso_arreglo;     // Acceso a elemento de arreglo [idx1][idx2]
+
+// ---------------------------------------------------------------
+// 4.11 LLAMADAS A FUNCIONES Y BLOQUES
+// ---------------------------------------------------------------
+non terminal String llamada_funcion_exp; // Llamada a funcion como expresion
+non terminal argumentos;                 // Lista de argumentos de llamada
+non terminal lista_argumentos;           // Argumentos separados por coma
+non terminal bloque_simple;              // Bloque |: sentencias :|
+non terminal bloque_inicio;              // Inicio de bloque (para ambito)
+
+// ===============================================================
+// 5. REGLAS GRAMATICALES
+// ===============================================================
+
+start with programa;
+
+// ===============================================================
+// 5.1 LITERALES NUMERICOS
+// ===============================================================
+// Genera codigo intermedio para numeros y retorna "tipo|temp|valor"
+// Formato: "int|t0|5", "float|t1|3.14"
+
+numero ::= NUMERO_ENTERO:n
+            {:
+                String nStr = String.valueOf(n);
+                String t = GeneradorCodigo.nuevoTemp("int"); 
+                GeneradorCodigo.emitir("    " + t + " = " + nStr);
+                RESULT = "int|" + t + "|" + nStr;
+            :}
+         | NUMERO_FLOTANTE:n
+            {:
+                String nStr = String.valueOf(n);
+                String t = GeneradorCodigo.nuevoTemp("float"); 
+                GeneradorCodigo.emitir("    " + t + " = " + nStr);
+                RESULT = "float|" + t + "|" + nStr;
+            :}
+         | NOTACION_CIENTIFICA:n
+            {:
+                String nStr = String.valueOf(n);
+                String t = GeneradorCodigo.nuevoTemp("int"); 
+                GeneradorCodigo.emitir("    " + t + " = " + nStr);
+                RESULT = "int|" + t + "|" + nStr;
+            :}
+         | FRACCIONARIO:n
+            {:
+                String nStr = String.valueOf(n);
+                String t = GeneradorCodigo.nuevoTemp("float");
+                GeneradorCodigo.emitir("    " + t + " = " + nStr);
+                RESULT = "float|" + t + "|" + nStr;
+            :};
+
+// ===============================================================
+// 5.2 CONSTANTES PARA CASE (solo literales, sin variables)
+// ===============================================================
+// Para switch: constantes deben ser int o char
+
+casoConstante ::= numero:n 
+                  {: 
+                     String tipo = n.split("\\|")[0];
+                     if (!tipo.equals("int")) {
+                         errorSemantico("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left 
+                             + ": constante de case debe ser 'int' o 'char', se encontro '" + tipo + "'");
+                         RESULT = "error|?|?";
+                     } else {
+                         RESULT = n;
+                     }
+                  :}
+                | CARACTER:c 
+                  {: 
+                      char ch;
+                      if (c instanceof Character) {
+                          ch = (Character) c;
+                      } else {
+                          String cStr = (String) c;
+                          ch = cStr.length() == 1 ? cStr.charAt(0) : cStr.charAt(1);
+                      }
+                      int ascii = (int) ch;
+                      String temp = GeneradorCodigo.nuevoTemp();
+                      GeneradorCodigo.emitir("    " + temp + " = " + ascii);
+                      RESULT = "char|" + temp + "|'" + ch + "'";
+                  :};
+
+// ===============================================================
+// 5.3 PROGRAMA PRINCIPAL
+// ===============================================================
+
+programa ::= lista_funciones {: pushScope("GLOBAL (MAIN)"); :} funcion_main {: popScope(); imprimirTodasLasTablas(); :} ;
+
+funcion_main ::= EMPTY SEPARADOR PALABRA_MAIN SEPARADOR INICIO_PARENTESIS FIN_PARENTESIS 
+                {: 
+                    GeneradorCodigo.emitir("\nmain:"); 
+                    tipoFuncionActual = "empty";
+                :} 
+                INICIO_BLOQUE contenido_programa FIN_BLOQUE ;
+
+contenido_programa ::= lista_sentencias ;
+
+// ===============================================================
+// 5.4 FUNCIONES
+// ===============================================================
+
+funcion ::= INT SEPARADOR IDENTIFICADOR:id
+              {: 
+                 if (tablaFunciones.containsKey((String)id)) {
+                     errorSemantico("Linea " + idleft + ": funcion '" + id + "' ya fue declarada.");
+                     tipoFuncionActual = "int";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope("DUPLICADA_" + (String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                 } else {
+                     tablaFunciones.put((String)id, "int");
+                     tipoFuncionActual = "int";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope((String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                 }
+              :}
+              INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
+              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+          | FLOAT SEPARADOR IDENTIFICADOR:id
+              {: 
+                 if (tablaFunciones.containsKey((String)id)) {
+                     errorSemantico("Linea " + idleft + ": funcion '" + id + "' ya fue declarada.");
+                     tipoFuncionActual = "float";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope("DUPLICADA_" + (String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                 } else {
+                     tablaFunciones.put((String)id, "float");
+                     tipoFuncionActual = "float";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope((String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                 }
+              :}
+              INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
+              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+          | BOOL SEPARADOR IDENTIFICADOR:id
+              {: 
+                 if (tablaFunciones.containsKey((String)id)) {
+                     errorSemantico("Linea " + idleft + ": funcion '" + id + "' ya fue declarada.");
+                     tipoFuncionActual = "bool";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope("DUPLICADA_" + (String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                 } else {
+                     tablaFunciones.put((String)id, "bool");
+                     tipoFuncionActual = "bool";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope((String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                 }
+              :}
+              INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
+              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+          | CHAR SEPARADOR IDENTIFICADOR:id
+              {: 
+                 if (tablaFunciones.containsKey((String)id)) {
+                     errorSemantico("Linea " + idleft + ": funcion '" + id + "' ya fue declarada.");
+                     tipoFuncionActual = "char";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope("DUPLICADA_" + (String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                 } else {
+                     tablaFunciones.put((String)id, "char");
+                     tipoFuncionActual = "char";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope((String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                 }
+              :}
+              INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
+              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+          | STRING SEPARADOR IDENTIFICADOR:id
+              {: 
+                 if (tablaFunciones.containsKey((String)id)) {
+                     errorSemantico("Linea " + idleft + ": funcion '" + id + "' ya fue declarada.");
+                     tipoFuncionActual = "string";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope("DUPLICADA_" + (String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                 } else {
+                     tablaFunciones.put((String)id, "string");
+                     tipoFuncionActual = "string";
+                     parametrosActuales = new java.util.ArrayList<>();
+                     pushScope((String)id);
+                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                 }
+              :}
+              INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
+              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :} ;
+
+/*Lista de 0 o mas funciones*/
+lista_funciones ::= funcion lista_funciones | /* vacio */ ;
+
+// ===============================================================
+// 5.5 PARAMETROS DE FUNCION
+// ===============================================================
+
+parametros ::= lista_parametros | /* vacio */ ;
+
+/* Lista de parametros separados por coma */
+lista_parametros ::= parametro 
+                   | lista_parametros COMA parametro ;
+
+/* FIX: factorizado con parametro_resto para evitar conflictos y reducir repeticion */
+parametro ::= INT SEPARADOR IDENTIFICADOR:id parametro_resto
+                {: agregarParametro((String)id, "int", idleft); parametrosActuales.add("int"); GeneradorCodigo.emitir("    param " + id); :}
+            | INT SEPARADOR IDENTIFICADOR:id array parametro_resto
+                {: agregarParametro((String)id, "int[][]", idleft); parametrosActuales.add("int[][]"); GeneradorCodigo.emitir("    param " + id); :}
+            | FLOAT SEPARADOR IDENTIFICADOR:id array parametro_resto
+                {: agregarParametro((String)id, "float[][]", idleft); parametrosActuales.add("float[][]"); GeneradorCodigo.emitir("    param " + id); :}
+            | FLOAT SEPARADOR IDENTIFICADOR:id parametro_resto
+                {: agregarParametro((String)id, "float", idleft); parametrosActuales.add("float"); GeneradorCodigo.emitir("    param " + id); :}
+            | BOOL SEPARADOR IDENTIFICADOR:id parametro_resto
+                {: agregarParametro((String)id, "bool", idleft); parametrosActuales.add("bool"); GeneradorCodigo.emitir("    param " + id); :}
+            | CHAR SEPARADOR IDENTIFICADOR:id parametro_resto
+                {: agregarParametro((String)id, "char", idleft); parametrosActuales.add("char"); GeneradorCodigo.emitir("    param " + id); :}
+            | STRING SEPARADOR IDENTIFICADOR:id parametro_resto
+                {: agregarParametro((String)id, "string", idleft); parametrosActuales.add("string"); GeneradorCodigo.emitir("    param " + id); :} ;
+
+/* Valor por defecto opcional para parametro */
+parametro_resto ::= /* vacio */ 
+                    | ASIGNACION valor;
+
+// ===============================================================
+// 5.6 ARGUMENTOS DE LLAMADA A FUNCION
+// ===============================================================
+
+argumentos ::= lista_argumentos | /* vacio */ ;
+
+/* Argumentos separados por coma */
+lista_argumentos ::= expresion:e 
+                        {: pilaArgumentos.peek().add((String)e); :}
+                   | expresion:e 
+                        {: pilaArgumentos.peek().add((String)e); :}
+                     COMA lista_argumentos ;
+
+// ===============================================================
+// 5.7 SENTENCIAS
+// ===============================================================
+
+sentencia ::= declaracion
+            | asignacion
+            | return_sentencia
+            | break_sentencia
+            | if_sentencia
+            | do_while_sentencia
+            | switch_sentencia
+            | cin_sentencia
+            | cout_sentencia
+            | expresion DELIMITADOR_EXP
+            | error DELIMITADOR_EXP;
+
+lista_sentencias ::= sentencia lista_sentencias | /* vacio */ ;
+
+// ===============================================================
+// 5.8 DECLARACIONES DE VARIABLES
+// ===============================================================
+
+declaracion ::= INT SEPARADOR IDENTIFICADOR:id
+                {: tipoDeclaracionActual = "int"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "int", idleft); :}
+                declaracion_resto:r
+                {: if (r != null) actualizarTipoSimbolo((String)id, tipoDeclaracionActual + r); :}
+
+            | FLOAT SEPARADOR IDENTIFICADOR:id
+                {: tipoDeclaracionActual = "float"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "float", idleft); :}
+                declaracion_resto:r
+                {: if (r != null) actualizarTipoSimbolo((String)id, tipoDeclaracionActual + r); :}
+
+            | BOOL SEPARADOR IDENTIFICADOR:id
+                {: tipoDeclaracionActual = "bool"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "bool", idleft); :}
+                declaracion_variable_resto
+
+            | CHAR SEPARADOR IDENTIFICADOR:id
+                {: tipoDeclaracionActual = "char"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "char", idleft); :}
+                declaracion_variable_resto
+
+            | STRING SEPARADOR IDENTIFICADOR:id
+                {: tipoDeclaracionActual = "string"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "string", idleft); :}
+                declaracion_variable_resto
+
+            | error SEPARADOR IDENTIFICADOR declaracion_resto {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Tipo no reconocido, se asume 'int'"); :} ;
+
+// ===============================================================
+// 5.8.1 DECLARACION CON INICIALIZACION
+// ===============================================================
+
+declaracion_resto ::= declaracion_variable_resto
+                        {: RESULT = null; :}
+                    | array:dim DELIMITADOR_EXP
+                        {: RESULT = "[][]"; :}
+                    | array:dim ASIGNACION {: temporalesArreglo.clear(); :} INICIO_BLOQUE lista_valores:v FIN_BLOQUE DELIMITADOR_EXP
+                        {: 
+                            String tipoBloque = v.contains(":") ? v.split(":")[0] : v;
+                            String conteo     = v.contains(":") ? v.split(":")[1] : "0";
+
+                            if (!tipoBloque.equals(tipoDeclaracionActual) && !tipoBloque.equals("error")) {
+                                errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                    + ": tipo incompatible en inicializacion de arreglo, se esperaba '" 
+                                    + tipoDeclaracionActual + "' pero se encontro '" + tipoBloque + "'.");
+                            }
+
+                            if (dim != null && !tipoBloque.equals("error")) {
+                                int filasDecl  = Integer.parseInt(dim.split(",")[0]);
+                                int colsDecl   = Integer.parseInt(dim.split(",")[1]);
+                                int totalDecl  = filasDecl * colsDecl;
+                                int totalBloque = Integer.parseInt(conteo);
+                                if (totalDecl != totalBloque) {
+                                    errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                        + ": dimensiones del arreglo no coinciden, se declaro " 
+                                        + filasDecl + "x" + colsDecl + " (" + totalDecl + " elementos)"
+                                        + " pero se inicializo con " + totalBloque + " elemento(s).");
+                                }
+                                // Emitir declaracion e inicializacion del arreglo
+                                GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = alloc " + filasDecl + ", " + colsDecl);
+                                int idx = 0;
+                                for (int i = 0; i < filasDecl; i++) {
+                                    for (int j = 0; j < colsDecl && idx < temporalesArreglo.size(); j++, idx++) {
+                                        GeneradorCodigo.emitir("    " + nombreDeclaracionActual + "[" + i + "][" + j + "] = " + temporalesArreglo.get(idx));
+                                    }
+                                }
+                            }
+                            RESULT = "[][]"; 
+                        :}
+                    | array:dim ASIGNACION expresion:e DELIMITADOR_EXP
+                        {: 
+                            errorSemantico("Linea " + eleft 
+                                + ": un arreglo bidimensional no puede inicializarse con un valor escalar, use |: ... :|"); 
+                            RESULT = "[][]"; 
+                        :};
+
+declaracion_variable_resto ::= DELIMITADOR_EXP
+    | ASIGNACION expresion:e DELIMITADOR_EXP {: 
+          String tipoExp = e.contains("|") ? e.split("\\|")[0] : e;
+          validarTipos(tipoDeclaracionActual, tipoExp, "asignacion", eleft);
+          String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+          GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = " + lugarE); :} ;
+
+// ===============================================================
+// 5.8.2 INICIALIZACION DE ARREGLOS
+// ===============================================================
+         
+lista_valores ::= valor_lista:v 
+                    {: RESULT = v; :}
+                | valor_lista:v COMA lista_valores:r
+                    {: 
+                        String tipoV = v.contains(":") ? v.split(":")[0] : v;
+                        String tipoR = r.contains(":") ? r.split(":")[0] : r;
+                        int contV   = v.contains(":") ? Integer.parseInt(v.split(":")[1]) : 1;
+                        int contR   = r.contains(":") ? Integer.parseInt(r.split(":")[1]) : 1;
+
+                        if (!tipoV.equals(tipoR) && !tipoV.equals("error") && !tipoR.equals("error")) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": tipos inconsistentes en inicializacion de arreglo, se encontro '" + tipoV + "' y '" + tipoR + "' en la misma lista.");
+                            RESULT = "error:0";
+                        } else if (tipoV.equals("error") || tipoR.equals("error")) {
+                            RESULT = "error:0";
+                        } else {
+                            RESULT = tipoV + ":" + (contV + contR);
+                        }
+                    :};
+
+/* Elemento individual en inicializacion de arreglo (puede ser anidado) */
+valor_lista ::= expresion:e 
+                    {: 
+                        String tipo = e.contains("|") ? e.split("\\|")[0] : e;
+                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                        temporalesArreglo.add(lugar);
+                        RESULT = tipo + ":1"; 
+                    :}
+              | INICIO_BLOQUE lista_valores:v FIN_BLOQUE 
+                    {: RESULT = v; :};
+
+// ===============================================================
+// 5.9 ASIGNACION
+// ===============================================================
+
+asignacion ::= IDENTIFICADOR:id ASIGNACION expresion:e DELIMITADOR_EXP {: 
+                   String tipoVar = verificarUso((String)id, idleft);
+                   validarTipos(tipoVar, e, "asignacion", idleft);
+                   String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+                   GeneradorCodigo.emitir("    " + id + " = " + lugarE); :}
+             | acceso_arreglo:arr ASIGNACION expresion:e DELIMITADOR_EXP {:
+                   validarTipos(arr, e, "asignacion", ((Symbol)CUP$parser$stack.peek()).left);
+                   String[] partes = arr.split("\\|");
+                   String posicion = partes.length >= 3 ? partes[2] : arr;
+                   String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+                   GeneradorCodigo.emitir("    " + posicion + " = " + lugarE); :}
+             | IDENTIFICADOR error expresion DELIMITADOR_EXP  {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left + ": Operador de asignacion incorrecto, se asume '<-'"); :};
+
+// ===============================================================
+// 5.10 LLAMADA A FUNCION
+// ===============================================================
+
+llamada_funcion_exp ::= IDENTIFICADOR:id
+    {: 
+        pilaArgumentos.push(new java.util.ArrayList<>());
+        argumentosActuales = pilaArgumentos.peek();
+    :} 
+    INICIO_PARENTESIS argumentos FIN_PARENTESIS 
+    {:
+        java.util.ArrayList<String> misArgumentos = pilaArgumentos.pop();
+        argumentosActuales = pilaArgumentos.isEmpty() ? new java.util.ArrayList<>() : pilaArgumentos.peek();
+        
+        if (!tablaFunciones.containsKey((String)id)) {
+            errorSemantico("Linea " + idleft + ": funcion '" + id + "' no fue declarada.");
+            RESULT = "error|?";
+        } else {
+            java.util.ArrayList<String> params = tablaParametros.get((String)id);
+            if (params != null && params.size() != misArgumentos.size()) {
+                errorSemantico("Linea " + idleft + ": la funcion '" + id + "' espera " + params.size() + " argumento(s) pero se encontraron " + misArgumentos.size() + ".");
+                for (int i = 0; i < misArgumentos.size(); i++) {
+                    String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
+                    GeneradorCodigo.emitir("    param " + lugarArg);
+                }
+                String t = GeneradorCodigo.nuevoTemp();
+                GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + misArgumentos.size());
+                RESULT = tablaFunciones.get((String)id) + "|" + t;
+            } else if (params != null) {
+                for (int i = 0; i < params.size(); i++) {
+                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);
+                    if (!params.get(i).equals(tipoArg) && !tipoArg.equals("error")) {
+                        errorSemantico("Linea " + idleft + ": argumento " + (i+1) + " de funcion '" + id + "' esperaba tipo '" + params.get(i) + "' pero se encontro '" + tipoArg + "'.");
+                    }
+                    String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
+                    GeneradorCodigo.emitir("    param " + lugarArg);
+                }
+                String t = GeneradorCodigo.nuevoTemp();
+                GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + params.size());
+                RESULT = tablaFunciones.get((String)id) + "|" + t;
+            } else {
+                for (int i = 0; i < misArgumentos.size(); i++) {
+                    String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
+                    GeneradorCodigo.emitir("    param " + lugarArg);
+                }
+                String t = GeneradorCodigo.nuevoTemp();
+                GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + misArgumentos.size());
+                RESULT = tablaFunciones.get((String)id) + "|" + t;
+            }
+        }
+    :} ;
+
+// ===============================================================
+// 5.11 RETURN Y BREAK
+// ===============================================================
+
+return_sentencia ::= RETURN SEPARADOR expresion:e DELIMITADOR_EXP {: 
+                        if (tipoFuncionActual.equals("empty")) {
+                            errorSemantico("Linea " + eleft + ": la funcion 'main' es de tipo empty y no puede retornar un valor.");
+                        } else {
+                            validarTipos(tipoFuncionActual, e, "return", eleft);
+                        }
+                        String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+                        GeneradorCodigo.emitir("    return " + lugarE); :}
+                   | RETURN error DELIMITADOR_EXP {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Expresion de retorno invalida, se asume retorno por defecto"); :} ; 
+
+break_sentencia ::= BREAK DELIMITADOR_EXP {:
+        if (nivelBreak == 0) {
+            errorSemantico("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left 
+                + ": 'break' fuera de un switch o do-while.");
+        } else {
+            GeneradorCodigo.emitir("    goto " + pilaBreak.peek());
+        } :};
+
+// ===============================================================
+// 5.12 ENTRADA Y SALIDA (cin / cout)
+// ===============================================================
+
+cin_sentencia ::= CIN SEPARADOR IDENTIFICADOR:id DELIMITADOR_EXP {: 
+        String t = verificarUso((String)id, idleft);
+        String tipoT = t.contains("|") ? t.split("\\|")[0] : t;
+        if (!tipoT.equals("int") && !tipoT.equals("float") && !tipoT.equals("error")) {
+            errorSemantico("Linea " + idleft + ": cin solo puede leer variables int o float, se encontro tipo '" + tipoT + "'.");
+        } else {
+            GeneradorCodigo.emitir("    read " + id);
+        }
+    :}
+    | CIN error DELIMITADOR_EXP {: mensajeRecuperacion("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": Cin invalido, se omite");:};
+
+cout_sentencia ::= COUT SEPARADOR INICIO_PARENTESIS lista_escritura FIN_PARENTESIS DELIMITADOR_EXP
+                 | COUT error DELIMITADOR_EXP {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Escritura invalida, se omite"); :};
+
+lista_escritura ::= elemento_escritura 
+                    | elemento_escritura SEPARADOR lista_escritura;
+
+elemento_escritura ::= IDENTIFICADOR:id 
+                        {: 
+                            String t = verificarUso((String)id, idleft);
+                            String lugar = t.contains("|") ? t.split("\\|")[1] : (String)id;
+                            GeneradorCodigo.emitir("    write " + lugar); 
+                        :}
+                     | MENOS numero:n
+                        {: 
+                            String lugar = n.contains("|") ? n.split("\\|")[1] : n;
+                            GeneradorCodigo.emitir("    write -" + lugar); 
+                        :}
+                     | numero:n
+                        {: 
+                            String lugar = n.contains("|") ? n.split("\\|")[1] : n;
+                            GeneradorCodigo.emitir("    write " + lugar); 
+                        :}
+                     | CADENA:s    
+                        {: 
+                            String t = GeneradorCodigo.nuevoTemp();
+                            GeneradorCodigo.emitir("    " + t + " = \"" + s + "\"");
+                            GeneradorCodigo.emitir("    write " + t); 
+                        :}
+                     | BOOLEANO:b  
+                        {: 
+                            String t = GeneradorCodigo.nuevoTemp();
+                            GeneradorCodigo.emitir("    " + t + " = " + b);
+                            GeneradorCodigo.emitir("    write " + t); 
+                        :}
+                     | CARACTER:c  
+                        {: 
+                            char ch;
+                            if (c instanceof Character) {
+                                ch = (Character) c;
+                            } else {
+                                String cStr = (String) c;
+                                ch = cStr.length() == 1 ? cStr.charAt(0) : cStr.charAt(1);
+                            }
+                            String t = GeneradorCodigo.nuevoTemp();
+                            GeneradorCodigo.emitir("    " + t + " = " + (int)ch);
+                            GeneradorCodigo.emitir("    write " + t); 
+                        :}
+                     | acceso_arreglo:arr 
+                        {: 
+                            String lugar = arr.contains("|") ? arr.split("\\|")[1] : arr;
+                            GeneradorCodigo.emitir("    write " + lugar); 
+                        :};
+
+// ===============================================================
+// 5.13 BLOQUES Y AMBITOS
+// ===============================================================
+
+bloque_inicio ::= INICIO_BLOQUE {: pushScope(nombreBloqueActual); nombreBloqueActual = "BLOQUE"; :} ;
+
+bloque_simple ::= bloque_inicio lista_sentencias FIN_BLOQUE {: popScope(); :};
+
+// ===============================================================
+// 5.14 SENTENCIA IF
+// ===============================================================
+
+if_cabeza ::= IF INICIO_PARENTESIS expresion:e FIN_PARENTESIS
+    {:
+        String tipoE = e.contains("|") ? e.split("\\|")[0] : e;
+        if (!tipoE.equals("bool") && !tipoE.equals("error")) {
+            errorSemantico("Linea " + eleft + ": la condicion del if debe ser de tipo bool, se encontro '" + tipoE + "'.");
+        }
+        String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+        String etqFalso = GeneradorCodigo.nuevaEtiqueta();
+        GeneradorCodigo.emitir("    ifFalse " + lugarE + " goto " + etqFalso);
+        contadorIf++; nombreBloqueActual = "IF " + contadorIf;
+        RESULT = etqFalso;
+    :} ;
+
+else_cabeza  ::= ELSE {: contadorElse++;  nombreBloqueActual = "ELSE "  + contadorElse; :} ;
+while_cabeza ::= DO {: contadorWhile++; nivelBreak++; nombreBloqueActual = "DO-WHILE " + contadorWhile; String etqInicio = "_dowhile" + contadorWhile + "_start"; GeneradorCodigo.emitirEtiqueta(etqInicio); setEtqInicioWhile(contadorWhile, etqInicio); pilaBreak.push("_dowhile" + contadorWhile + "_end"); pilaContadorWhile.push(contadorWhile); :};
+
+if_sentencia ::= if_cabeza:cab bloque_simple {: GeneradorCodigo.emitirEtiqueta((String)cab); :}
+  | if_cabeza:cab bloque_simple else_cabeza:el {:
+        String etqFin = GeneradorCodigo.nuevaEtiqueta();
+        GeneradorCodigo.emitir("    goto " + etqFin);
+        GeneradorCodigo.emitirEtiqueta((String)cab);
+        RESULT = etqFin; :}
+    bloque_simple {:  GeneradorCodigo.emitirEtiqueta((String)RESULT); :}
+  | IF error bloque_simple {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Condicion de if invalida, se asume verdadero"); :} ;
+
+// ===============================================================
+// 5.15 SENTENCIA DO-WHILE
+// ===============================================================
+
+do_while_sentencia ::= while_cabeza bloque_simple WHILE INICIO_PARENTESIS expresion:e FIN_PARENTESIS DELIMITADOR_EXP{:
+        nivelBreak--;
+        pilaBreak.pop();
+        int miWhile = pilaContadorWhile.pop();
+        String tipoE = e.contains("|") ? e.split("\\|")[0] : e;
+        if (!tipoE.equals("bool") && !tipoE.equals("error")) {
+            errorSemantico("Linea " + eleft + ": la condicion del do-while debe ser de tipo bool, se encontro '" + tipoE + "'.");
+        }
+        String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+        String etqInicio = getEtqInicioWhile(miWhile);
+        String etqFin    = "_dowhile" + miWhile + "_end";
+        GeneradorCodigo.emitir("    if " + lugarE + " goto " + etqInicio);
+        GeneradorCodigo.emitirEtiqueta(etqFin); :}
+    | DO error DELIMITADOR_EXP {:
+        mensajeRecuperacion("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": Do-while invalido, se omite");
+        nivelBreak--;
+        if (!pilaBreak.isEmpty()) pilaBreak.pop();
+        if (!pilaContadorWhile.isEmpty()) pilaContadorWhile.pop(); :} ;
+
+// ===============================================================
+// 5.16 SENTENCIA SWITCH
+// ===============================================================
+
+switch_sentencia ::= SWITCH SEPARADOR INICIO_PARENTESIS expresion:e FIN_PARENTESIS 
+                     {: 
+                        contadorSwitch++; 
+                        switchActual = contadorSwitch; 
+                        casoActual = 0; 
+                        nivelBreak++; 
+                        pushScope("SWITCH " + switchActual);
+                        
+                        String tipoE = e.contains("|") ? e.split("\\|")[0] : e;
+                        if (!tipoE.equals("int") && !tipoE.equals("char") && !tipoE.equals("error")) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                + ": la expresion del switch debe ser 'int' o 'char', se encontro '" + tipoE + "'.");
+                        }
+                        setTipoSwitch(switchActual, tipoE);
+                        
+                        String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+                        GeneradorCodigo.emitir("_switch" + switchActual + ":");
+                        setLugarSwitch(switchActual, lugarE);
+                        String tsw = "tsw" + switchActual;
+                        GeneradorCodigo.emitir("    " + tsw + " = 1");
+                        pilaBreak.push("_sw" + switchActual + "_end");
+                     :} 
+                     INICIO_BLOQUE lista_casos FIN_BLOQUE 
+                     {: 
+                        GeneradorCodigo.emitirEtiqueta("_sw" + switchActual + "_end");
+                        nivelBreak--;
+                        pilaBreak.pop();
+                        popScope(); 
+                     :}
+                   | SWITCH error INICIO_BLOQUE lista_casos FIN_BLOQUE 
+                     {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Switch invalido, se omite"); :};
+
+/* Casos del switch incluyendo opcional default */
+lista_casos ::= lista_caso_simple caso_default
+                | lista_caso_simple
+                | caso_default;
+
+/* Lista de uno o mas cases */
+lista_caso_simple ::= caso lista_caso_simple | caso;
+
+/* Etiqueta case con su bloque de sentencias. punto s: ~ entre case/default y expresion/identificador */
+caso ::= CASE SEPARADOR casoConstante:c DOS_PUNTOS 
+         {: 
+            casoActual++;
+            String tipoSwitchActual = getTipoSwitch(switchActual);
+            
+            String[] partes = (c != null) ? c.split("\\|") : new String[]{"error","?","?"};
+            String tipoConstante  = partes.length > 0 ? partes[0] : "error";
+            String lugarConstante = partes.length > 1 ? partes[1] : "?";
+            String valorConstante = partes.length > 2 ? partes[2] 
+                                  : partes.length > 1 ? partes[1] 
+                                  : "?";
+
+            if (!tipoSwitchActual.equals("desconocido") && !tipoConstante.equals("error")) {
+                if (tipoSwitchActual.equals("int") && !tipoConstante.equals("int")) {
+                    errorSemantico("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left 
+                        + ": constante de case tipo '" + tipoConstante 
+                        + "' incompatible con expresion del switch (tipo 'int')");
+                } else if (tipoSwitchActual.equals("char") && !tipoConstante.equals("char")) {
+                    errorSemantico("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left 
+                        + ": constante de case tipo '" + tipoConstante 
+                        + "' incompatible con expresion del switch (tipo 'char')");
+                }
+            }
+            agregarConstanteSwitch(switchActual, valorConstante,
+                                   ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left);
+
+            // Codigo intermedio
+            String lugarSw = getLugarSwitch(switchActual);
+            String tsw     = "tsw" + switchActual;
+            
+            String etqBody = "_case" + switchActual + "_" + casoActual + "_b";
+            String etqEnd  = "_case" + switchActual + "_" + casoActual + "_e";
+            
+            setEtqCasoActual(switchActual, casoActual, etqEnd);
+
+            GeneradorCodigo.emitirEtiqueta("_case" + switchActual + "_" + casoActual);
+            
+            String tFall = GeneradorCodigo.nuevoTemp();
+            GeneradorCodigo.emitir("    " + tFall + " = " + tsw + " == 0");
+            GeneradorCodigo.emitir("    if " + tFall + " goto " + etqBody);
+            
+            String tCmp = GeneradorCodigo.nuevoTemp();
+            GeneradorCodigo.emitir("    " + tCmp + " = " + lugarSw + " == " + lugarConstante);
+            GeneradorCodigo.emitir("    if " + tCmp + " goto " + etqBody);
+            
+            GeneradorCodigo.emitir("    goto " + etqEnd);
+            
+            GeneradorCodigo.emitirEtiqueta(etqBody);
+            GeneradorCodigo.emitir("    " + tsw + " = 0");
+         :} 
+         lista_sentencias
+         {: 
+            String etqEnd = getEtqCasoActual(switchActual, casoActual);
+            GeneradorCodigo.emitirEtiqueta(etqEnd);
+         :}
+       | CASE error DOS_PUNTOS lista_sentencias  
+         {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Case invalido, se omite"); :};
+
+/* Etiqueta default (opcional) */
+caso_default ::= DEFAULT DOS_PUNTOS 
+                 {: 
+                    marcarDefaultUsado(switchActual, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left);
+                    GeneradorCodigo.emitirEtiqueta("_default" + switchActual);
+                 :} 
+                 lista_sentencias;
+
+// ===============================================================
+// 5.17 EXPRESIONES (JERARQUIA DE PRECEDENCIA)
+// ===============================================================
+// La jerarquia es:
+//   1. exp_logica   (operadores logicos @, #)
+//   2. exp_relacional (<, >, <=, >=, ==, !=)
+//   3. exp_aritmetica (+, -)
+//   4. exp_termino    (*, /, %)
+//   5. exp_factor     (literales, variables, parentesis)
+
+expresion ::= exp_logica:e{: RESULT = e; :};
+
+// ---------------------------------------------------------------
+// 5.17.1 EXPRESIONES LOGICAS (@ = AND, # = OR)
+// ---------------------------------------------------------------
+
+exp_logica ::= exp_relacional:e1 resto_logica:r
+                {:
+                    String tipo1  = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                    String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                    String opR    = r != null ? (r.contains("|") ? r.split("\\|")[0] : null) : null;
+                    String lugarR = r != null ? (r.contains("|") ? r.split("\\|")[1] : r) : null;
+                    String tipoR  = r != null ? (r.contains("|") ? r.split("\\|")[2] : r) : null;
+                    if (tipoR != null && !tipoR.equals("error")) {
+                        if (!tipo1.equals("bool") || !tipoR.equals("bool")) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": Operadores logicos requieren tipos bool.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp();
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " @ " + lugarR);
+                            RESULT = "bool|" + t;
+                        }
+                    } else {
+                        RESULT = e1;
+                    }
+                :};
+
+/* Operadores logicos binarios en cadena (and, or) */
+resto_logica ::= OPERADOR_LOGICO_BINARIO exp_relacional:e resto_logica:r {:
+                        String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                        if (r != null) {
+                            String opR    = r.split("\\|")[0];
+                            String lugarR = r.split("\\|")[1];
+                            String tipoR  = r.split("\\|")[2];
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " @ " + lugarR);
+                            RESULT = "@|" + t + "|" + tipo;
+                        } else {
+                            RESULT = "@|" + lugar + "|" + tipo;
+                        }
+                    :}
+                | /* vacio */ {: RESULT = null; :};
+
+// ---------------------------------------------------------------
+// 5.17.2 EXPRESIONES RELACIONALES
+// ---------------------------------------------------------------
+
+exp_relacional ::= LESS_T INICIO_PARENTESIS exp_aritmetica:e1 COMA exp_aritmetica:e2 FIN_PARENTESIS
+                    {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+                        if ((!tipo1.equals("int") && !tipo1.equals("float") && !tipo1.equals("error")) ||
+                            (!tipo2.equals("int") && !tipo2.equals("float") && !tipo2.equals("error"))) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": 'less_t' solo aplica a int o float.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp("int");  
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " < " + lugar2);
+                            RESULT = "bool|" + t;
+                        }
+                    :}
+                 | LESS_TE INICIO_PARENTESIS exp_aritmetica:e1 COMA exp_aritmetica:e2 FIN_PARENTESIS
+                    {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+                        if ((!tipo1.equals("int") && !tipo1.equals("float") && !tipo1.equals("error")) ||
+                            (!tipo2.equals("int") && !tipo2.equals("float") && !tipo2.equals("error"))) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": 'less_te' solo aplica a int o float.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp("int");  
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " <= " + lugar2);
+                            RESULT = "bool|" + t;
+                        }
+                    :}
+                 | GREATER_T INICIO_PARENTESIS exp_aritmetica:e1 COMA exp_aritmetica:e2 FIN_PARENTESIS
+                    {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+                        if ((!tipo1.equals("int") && !tipo1.equals("float") && !tipo1.equals("error")) ||
+                            (!tipo2.equals("int") && !tipo2.equals("float") && !tipo2.equals("error"))) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": 'greather_t' solo aplica a int o float.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp("int");  
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " > " + lugar2);
+                            RESULT = "bool|" + t;
+                        }
+                    :}
+                 | GREATER_TE INICIO_PARENTESIS exp_aritmetica:e1 COMA exp_aritmetica:e2 FIN_PARENTESIS
+                    {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+                        if ((!tipo1.equals("int") && !tipo1.equals("float") && !tipo1.equals("error")) ||
+                            (!tipo2.equals("int") && !tipo2.equals("float") && !tipo2.equals("error"))) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": 'greather_te' solo aplica a int o float.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp("int"); 
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " >= " + lugar2);
+                            RESULT = "bool|" + t;
+                        }
+                    :}
+                 | EQUAL INICIO_PARENTESIS expresion:e1 COMA expresion:e2 FIN_PARENTESIS
+                    {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+                        String resV = validarTipos(tipo1, tipo2, "equal", ((Symbol)CUP$parser$stack.peek()).left);
+                        if (!resV.contains("error")) {
+                            String t = GeneradorCodigo.nuevoTemp("int");  
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " == " + lugar2);
+                            RESULT = "bool|" + t;
+                        } else {
+                            RESULT = "error|?";
+                        }
+                    :}
+                 | N_EQUAL INICIO_PARENTESIS expresion:e1 COMA expresion:e2 FIN_PARENTESIS
+                    {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+                        String resV = validarTipos(tipo1, tipo2, "n_equal", ((Symbol)CUP$parser$stack.peek()).left);
+                        if (!resV.contains("error")) {
+                            String t = GeneradorCodigo.nuevoTemp("int");  
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " != " + lugar2);
+                            RESULT = "bool|" + t;
+                        } else {
+                            RESULT = "error|?";
+                        }
+                    :}
+                 | exp_aritmetica:e {: RESULT = e; :};
+
+// ---------------------------------------------------------------
+// 5.17.3 EXPRESIONES ARITMETICAS (SUMA Y RESTA)
+// ---------------------------------------------------------------
+
+exp_aritmetica ::= exp_termino:e1 resto_aritmetica:r {: 
+                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        if (r != null && !r.equals("error|?")) {
+                            String op = r.split("\\|")[0];
+                            String lugar2 = r.split("\\|")[1];
+                            String tipo2 = r.split("\\|")[2];
+                            validarTipos(tipo1, tipo2, "aritmetica", ((Symbol)CUP$parser$stack.peek()).left);
+                            
+                            String t = GeneradorCodigo.nuevoTemp(tipo1); 
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " " + op + " " + lugar2);
+                            RESULT = tipo1 + "|" + t;
+                        } else {
+                            RESULT = e1;
+                        }
+                    :};
+
+
+/* Operadores de suma y resta en cadena */
+resto_aritmetica ::= MAS exp_termino:e resto_aritmetica:r {:
+                        String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                        if (r != null) {
+                            String opR    = r.split("\\|")[0];
+                            String lugarR = r.split("\\|")[1];
+                            String tipoR  = r.split("\\|")[2];
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = "+|" + t + "|" + tipo;
+                        } else {
+                            RESULT = "+|" + lugar + "|" + tipo;
+                        }
+                    :}
+                    | MENOS exp_termino:e resto_aritmetica:r {:
+                        String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                        if (r != null) {
+                            String opR    = r.split("\\|")[0];
+                            String lugarR = r.split("\\|")[1];
+                            String tipoR  = r.split("\\|")[2];
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = "-|" + t + "|" + tipo;
+                        } else {
+                            RESULT = "-|" + lugar + "|" + tipo;
+                        }
+                    :}
+                    | /* vacio */ {: RESULT = null; :};
+
+// ---------------------------------------------------------------
+// 5.17.4 EXPRESIONES DE TERMINO (MULTIPLICACION, DIVISION, MODULO)
+// ---------------------------------------------------------------
+
+exp_termino ::= exp_factor:e1 resto_termino:r {: 
+                    String tipo = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                    String lugar = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                    if (r != null && !r.equals("error")) {
+                        String opR    = r.split("\\|")[0];
+                        String lugarR = r.split("\\|")[1];  // lugar en [1]
+                        String tipoR  = r.split("\\|")[2];  // tipo en [2]
+                        if (opR.equals("%") && !tipo.equals("int") && !tipo.equals("error")) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
+                            RESULT = "error|?";
+                        } else if (opR.equals("%") && !tipoR.equals("int") && !tipoR.equals("error")) {
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
+                            RESULT = "error|?";
+                        } else {
+                            String nombreOp = opR.equals("*") ? "multiplicacion" 
+                                           : opR.equals("/") ? "division" 
+                                           : "modulo";
+                            validarTipos(tipo, tipoR, nombreOp, ((Symbol)CUP$parser$stack.peek()).left);
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = tipo + "|" + t;
+                        }
+                    } else {
+                        RESULT = e1;
+                    }
+                :};
+
+/* Operadores de multiplicacion, division y modulo en cadena */
+resto_termino ::= MULTIPLICACION exp_factor:e resto_termino:r {:
+                    String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
+                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                            + ": operador '*' no aplica a tipo '" + tipo + "', se encontro tipo '" + tipo + "'.");
+                        RESULT = "error|?|?";
+                    } else if (r != null) {
+                        String opR    = r.split("\\|")[0];
+                        String lugarR = r.split("\\|")[1];
+                        String tipoR  = r.split("\\|")[2];
+                        String t = GeneradorCodigo.nuevoTemp(tipo);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                        RESULT = "*|" + t + "|" + tipo;
+                    } else {
+                        RESULT = "*|" + lugar + "|" + tipo;
+                    }
+                :}
+                | DIVISION exp_factor:e resto_termino:r {:
+                    String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
+                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                            + ": operador '/' no aplica a tipo '" + tipo + "', se encontro tipo '" + tipo + "'.");
+                        RESULT = "error|?|?";
+                    } else if (r != null) {
+                        String opR    = r.split("\\|")[0];
+                        String lugarR = r.split("\\|")[1];
+                        String tipoR  = r.split("\\|")[2];
+                        String t = GeneradorCodigo.nuevoTemp(tipo);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                        RESULT = "/|" + t + "|" + tipo;
+                    } else {
+                        RESULT = "/|" + lugar + "|" + tipo;
+                    }
+                :}
+                | MODULO exp_factor:e resto_termino:r {:
+                    String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipo.equals("int") && !tipo.equals("error")) {
+                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                            + ": operador '%' no aplica a tipo '" + tipo + "', se encontro tipo '" + tipo + "'.");
+                        RESULT = "error|?|?";
+                    } else if (r != null) {
+                        String opR    = r.split("\\|")[0];
+                        String lugarR = r.split("\\|")[1];
+                        String tipoR  = r.split("\\|")[2];
+                        String t = GeneradorCodigo.nuevoTemp(tipo);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                        RESULT = "%|" + t + "|" + tipo;
+                    } else {
+                        RESULT = "%|" + lugar + "|" + tipo;
+                    }
+                :}
+                | /* vacio */ {: RESULT = null; :};
+
+
+// ---------------------------------------------------------------
+// 5.17.5 POTENCIA
+// ---------------------------------------------------------------
+
+exp_potencia ::= valor:e1 resto_potencia:r
+                    {:  
+                        String tipo  = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                        String lugar = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                        if (r != null && !r.equals("error")) {
+                            String opR    = r.split("\\|")[0];
+                            String lugarR = r.split("\\|")[1];
+                            String tipoR  = r.split("\\|")[2];
+
+                            if (!tipo.equals("int") && !tipo.equals("error")) {
+                                errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                    + ": el operador '^' solo aplica a tipo int, se encontro '" + tipo + "'.");
+                                RESULT = "error|?";
+                            } else if (!tipoR.equals("int") && !tipoR.equals("error")) {
+                                errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                    + ": el operador '^' solo aplica a tipo int, se encontro '" + tipoR + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                String t = GeneradorCodigo.nuevoTemp("int");
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " ^ " + lugarR);
+                                RESULT = "int|" + t;
+                            }
+                        } else {
+                            RESULT = e1;
+                        }
+                    :};
+
+/* Operador potencia en cadena */
+resto_potencia ::= POTENCIA valor:e resto_potencia:r
+                    {:
+                        String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
+                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                        if (r != null) {
+                            String opR    = r.split("\\|")[0];
+                            String lugarR = r.split("\\|")[1];
+                            String tipoR  = r.split("\\|")[2];
+                            String t = GeneradorCodigo.nuevoTemp("int");
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = "^|" + t + "|int";
+                        } else {
+                            RESULT = "^|" + lugar + "|int";
+                        }
+                    :}
+                | /* vacio */ {: RESULT = null; :};
+                
+
+// ---------------------------------------------------------------
+// 5.17.6 FACTORES (MENOS UNARIO, INCREMENTO, DECREMENTO, NOT)
+// ---------------------------------------------------------------
+
+exp_factor ::= MENOS numero:n 
+                {: 
+                    String tipo  = n.contains("|") ? n.split("\\|")[0] : n;
+                    String lugar = n.contains("|") ? n.split("\\|")[1] : n;
+                    String temp = GeneradorCodigo.nuevoTemp(tipo);
+                    GeneradorCodigo.emitir("    " + temp + " = - " + lugar);
+                    RESULT = tipo + "|" + temp;
+
+                :}
+             | INCREMENTO IDENTIFICADOR:id
+                {: 
+                    String full = verificarUso((String)id, idleft);
+                    String tipo  = full.contains("|") ? full.split("\\|")[0] : full;
+                    String nombre = full.contains("|") ? full.split("\\|")[1] : full;
+                    if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
+                        errorSemantico("Linea " + idleft + ": '++' solo aplica a variables int o float, se encontro tipo '" + tipo + "'.");
+                    }
+
+                    String temp = GeneradorCodigo.nuevoTemp(tipo);
+                    GeneradorCodigo.emitir("    " + temp + " = " + nombre + " + 1");
+                    GeneradorCodigo.emitir("    " + nombre + " = " + temp);
+                    RESULT = tipo + "|" + temp;
+                :}
+             | INCREMENTO acceso_arreglo:arr {: RESULT = arr; :}
+             | DECREMENTO IDENTIFICADOR:id
+                {: 
+                    String full = verificarUso((String)id, idleft);
+                    String tipo  = full.contains("|") ? full.split("\\|")[0] : full;
+                    String nombre = full.contains("|") ? full.split("\\|")[1] : full;
+                    if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
+                        errorSemantico("Linea " + idleft + ": '--' solo aplica a variables int o float, se encontro tipo '" + tipo + "'.");
+                    }
+
+                    String temp = GeneradorCodigo.nuevoTemp(tipo);
+                    GeneradorCodigo.emitir("    " + temp + " = " + nombre + " - 1");
+                    GeneradorCodigo.emitir("    " + nombre + " = " + temp);
+                    RESULT = tipo + "|" + temp;
+                :}
+             | DECREMENTO acceso_arreglo:arr {: RESULT = arr; :}
+             | OPERADOR_LOGICO_UNARIO exp_factor:e {: RESULT = "bool"; :}
+             | exp_potencia:e {: RESULT = e; :};
+
+// ---------------------------------------------------------------
+// 5.17.7 VALORES ATOMICOS (literales, variables, llamadas)
+// ---------------------------------------------------------------
+
+valor ::= numero:n {: RESULT = n; :}
+        | IDENTIFICADOR:id {: RESULT = verificarUso((String)id, idleft); :}
+        | BOOLEANO:b {:
+                String t = GeneradorCodigo.nuevoTemp("int");  
+                GeneradorCodigo.emitir("    " + t + " = " + b);
+                RESULT = "bool|" + t; :}
+        | CADENA:s {:
+                String t = GeneradorCodigo.nuevoTemp("int"); 
+                GeneradorCodigo.emitir("    " + t + " = \"" + s + "\"");
+                RESULT = "string|" + t; :}
+        | CARACTER:c {:
+                char ch;
+                if (c instanceof Character) {
+                    ch = (Character) c;
+                } else {
+                    String cStr = (String) c;
+                    ch = cStr.length() == 1 ? cStr.charAt(0) : cStr.charAt(1);
+                }
+                String t = GeneradorCodigo.nuevoTemp("int");  
+                GeneradorCodigo.emitir("    " + t + " = " + (int)ch);
+                RESULT = "char|" + t; :}
+        | acceso_arreglo:arr {: RESULT = arr; :}
+        | llamada_funcion_exp:lf {: RESULT = lf; :}
+        | INICIO_PARENTESIS exp_logica:e FIN_PARENTESIS {: RESULT = e; :} ;
+        
+// ===============================================================
+// 5.18 ARREGLOS BIDIMENSIONALES
+// ===============================================================
+
+array ::= INICIO_INDICE NUMERO_ENTERO:d1 FIN_INDICE INICIO_INDICE NUMERO_ENTERO:d2 FIN_INDICE
+            {: RESULT = ((Integer)d1) + "," + ((Integer)d2); :};
+
+/* Acceso a elemento de arreglo bidimensional */
+acceso_arreglo ::= IDENTIFICADOR:id INICIO_INDICE exp_aritmetica:e1 FIN_INDICE INICIO_INDICE exp_aritmetica:e2 FIN_INDICE
+                   {: 
+                       // Verificar que la variable del arreglo exista
+                       String tipoArreglo = verificarUso((String)id, idleft);
+                       // Limpiar tipo (quitar |nombre)
+                       String tipoLimpio = tipoArreglo.contains("|") ? tipoArreglo.split("\\|")[0] : tipoArreglo;
+                       
+                       // VERIFICAR QUE SEA UN ARREGLO BIDIMENSIONAL
+                       if (!tipoLimpio.endsWith("[][]")) {
+                           errorSemantico("Linea " + idleft 
+                               + ": La variable '" + id + "' no es un arreglo bidimensional, es de tipo '" + tipoLimpio + "'");
+                       }
+                       
+                       // Limpiar tipos de indices
+                       String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                       String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
+                       String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                       String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
+
+                       // Verificar que los indices sean ENTEROS
+                       if (!tipo1.equals("int") && !tipo1.equals("error")) {
+                           errorSemantico("Linea " + idleft 
+                               + ": Indice de arreglo debe ser int, se encontro '" + tipo1 + "'");
+                       }
+                       if (!tipo2.equals("int") && !tipo2.equals("error")) {
+                           errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                               + ": Indice de arreglo debe ser int, se encontro '" + tipo2 + "'");
+                       }
+                       
+                       // Extraer tipo base (quitar "[][]")
+                       String tipoBase = tipoLimpio.endsWith("[][]") ? 
+                           tipoLimpio.substring(0, tipoLimpio.length() - 4) : tipoLimpio;
+
+                       // Generar codigo intermedio
+                       String t = GeneradorCodigo.nuevoTemp();
+                       GeneradorCodigo.emitir("    " + t + " = " + id + "[" + lugar1 + "][" + lugar2 + "]");
+                       RESULT = tipoBase + "|" + t + "|" + id + "[" + lugar1 + "][" + lugar2 + "]";
+                   :};

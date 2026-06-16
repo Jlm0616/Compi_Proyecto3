@@ -1,0 +1,28 @@
+¡¡ Función suma
+int ~ suma <| int ~ a, int ~ b |> |:
+    return ~ a + b !
+:|
+
+¡¡ Función resta
+int ~ func1 <| int ~ a, int ~ b |> |:
+    return ~ a - b !
+:|
+
+¡¡ Función factorial (recursiva)
+int ~ factorial <| int ~ n |> |:
+    if <| equal <| n, 0 |> |> |:
+        return ~ 1 !
+    :| else |:
+        return ~ n * factorial <| n - 1 |> !
+    :|
+:|
+
+¡¡ Función main
+empty ~ __main__ ~ <| |> |:
+    ¡¡ Declaración de variables
+    int ~ x <- 5!
+    int ~ y <- 10!
+    string ~ w <- "Hola"!
+    float~h!
+    h <- 4.4 * 4.4 - w!
+:|
