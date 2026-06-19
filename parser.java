@@ -3459,21 +3459,23 @@ class CUP$parser$actions {
 		int rright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String r = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
-                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                        if (r != null && !r.equals("error|?")) {
-                            String op = r.split("\\|")[0];
-                            String lugar2 = r.split("\\|")[1];
-                            String tipo2 = r.split("\\|")[2];
-                            validarTipos(tipo1, tipo2, "aritmetica", ((Symbol)CUP$parser$stack.peek()).left);
-                            
-                            String t = GeneradorCodigo.nuevoTemp(tipo1); 
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " " + op + " " + lugar2);
-                            RESULT = tipo1 + "|" + t;
-                        } else {
-                            RESULT = e1;
-                        }
-                    
+                            String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
+                            String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
+                            if (r != null && !r.equals("error|?")) {
+                                String op    = r.split("\\|")[0];
+                                String lugar2 = r.split("\\|")[1];
+                                String tipo2  = r.split("\\|")[2];
+
+                                String nombreOp = op.equals("+") ? "suma" : "resta";
+                                validarTipos(tipo1, tipo2, nombreOp, ((Symbol)CUP$parser$stack.peek()).left);
+                                
+                                String t = GeneradorCodigo.nuevoTemp(tipo1); 
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " " + op + " " + lugar2);
+                                RESULT = tipo1 + "|" + t;
+                            } else {
+                                RESULT = e1;
+                            }
+                        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("exp_aritmetica",39, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3556,20 +3558,22 @@ class CUP$parser$actions {
 		 
                     String tipo = e1.contains("|") ? e1.split("\\|")[0] : e1;
                     String lugar = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                    if (r != null && !r.equals("error")) {
+                    if (r != null && r.split("\\|").length >= 3) {
                         String opR    = r.split("\\|")[0];
-                        String lugarR = r.split("\\|")[1];  // lugar en [1]
-                        String tipoR  = r.split("\\|")[2];  // tipo en [2]
+                        String lugarR = r.split("\\|")[1];
+                        String tipoR  = r.split("\\|")[2];
                         if (opR.equals("%") && !tipo.equals("int") && !tipo.equals("error")) {
-                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
                             RESULT = "error|?";
                         } else if (opR.equals("%") && !tipoR.equals("int") && !tipoR.equals("error")) {
-                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
+                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
                             RESULT = "error|?";
                         } else {
                             String nombreOp = opR.equals("*") ? "multiplicacion" 
-                                           : opR.equals("/") ? "division" 
-                                           : "modulo";
+                                        : opR.equals("/") ? "division" 
+                                        : "modulo";
                             validarTipos(tipo, tipoR, nombreOp, ((Symbol)CUP$parser$stack.peek()).left);
                             String t = GeneradorCodigo.nuevoTemp(tipo);
                             GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
@@ -3596,11 +3600,7 @@ class CUP$parser$actions {
 		
                     String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                     String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
-                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
-                            + ": operador '*' no aplica a tipo '" + tipo + "', se encontro tipo '" + tipo + "'.");
-                        RESULT = "error|?|?";
-                    } else if (r != null) {
+                    if (r != null) {
                         String opR    = r.split("\\|")[0];
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];
@@ -3628,11 +3628,7 @@ class CUP$parser$actions {
 		
                     String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                     String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
-                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
-                            + ": operador '/' no aplica a tipo '" + tipo + "', se encontro tipo '" + tipo + "'.");
-                        RESULT = "error|?|?";
-                    } else if (r != null) {
+                    if (r != null) {
                         String opR    = r.split("\\|")[0];
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];
@@ -3660,11 +3656,7 @@ class CUP$parser$actions {
 		
                     String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                     String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (!tipo.equals("int") && !tipo.equals("error")) {
-                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
-                            + ": operador '%' no aplica a tipo '" + tipo + "', se encontro tipo '" + tipo + "'.");
-                        RESULT = "error|?|?";
-                    } else if (r != null) {
+                    if (r != null) {
                         String opR    = r.split("\\|")[0];
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];

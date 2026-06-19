@@ -10,10 +10,11 @@ int ~ func1 <| int ~ a, int ~ b |> |:
 
 ¡¡ Función factorial (recursiva)
 int ~ factorial <| int ~ n |> |:
+    string ~ a <- "Hola"!
     if <| equal <| n, 0 |> |> |:
         return ~ 1 !
     :| else |:
-        return ~ n * factorial <| n - 1 |> !
+        return ~ n - "a" !
     :|
 :|
 
@@ -24,5 +25,5 @@ empty ~ __main__ ~ <| |> |:
     int ~ y <- 10!
     string ~ w <- "Hola"!
     float~h!
-    h <- 4.4 * 4.4 - w!
+    h <- 4.4 * 4.4!
 :|
