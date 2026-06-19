@@ -1,29 +1,33 @@
-¡¡ Función suma
-int ~ suma <| int ~ a, int ~ b |> |:
-    return ~ a + b !
+¡¡ PRUEBA DE RETURN - 5 ERRORES SEMÁNTICOS
+
+¡¡ ERROR 1: Función int SIN return
+int ~ sinReturn <| |> |:
+    int ~ x <- 10 !
+    ¡¡ FALTA return
 :|
 
-¡¡ Función resta
-int ~ func1 <| int ~ a, int ~ b |> |:
-    return ~ a - b !
+¡¡ ERROR 2: Función int con return SIN VALOR
+int ~ returnVacio <| |> |:
+    return ~ !
 :|
 
-¡¡ Función factorial (recursiva)
-int ~ factorial <| int ~ n |> |:
-    string ~ a <- "Hola"!
-    if <| equal <| n, 0 |> |> |:
-        return ~ 1 !
-    :| else |:
-        return ~ n - "a" !
-    :|
+¡¡ ERROR 3: Función float con return de tipo INCORRECTO
+float ~ tipoIncorrecto <| |> |:
+    return ~ 5 !
 :|
 
-¡¡ Función main
+¡¡ ERROR 5: Función bool con return de otro tipo
+bool ~ boolIncorrecto <| |> |:
+    return ~ 3.14 !
+:|
+
+¡¡ Esto está BIEN (no debe dar error)
+int ~ correcta <| |> |:
+    return ~ 42 !
+:| 
+
+¡¡ ERROR 4: Return en MAIN (empty no puede retornar)
 empty ~ __main__ ~ <| |> |:
-    ¡¡ Declaración de variables
-    int ~ x <- 5!
-    int ~ y <- 10!
-    string ~ w <- "Hola"!
-    float~h!
-    h <- 4.4 * 4.4!
+    return ~ 5 !
 :|
+

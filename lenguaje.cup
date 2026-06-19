@@ -74,6 +74,9 @@ parser code {:
     // Tipo de retorno de la funcion actual
     static String tipoFuncionActual = "";
 
+    static java.util.HashSet<String> funcionesConReturn = new java.util.HashSet<>();
+    static String funcionActual = "";
+
     // ---------------------------------------------------------------
     // 2.1.3 CONTADORES PARA AMBITOS Y ESTRUCTURAS
     // ---------------------------------------------------------------
@@ -652,6 +655,7 @@ funcion_main ::= EMPTY SEPARADOR PALABRA_MAIN SEPARADOR INICIO_PARENTESIS FIN_PA
                 {: 
                     GeneradorCodigo.emitir("\nmain:"); 
                     tipoFuncionActual = "empty";
+                    funcionActual = "main";
                 :} 
                 INICIO_BLOQUE contenido_programa FIN_BLOQUE ;
 
@@ -669,16 +673,26 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "int");
                      tipoFuncionActual = "int";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     funcionActual = (String)id;
                  }
               :}
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
-              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+              {: 
+                 tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
+             
+                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                     errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
+                 }
+                 funcionesConReturn.remove(funcionActual);
+                 popScope(); 
+              :}
           | FLOAT SEPARADOR IDENTIFICADOR:id
               {: 
                  if (tablaFunciones.containsKey((String)id)) {
@@ -687,16 +701,25 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "float");
                      tipoFuncionActual = "float";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     funcionActual = (String)id;
                  }
               :}
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
-              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+              {: 
+                 tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
+                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                     errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
+                 }
+                 funcionesConReturn.remove(funcionActual);
+                 popScope(); 
+              :}
           | BOOL SEPARADOR IDENTIFICADOR:id
               {: 
                  if (tablaFunciones.containsKey((String)id)) {
@@ -705,16 +728,25 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "bool");
                      tipoFuncionActual = "bool";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     funcionActual = (String)id;
                  }
               :}
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
-              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+              {: 
+                 tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
+                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                     errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
+                 }
+                 funcionesConReturn.remove(funcionActual);
+                 popScope(); 
+              :}
           | CHAR SEPARADOR IDENTIFICADOR:id
               {: 
                  if (tablaFunciones.containsKey((String)id)) {
@@ -723,16 +755,25 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "char");
                      tipoFuncionActual = "char";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     funcionActual = (String)id;
                  }
               :}
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
-              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :}
+              {: 
+                 tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
+                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                     errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
+                 }
+                 funcionesConReturn.remove(funcionActual);
+                 popScope(); 
+              :}
           | STRING SEPARADOR IDENTIFICADOR:id
               {: 
                  if (tablaFunciones.containsKey((String)id)) {
@@ -741,16 +782,25 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "string");
                      tipoFuncionActual = "string";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
                      GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     funcionActual = (String)id;
                  }
               :}
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
-              {: tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales)); popScope(); :} ;
+              {: 
+                 tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
+                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                     errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
+                 }
+                 funcionesConReturn.remove(funcionActual);
+                 popScope(); 
+              :} ;
 
 /*Lista de 0 o mas funciones*/
 lista_funciones ::= funcion lista_funciones | /* vacio */ ;
@@ -1007,14 +1057,28 @@ llamada_funcion_exp ::= IDENTIFICADOR:id
 // ===============================================================
 
 return_sentencia ::= RETURN SEPARADOR expresion:e DELIMITADOR_EXP {: 
+                        funcionesConReturn.add(funcionActual);
                         if (tipoFuncionActual.equals("empty")) {
                             errorSemantico("Linea " + eleft + ": la funcion 'main' es de tipo empty y no puede retornar un valor.");
                         } else {
-                            validarTipos(tipoFuncionActual, e, "return", eleft);
+                            String tipoRetorno = e.contains("|") ? e.split("\\|")[0] : e;
+                            validarTipos(tipoFuncionActual, tipoRetorno, "return", eleft);
                         }
                         String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
                         GeneradorCodigo.emitir("    return " + lugarE); :}
-                   | RETURN error DELIMITADOR_EXP {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Expresion de retorno invalida, se asume retorno por defecto"); :} ; 
+                   | RETURN DELIMITADOR_EXP {: 
+                        funcionesConReturn.add(funcionActual);
+                        if (!tipoFuncionActual.equals("empty")) {
+                            errorSemantico("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left 
+                                + ": la funcion '" + funcionActual + "' es de tipo '" + tipoFuncionActual 
+                                + "' y necesita un valor de retorno.");
+                        }
+                        GeneradorCodigo.emitir("    return"); 
+                   :}
+                   | RETURN error DELIMITADOR_EXP {: 
+                        funcionesConReturn.add(funcionActual);
+                        mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Expresion de retorno invalida, se asume retorno por defecto"); 
+                   :} ;
 
 break_sentencia ::= BREAK DELIMITADOR_EXP {:
         if (nivelBreak == 0) {
