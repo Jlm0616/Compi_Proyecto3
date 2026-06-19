@@ -1,46 +1,17 @@
-¡¡ PRUEBA DE DECLARACION DE VARIABLES Y CODIGO INTERMEDIO
-
 empty ~ __main__ ~ <| |> |:
-    ¡¡ ERROR 1: Variable declarada pero NO INICIALIZADA
-    int ~ x !                ¡¡ declare x, int PERO no tiene valor
-    int ~ y <- x + 5 !       ¡¡ ERROR: x no tiene valor (no inicializada)
+    int ~ x <- 5 !          
+    int ~ y <- ++x !        
     
-    ¡¡ ERROR 2: Variable declarada con tipo incorrecto
-    int ~ a <- "Hola" !      ¡¡ ERROR: string a int
+    int ~ a <- 10 !         
+    int ~ b <- --a !        
     
-    ¡¡ ERROR 3: Variable declarada sin tipo
-    b <- 10 !                ¡¡ ERROR: b no declarada
+    bool ~ flag <- true !   
+    bool ~ neg <- $flag !   
     
-    ¡¡ ERROR 4: Variable declarada con tipo y sin inicializar (pero usada)
-    int ~ c !                ¡¡ declare c, int
-    int ~ d <- c * 2 !       ¡¡ ERROR: c no inicializada
+    int ~ n <- -5 !         
     
-    ¡¡ ERROR 5: Declaración duplicada
-    int ~ e <- 5 !           ¡¡ declare e, int
-    int ~ e <- 10 !          ¡¡ ERROR: e ya declarada
+    int ~ arr <<2>><<2>> <- |: 1, 2, 3, 4 :| !
+    int ~ arr2 <<3>><<3>> ! 
     
-    ¡¡ ERROR 6: Arreglo con dimensiones incorrectas
-    int ~ arr1 <<2>><<2>> <- |: 1, 2, 3 :| !  ¡¡ ERROR: 3 elementos para 2x2=4
-    
-    ¡¡ ERROR 7: Arreglo con tipo incorrecto
-    int ~ arr2 <<2>><<2>> <- |: 1, "Hola", 3, 4 :| !  ¡¡ ERROR: string en arreglo int
-    
-    ¡¡ ERROR 8: Arreglo declarado sin dimensiones (CORREGIDO)
-    int ~ arr3 <<1>><<2>> <- |: 1, 2 :| !  ¡¡ CORRECTO: con dimensiones
-    
-    ¡¡ ERROR 9: Variable declarada pero usada sin inicializar en operación
-    int ~ f !                ¡¡ declare f, int
-    int ~ g <- f + 10 !      ¡¡ ERROR: f no inicializada
-    
-    ¡¡ ERROR 10: Declaración de arreglo sin inicialización correcta (CORREGIDO)
-    int ~ arr4 <<2>><<2>> !  ¡¡ declare arr4, int[][2][2]
-    arr4 <<0>><<0>> <- arr4 <<1>><<1>> !  ¡¡ ERROR: arr4[1][1] no inicializado
-    
-    ¡¡ ERROR 11: Variable con tipo incorrecto en operación
-    int ~ h <- 5 !
-    string ~ s <- "Texto" !
-    int ~ i <- h + s !       ¡¡ ERROR: int + string
-    
-    ¡¡ ERROR 12: Declaración con expresión inválida (CORREGIDO)
-    int ~ j <- 5 + 3 !       ¡¡ CORRECTO: expresión válida
+    cout ~ <| "y: " ~ y ~ " b: " ~ b ~ " neg: " ~ neg ~ " n: " ~ n |>!
 :|

@@ -930,7 +930,7 @@ declaracion_resto ::= declaracion_variable_resto
                             String[] dims = dim.split(",");
                             int filas = Integer.parseInt(dims[0]);
                             int cols = Integer.parseInt(dims[1]);
-                            GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual + "[][" + filas + "][" + cols + "]");
+
                             RESULT = "[][]"; 
                         :}
                     | array:dim ASIGNACION {: temporalesArreglo.clear(); :} INICIO_BLOQUE lista_valores:v FIN_BLOQUE DELIMITADOR_EXP
@@ -950,8 +950,7 @@ declaracion_resto ::= declaracion_variable_resto
                                 int totalDecl  = filasDecl * colsDecl;
                                 int totalBloque = Integer.parseInt(conteo);
                                 
-                                // DECLARAR ARREGLO
-                                GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual + "[][" + filasDecl + "][" + colsDecl + "]");
+                               
                                 
                                 if (totalDecl != totalBloque) {
                                     errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
@@ -982,15 +981,15 @@ declaracion_variable_resto ::= DELIMITADOR_EXP
             String tipoExp = e.contains("|") ? e.split("\\|")[0] : e;
             validarTipos(tipoDeclaracionActual, tipoExp, "asignacion", eleft);
             String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
-            // DECLARAR LA VARIABLE PRIMERO
-            GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual);
+            
             GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = " + lugarE); 
         :} 
         | ASIGNACION DELIMITADOR_EXP {: 
-            // DECLARAR LA VARIABLE SIN INICIALIZAR
-            GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual); 
+            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                + ": variable '" + nombreDeclaracionActual + "' inicializada sin valor");
+            
         :};
-        
+
 // ===============================================================
 // 5.8.2 INICIALIZACION DE ARREGLOS
 // ===============================================================
@@ -1713,47 +1712,73 @@ resto_potencia ::= POTENCIA valor:e resto_potencia:r
 // 5.17.6 FACTORES (MENOS UNARIO, INCREMENTO, DECREMENTO, NOT)
 // ---------------------------------------------------------------
 
-exp_factor ::= MENOS numero:n 
-                {: 
-                    String tipo  = n.contains("|") ? n.split("\\|")[0] : n;
-                    String lugar = n.contains("|") ? n.split("\\|")[1] : n;
-                    String temp = GeneradorCodigo.nuevoTemp(tipo);
-                    GeneradorCodigo.emitir("    " + temp + " = - " + lugar);
-                    RESULT = tipo + "|" + temp;
-
-                :}
-             | INCREMENTO IDENTIFICADOR:id
+exp_factor ::= INCREMENTO IDENTIFICADOR:id
                 {: 
                     String full = verificarUso((String)id, idleft);
-                    String tipo  = full.contains("|") ? full.split("\\|")[0] : full;
-                    String nombre = full.contains("|") ? full.split("\\|")[1] : full;
+                    String tipo = full.contains("|") ? full.split("\\|")[0] : full;
+                    String nombre = full.contains("|") ? full.split("\\|")[1] : (String)id;
+                    
                     if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
-                        errorSemantico("Linea " + idleft + ": '++' solo aplica a variables int o float, se encontro tipo '" + tipo + "'.");
+                        errorSemantico("Linea " + idleft + ": '++' solo aplica a int o float");
                     }
-
-                    String temp = GeneradorCodigo.nuevoTemp(tipo);
-                    GeneradorCodigo.emitir("    " + temp + " = " + nombre + " + 1");
-                    GeneradorCodigo.emitir("    " + nombre + " = " + temp);
-                    RESULT = tipo + "|" + temp;
+                    
+                    if (!tipo.equals("error")) {
+                        String t1 = GeneradorCodigo.nuevoTemp(tipo);
+                        String t2 = GeneradorCodigo.nuevoTemp(tipo);
+                        GeneradorCodigo.emitir("    " + t1 + " = " + nombre);
+                        GeneradorCodigo.emitir("    " + t2 + " = " + t1 + " + 1");
+                        GeneradorCodigo.emitir("    " + nombre + " = " + t2);
+                        RESULT = tipo + "|" + t2;
+                    } else {
+                        RESULT = "error|?";
+                    }
                 :}
-             | INCREMENTO acceso_arreglo:arr {: RESULT = arr; :}
              | DECREMENTO IDENTIFICADOR:id
                 {: 
                     String full = verificarUso((String)id, idleft);
-                    String tipo  = full.contains("|") ? full.split("\\|")[0] : full;
-                    String nombre = full.contains("|") ? full.split("\\|")[1] : full;
+                    String tipo = full.contains("|") ? full.split("\\|")[0] : full;
+                    String nombre = full.contains("|") ? full.split("\\|")[1] : (String)id;
+                    
                     if (!tipo.equals("int") && !tipo.equals("float") && !tipo.equals("error")) {
-                        errorSemantico("Linea " + idleft + ": '--' solo aplica a variables int o float, se encontro tipo '" + tipo + "'.");
+                        errorSemantico("Linea " + idleft + ": '--' solo aplica a int o float");
                     }
-
+                    
+                    if (!tipo.equals("error")) {
+                        String t1 = GeneradorCodigo.nuevoTemp(tipo);
+                        String t2 = GeneradorCodigo.nuevoTemp(tipo);
+                        GeneradorCodigo.emitir("    " + t1 + " = " + nombre);
+                        GeneradorCodigo.emitir("    " + t2 + " = " + t1 + " - 1");
+                        GeneradorCodigo.emitir("    " + nombre + " = " + t2);
+                        RESULT = tipo + "|" + t2;
+                    } else {
+                        RESULT = "error|?";
+                    }
+                :}
+             | MENOS numero:n 
+                {: 
+                    String tipo = n.contains("|") ? n.split("\\|")[0] : n;
+                    String lugar = n.contains("|") ? n.split("\\|")[1] : n;
                     String temp = GeneradorCodigo.nuevoTemp(tipo);
-                    GeneradorCodigo.emitir("    " + temp + " = " + nombre + " - 1");
-                    GeneradorCodigo.emitir("    " + nombre + " = " + temp);
+                    GeneradorCodigo.emitir("    " + temp + " = -" + lugar);
                     RESULT = tipo + "|" + temp;
                 :}
-             | DECREMENTO acceso_arreglo:arr {: RESULT = arr; :}
-             | OPERADOR_LOGICO_UNARIO exp_factor:e {: RESULT = "bool"; :}
+             | OPERADOR_LOGICO_UNARIO exp_factor:e 
+                {: 
+                    String tipo = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipo.equals("bool") && !tipo.equals("error")) {
+                        errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": NOT solo aplica a bool");
+                    }
+                    if (!tipo.equals("error")) {
+                        String temp = GeneradorCodigo.nuevoTemp("bool");
+                        GeneradorCodigo.emitir("    " + temp + " = !" + lugar);
+                        RESULT = "bool|" + temp;
+                    } else {
+                        RESULT = "error|?";
+                    }
+                :}
              | exp_potencia:e {: RESULT = e; :};
+
 
 // ---------------------------------------------------------------
 // 5.17.7 VALORES ATOMICOS (literales, variables, llamadas)
