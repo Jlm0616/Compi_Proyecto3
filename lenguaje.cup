@@ -871,25 +871,50 @@ lista_sentencias ::= sentencia lista_sentencias | /* vacio */ ;
 // ===============================================================
 
 declaracion ::= INT SEPARADOR IDENTIFICADOR:id
-                {: tipoDeclaracionActual = "int"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "int", idleft); :}
+                {: 
+                    tipoDeclaracionActual = "int"; 
+                    nombreDeclaracionActual = (String)id; 
+                    agregarSimbolo((String)id, "int", idleft);
+                    GeneradorCodigo.emitir("    declare " + id + ", int");
+                :}
                 declaracion_resto:r
                 {: if (r != null) actualizarTipoSimbolo((String)id, tipoDeclaracionActual + r); :}
 
             | FLOAT SEPARADOR IDENTIFICADOR:id
-                {: tipoDeclaracionActual = "float"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "float", idleft); :}
+                {: 
+                    tipoDeclaracionActual = "float"; 
+                    nombreDeclaracionActual = (String)id; 
+                    agregarSimbolo((String)id, "float", idleft);
+                    GeneradorCodigo.emitir("    declare " + id + ", float");
+                :}
                 declaracion_resto:r
                 {: if (r != null) actualizarTipoSimbolo((String)id, tipoDeclaracionActual + r); :}
 
             | BOOL SEPARADOR IDENTIFICADOR:id
-                {: tipoDeclaracionActual = "bool"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "bool", idleft); :}
+                {: 
+                    tipoDeclaracionActual = "bool"; 
+                    nombreDeclaracionActual = (String)id; 
+                    agregarSimbolo((String)id, "bool", idleft);
+                    GeneradorCodigo.emitir("    declare " + id + ", bool");
+                :}
                 declaracion_variable_resto
 
             | CHAR SEPARADOR IDENTIFICADOR:id
-                {: tipoDeclaracionActual = "char"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "char", idleft); :}
+                {: 
+                    tipoDeclaracionActual = "char"; 
+                    nombreDeclaracionActual = (String)id; 
+                    agregarSimbolo((String)id, "char", idleft);
+                    GeneradorCodigo.emitir("    declare " + id + ", char");
+                :}
                 declaracion_variable_resto
 
             | STRING SEPARADOR IDENTIFICADOR:id
-                {: tipoDeclaracionActual = "string"; nombreDeclaracionActual = (String)id; agregarSimbolo((String)id, "string", idleft); :}
+                {: 
+                    tipoDeclaracionActual = "string"; 
+                    nombreDeclaracionActual = (String)id; 
+                    agregarSimbolo((String)id, "string", idleft);
+                    GeneradorCodigo.emitir("    declare " + id + ", string");
+                :}
                 declaracion_variable_resto
 
             | error SEPARADOR IDENTIFICADOR declaracion_resto {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left + ": Tipo no reconocido, se asume 'int'"); :} ;
@@ -901,7 +926,13 @@ declaracion ::= INT SEPARADOR IDENTIFICADOR:id
 declaracion_resto ::= declaracion_variable_resto
                         {: RESULT = null; :}
                     | array:dim DELIMITADOR_EXP
-                        {: RESULT = "[][]"; :}
+                        {: 
+                            String[] dims = dim.split(",");
+                            int filas = Integer.parseInt(dims[0]);
+                            int cols = Integer.parseInt(dims[1]);
+                            GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual + "[][" + filas + "][" + cols + "]");
+                            RESULT = "[][]"; 
+                        :}
                     | array:dim ASIGNACION {: temporalesArreglo.clear(); :} INICIO_BLOQUE lista_valores:v FIN_BLOQUE DELIMITADOR_EXP
                         {: 
                             String tipoBloque = v.contains(":") ? v.split(":")[0] : v;
@@ -918,14 +949,18 @@ declaracion_resto ::= declaracion_variable_resto
                                 int colsDecl   = Integer.parseInt(dim.split(",")[1]);
                                 int totalDecl  = filasDecl * colsDecl;
                                 int totalBloque = Integer.parseInt(conteo);
+                                
+                                // DECLARAR ARREGLO
+                                GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual + "[][" + filasDecl + "][" + colsDecl + "]");
+                                
                                 if (totalDecl != totalBloque) {
                                     errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
                                         + ": dimensiones del arreglo no coinciden, se declaro " 
                                         + filasDecl + "x" + colsDecl + " (" + totalDecl + " elementos)"
                                         + " pero se inicializo con " + totalBloque + " elemento(s).");
                                 }
-                                // Emitir declaracion e inicializacion del arreglo
-                                GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = alloc " + filasDecl + ", " + colsDecl);
+                                
+                                // Inicializar elementos
                                 int idx = 0;
                                 for (int i = 0; i < filasDecl; i++) {
                                     for (int j = 0; j < colsDecl && idx < temporalesArreglo.size(); j++, idx++) {
@@ -943,12 +978,19 @@ declaracion_resto ::= declaracion_variable_resto
                         :};
 
 declaracion_variable_resto ::= DELIMITADOR_EXP
-    | ASIGNACION expresion:e DELIMITADOR_EXP {: 
-          String tipoExp = e.contains("|") ? e.split("\\|")[0] : e;
-          validarTipos(tipoDeclaracionActual, tipoExp, "asignacion", eleft);
-          String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
-          GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = " + lugarE); :} ;
-
+        | ASIGNACION expresion:e DELIMITADOR_EXP {: 
+            String tipoExp = e.contains("|") ? e.split("\\|")[0] : e;
+            validarTipos(tipoDeclaracionActual, tipoExp, "asignacion", eleft);
+            String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+            // DECLARAR LA VARIABLE PRIMERO
+            GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual);
+            GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = " + lugarE); 
+        :} 
+        | ASIGNACION DELIMITADOR_EXP {: 
+            // DECLARAR LA VARIABLE SIN INICIALIZAR
+            GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual + ", " + tipoDeclaracionActual); 
+        :};
+        
 // ===============================================================
 // 5.8.2 INICIALIZACION DE ARREGLOS
 // ===============================================================
@@ -989,14 +1031,16 @@ valor_lista ::= expresion:e
 
 asignacion ::= IDENTIFICADOR:id ASIGNACION expresion:e DELIMITADOR_EXP {: 
                    String tipoVar = verificarUso((String)id, idleft);
-                   validarTipos(tipoVar, e, "asignacion", idleft);
+                   String tipoVarLimpio = tipoVar.contains("|") ? tipoVar.split("\\|")[0] : tipoVar;
+                   validarTipos(tipoVarLimpio, e, "asignacion", idleft);
                    String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
                    GeneradorCodigo.emitir("    " + id + " = " + lugarE); :}
              | acceso_arreglo:arr ASIGNACION expresion:e DELIMITADOR_EXP {:
-                   validarTipos(arr, e, "asignacion", ((Symbol)CUP$parser$stack.peek()).left);
                    String[] partes = arr.split("\\|");
+                   String tipoArr = partes[0];           // Ya viene sin "|"
                    String posicion = partes.length >= 3 ? partes[2] : arr;
                    String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+                   validarTipos(tipoArr, e, "asignacion", ((Symbol)CUP$parser$stack.peek()).left);
                    GeneradorCodigo.emitir("    " + posicion + " = " + lugarE); :}
              | IDENTIFICADOR error expresion DELIMITADOR_EXP  {: mensajeRecuperacion("Linea " + ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left + ": Operador de asignacion incorrecto, se asume '<-'"); :};
 
@@ -1716,7 +1760,18 @@ exp_factor ::= MENOS numero:n
 // ---------------------------------------------------------------
 
 valor ::= numero:n {: RESULT = n; :}
-        | IDENTIFICADOR:id {: RESULT = verificarUso((String)id, idleft); :}
+        | IDENTIFICADOR:id 
+            {: 
+                String full = verificarUso((String)id, idleft);
+                String tipo = full.contains("|") ? full.split("\\|")[0] : full;
+                if (!tipo.equals("error")) {
+                    String temp = GeneradorCodigo.nuevoTemp(tipo);
+                    GeneradorCodigo.emitir("    " + temp + " = " + id);
+                    RESULT = tipo + "|" + temp;
+                } else {
+                    RESULT = "error|?";
+                }
+            :}
         | BOOLEANO:b {:
                 String t = GeneradorCodigo.nuevoTemp("int");  
                 GeneradorCodigo.emitir("    " + t + " = " + b);
@@ -1739,7 +1794,7 @@ valor ::= numero:n {: RESULT = n; :}
         | acceso_arreglo:arr {: RESULT = arr; :}
         | llamada_funcion_exp:lf {: RESULT = lf; :}
         | INICIO_PARENTESIS exp_logica:e FIN_PARENTESIS {: RESULT = e; :} ;
-        
+
 // ===============================================================
 // 5.18 ARREGLOS BIDIMENSIONALES
 // ===============================================================

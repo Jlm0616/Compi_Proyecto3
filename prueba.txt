@@ -1,33 +1,46 @@
-¡¡ PRUEBA DE RETURN - 5 ERRORES SEMÁNTICOS
+¡¡ PRUEBA DE DECLARACION DE VARIABLES Y CODIGO INTERMEDIO
 
-¡¡ ERROR 1: Función int SIN return
-int ~ sinReturn <| |> |:
-    int ~ x <- 10 !
-    ¡¡ FALTA return
-:|
-
-¡¡ ERROR 2: Función int con return SIN VALOR
-int ~ returnVacio <| |> |:
-    return ~ !
-:|
-
-¡¡ ERROR 3: Función float con return de tipo INCORRECTO
-float ~ tipoIncorrecto <| |> |:
-    return ~ 5 !
-:|
-
-¡¡ ERROR 5: Función bool con return de otro tipo
-bool ~ boolIncorrecto <| |> |:
-    return ~ 3.14 !
-:|
-
-¡¡ Esto está BIEN (no debe dar error)
-int ~ correcta <| |> |:
-    return ~ 42 !
-:| 
-
-¡¡ ERROR 4: Return en MAIN (empty no puede retornar)
 empty ~ __main__ ~ <| |> |:
-    return ~ 5 !
+    ¡¡ ERROR 1: Variable declarada pero NO INICIALIZADA
+    int ~ x !                ¡¡ declare x, int PERO no tiene valor
+    int ~ y <- x + 5 !       ¡¡ ERROR: x no tiene valor (no inicializada)
+    
+    ¡¡ ERROR 2: Variable declarada con tipo incorrecto
+    int ~ a <- "Hola" !      ¡¡ ERROR: string a int
+    
+    ¡¡ ERROR 3: Variable declarada sin tipo
+    b <- 10 !                ¡¡ ERROR: b no declarada
+    
+    ¡¡ ERROR 4: Variable declarada con tipo y sin inicializar (pero usada)
+    int ~ c !                ¡¡ declare c, int
+    int ~ d <- c * 2 !       ¡¡ ERROR: c no inicializada
+    
+    ¡¡ ERROR 5: Declaración duplicada
+    int ~ e <- 5 !           ¡¡ declare e, int
+    int ~ e <- 10 !          ¡¡ ERROR: e ya declarada
+    
+    ¡¡ ERROR 6: Arreglo con dimensiones incorrectas
+    int ~ arr1 <<2>><<2>> <- |: 1, 2, 3 :| !  ¡¡ ERROR: 3 elementos para 2x2=4
+    
+    ¡¡ ERROR 7: Arreglo con tipo incorrecto
+    int ~ arr2 <<2>><<2>> <- |: 1, "Hola", 3, 4 :| !  ¡¡ ERROR: string en arreglo int
+    
+    ¡¡ ERROR 8: Arreglo declarado sin dimensiones (CORREGIDO)
+    int ~ arr3 <<1>><<2>> <- |: 1, 2 :| !  ¡¡ CORRECTO: con dimensiones
+    
+    ¡¡ ERROR 9: Variable declarada pero usada sin inicializar en operación
+    int ~ f !                ¡¡ declare f, int
+    int ~ g <- f + 10 !      ¡¡ ERROR: f no inicializada
+    
+    ¡¡ ERROR 10: Declaración de arreglo sin inicialización correcta (CORREGIDO)
+    int ~ arr4 <<2>><<2>> !  ¡¡ declare arr4, int[][2][2]
+    arr4 <<0>><<0>> <- arr4 <<1>><<1>> !  ¡¡ ERROR: arr4[1][1] no inicializado
+    
+    ¡¡ ERROR 11: Variable con tipo incorrecto en operación
+    int ~ h <- 5 !
+    string ~ s <- "Texto" !
+    int ~ i <- h + s !       ¡¡ ERROR: int + string
+    
+    ¡¡ ERROR 12: Declaración con expresión inválida (CORREGIDO)
+    int ~ j <- 5 + 3 !       ¡¡ CORRECTO: expresión válida
 :|
-
