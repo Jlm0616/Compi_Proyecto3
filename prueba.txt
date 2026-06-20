@@ -1,24 +1,7 @@
 empty ~ __main__ ~ <| |> |:
-    bool ~ f1 <- true!
-    bool ~ f2 <- false!
-    bool ~ f3 <- true!
-    bool ~ f4 <- false!
+    int ~ x <- -5!
+    float ~ y <- -3.14!
+    char ~ c <- 'a'!
 
-    bool ~ r1 <- f1 @ f2!
-    bool ~ r2 <- f1 # f2!
-    bool ~ r3 <- $f1!
-    
-    bool ~ r4 <- f1 @ f2 # f3!
-    bool ~ r5 <- f1 # f2 @ f3!
-    bool ~ r6 <- $f1 @ f2!
-    bool ~ r7 <- f1 @ $f2!
-    bool ~ r8 <- $f1 # $f2!
-    
-    bool ~ r9 <- f1 @ f2 @ f3 # f4!
-    bool ~ r10 <- <|f1 @ f2|> # <|$f3 @ f4|>!
-
-    cout ~ <| "r1: " ~ r1 ~ " r2: " ~ r2 ~ " r3: " ~ r3 |>!
-    cout ~ <| "r4: " ~ r4 ~ " r5: " ~ r5 |>!
-    cout ~ <| "r6: " ~ r6 ~ " r7: " ~ r7 ~ " r8: " ~ r8 |>!
-    cout ~ <| "r9: " ~ r9 ~ " r10: " ~ r10 |>!
+    cout ~ <| x ~ y ~ c |>!
 :|

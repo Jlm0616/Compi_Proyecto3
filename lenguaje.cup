@@ -642,7 +642,7 @@ casoConstante ::= numero:n
                      }
                   :}
                 | CARACTER:c 
-                  {: 
+                    {: 
                       char ch;
                       if (c instanceof Character) {
                           ch = (Character) c;
@@ -650,11 +650,10 @@ casoConstante ::= numero:n
                           String cStr = (String) c;
                           ch = cStr.length() == 1 ? cStr.charAt(0) : cStr.charAt(1);
                       }
-                      int ascii = (int) ch;
-                      String temp = GeneradorCodigo.nuevoTemp();
-                      GeneradorCodigo.emitir("    " + temp + " = " + ascii);
+                      String temp = GeneradorCodigo.nuevoTemp("char");           // <<< CAMBIO: agregado "char"
+                      GeneradorCodigo.emitir("    " + temp + " = '" + ch + "'"); // <<< CAMBIO: ascii -> '" + ch + "'
                       RESULT = "char|" + temp + "|'" + ch + "'";
-                  :};
+                    :};
 
 // ===============================================================
 // 5.3 PROGRAMA PRINCIPAL
@@ -1190,7 +1189,7 @@ elemento_escritura ::= IDENTIFICADOR:id
                             GeneradorCodigo.emitir("    " + t + " = " + b);
                             GeneradorCodigo.emitir("    write " + t); 
                         :}
-                     | CARACTER:c  
+                    | CARACTER:c  
                         {: 
                             char ch;
                             if (c instanceof Character) {
@@ -1199,8 +1198,8 @@ elemento_escritura ::= IDENTIFICADOR:id
                                 String cStr = (String) c;
                                 ch = cStr.length() == 1 ? cStr.charAt(0) : cStr.charAt(1);
                             }
-                            String t = GeneradorCodigo.nuevoTemp();
-                            GeneradorCodigo.emitir("    " + t + " = " + (int)ch);
+                            String t = GeneradorCodigo.nuevoTemp("char");           // <<< CAMBIO: agregado "char"
+                            GeneradorCodigo.emitir("    " + t + " = '" + ch + "'"); // <<< CAMBIO: (int)ch -> '" + ch + "'
                             GeneradorCodigo.emitir("    write " + t); 
                         :}
                      | acceso_arreglo:arr 
@@ -1815,13 +1814,17 @@ exp_factor ::= INCREMENTO IDENTIFICADOR:id
                         RESULT = "error|?";
                     }
                 :}
-             | MENOS numero:n 
+             | MENOS NUMERO_ENTERO:n
                 {: 
-                    String tipo = n.contains("|") ? n.split("\\|")[0] : n;
-                    String lugar = n.contains("|") ? n.split("\\|")[1] : n;
-                    String temp = GeneradorCodigo.nuevoTemp(tipo);
-                    GeneradorCodigo.emitir("    " + temp + " = - " + lugar);
-                    RESULT = tipo + "|" + temp;
+                    String temp = GeneradorCodigo.nuevoTemp("int");
+                    GeneradorCodigo.emitir("    " + temp + " = -" + n);
+                    RESULT = "int|" + temp;
+                :}
+             | MENOS NUMERO_FLOTANTE:n
+                {: 
+                    String temp = GeneradorCodigo.nuevoTemp("float");
+                    GeneradorCodigo.emitir("    " + temp + " = -" + n);
+                    RESULT = "float|" + temp;
                 :}
              | OPERADOR_LOGICO_UNARIO exp_factor:e 
                 {: 
@@ -1873,8 +1876,8 @@ valor ::= numero:n {: RESULT = n; :}
                     String cStr = (String) c;
                     ch = cStr.length() == 1 ? cStr.charAt(0) : cStr.charAt(1);
                 }
-                String t = GeneradorCodigo.nuevoTemp("int");  
-                GeneradorCodigo.emitir("    " + t + " = " + (int)ch);
+                String t = GeneradorCodigo.nuevoTemp("char");          // <<< CAMBIO: "int" -> "char"
+                GeneradorCodigo.emitir("    " + t + " = '" + ch + "'"); // <<< CAMBIO: (int)ch -> '" + ch + "'
                 RESULT = "char|" + t; :}
         | acceso_arreglo:arr {: RESULT = arr; :}
         | llamada_funcion_exp:lf {: RESULT = lf; :}
