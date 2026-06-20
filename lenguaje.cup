@@ -34,12 +34,14 @@ parser code {:
         String tipo;
         int linea;
         String categoria;
+        boolean inicializada;
 
-        Simbolo(String nombre, String tipo, int linea, String categoria) {
+        Simbolo(String nombre, String tipo, int linea, String categoria, boolean inicializada) {
             this.nombre    = nombre;
             this.tipo      = tipo;
             this.linea     = linea;
             this.categoria = categoria;
+            this.inicializada = inicializada;
         }
     }
 
@@ -159,13 +161,13 @@ parser code {:
     // ===============================================================
 
     // Registra una nueva variable en la tabla del ambito actual
-    public static void agregarSimbolo(String nombre, String tipo, int linea) {
+    public static void agregarSimbolo(String nombre, String tipo, int linea, boolean inicializada) {
         if (pilaTablas.isEmpty()) return;
         java.util.HashMap<String, Simbolo> ambito = pilaTablas.peek();
         if (ambito.containsKey(nombre)) {
             errorSemantico("Linea " + linea + ": variable '" + nombre + "' ya fue declarada en este ambito.");
         } else {
-            ambito.put(nombre, new Simbolo(nombre, tipo, linea, "variable"));
+            ambito.put(nombre, new Simbolo(nombre, tipo, linea, "variable", inicializada));
         }
     }
 
@@ -176,7 +178,7 @@ parser code {:
         if (ambito.containsKey(nombre)) {
             errorSemantico("Linea " + linea + ": parametro '" + nombre + "' ya fue declarado en este ambito.");
         } else {
-            ambito.put(nombre, new Simbolo(nombre, tipo, linea, "parametro"));
+            ambito.put(nombre, new Simbolo(nombre, tipo, linea, "parametro", true)); // true: los parametros ya vienen inicializados
         }
     }
 
@@ -247,6 +249,12 @@ parser code {:
         return null;
     }
 
+    // Verifica que una variable haya sido inicializada
+    public static void marcarInicializada(String nombre) {
+        Simbolo s = buscarSimbolo(nombre);
+        if (s != null) s.inicializada = true;
+    }
+
     // Verifica que una variable exista antes de usarla
     // Retorna: "tipo|nombre" o "error|?"
     public static String verificarUso(String nombre, int linea) {
@@ -254,6 +262,9 @@ parser code {:
         if (s == null) {
             errorSemantico("Linea " + linea + ": variable '" + nombre + "' no fue declarada.");
             return "error|?";
+        }
+        if (!s.inicializada) {
+            errorSemantico("Linea " + linea + ": variable '" + nombre + "' se usa sin haber sido inicializada.");
         }
         return s.tipo + "|" + nombre;
     }
@@ -773,34 +784,7 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                  }
                  funcionesConReturn.remove(funcionActual);
                  popScope(); 
-              :}
-          | STRING SEPARADOR IDENTIFICADOR:id
-              {: 
-                 if (tablaFunciones.containsKey((String)id)) {
-                     errorSemantico("Linea " + idleft + ": funcion '" + id + "' ya fue declarada.");
-                     tipoFuncionActual = "string";
-                     parametrosActuales = new java.util.ArrayList<>();
-                     pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
-                     funcionActual = (String)id + "_duplicada";
-                 } else {
-                     tablaFunciones.put((String)id, "string");
-                     tipoFuncionActual = "string";
-                     parametrosActuales = new java.util.ArrayList<>();
-                     pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
-                     funcionActual = (String)id;
-                 }
-              :}
-              INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
-              {: 
-                 tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
-                     errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
-                 }
-                 funcionesConReturn.remove(funcionActual);
-                 popScope(); 
-              :} ;
+              :};
 
 /*Lista de 0 o mas funciones*/
 lista_funciones ::= funcion lista_funciones | /* vacio */ ;
@@ -874,7 +858,7 @@ declaracion ::= INT SEPARADOR IDENTIFICADOR:id
                 {: 
                     tipoDeclaracionActual = "int"; 
                     nombreDeclaracionActual = (String)id; 
-                    agregarSimbolo((String)id, "int", idleft);
+                    agregarSimbolo((String)id, "int", idleft, false);
                     GeneradorCodigo.emitir("    declare " + id + ", int");
                 :}
                 declaracion_resto:r
@@ -884,7 +868,7 @@ declaracion ::= INT SEPARADOR IDENTIFICADOR:id
                 {: 
                     tipoDeclaracionActual = "float"; 
                     nombreDeclaracionActual = (String)id; 
-                    agregarSimbolo((String)id, "float", idleft);
+                    agregarSimbolo((String)id, "float", idleft, false);
                     GeneradorCodigo.emitir("    declare " + id + ", float");
                 :}
                 declaracion_resto:r
@@ -894,7 +878,7 @@ declaracion ::= INT SEPARADOR IDENTIFICADOR:id
                 {: 
                     tipoDeclaracionActual = "bool"; 
                     nombreDeclaracionActual = (String)id; 
-                    agregarSimbolo((String)id, "bool", idleft);
+                    agregarSimbolo((String)id, "bool", idleft, false);
                     GeneradorCodigo.emitir("    declare " + id + ", bool");
                 :}
                 declaracion_variable_resto
@@ -903,7 +887,7 @@ declaracion ::= INT SEPARADOR IDENTIFICADOR:id
                 {: 
                     tipoDeclaracionActual = "char"; 
                     nombreDeclaracionActual = (String)id; 
-                    agregarSimbolo((String)id, "char", idleft);
+                    agregarSimbolo((String)id, "char", idleft, false);
                     GeneradorCodigo.emitir("    declare " + id + ", char");
                 :}
                 declaracion_variable_resto
@@ -912,7 +896,7 @@ declaracion ::= INT SEPARADOR IDENTIFICADOR:id
                 {: 
                     tipoDeclaracionActual = "string"; 
                     nombreDeclaracionActual = (String)id; 
-                    agregarSimbolo((String)id, "string", idleft);
+                    agregarSimbolo((String)id, "string", idleft, false);
                     GeneradorCodigo.emitir("    declare " + id + ", string");
                 :}
                 declaracion_variable_resto
@@ -950,8 +934,6 @@ declaracion_resto ::= declaracion_variable_resto
                                 int totalDecl  = filasDecl * colsDecl;
                                 int totalBloque = Integer.parseInt(conteo);
                                 
-                               
-                                
                                 if (totalDecl != totalBloque) {
                                     errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
                                         + ": dimensiones del arreglo no coinciden, se declaro " 
@@ -967,6 +949,7 @@ declaracion_resto ::= declaracion_variable_resto
                                     }
                                 }
                             }
+                            marcarInicializada(nombreDeclaracionActual);  // NUEVO
                             RESULT = "[][]"; 
                         :}
                     | array:dim ASIGNACION expresion:e DELIMITADOR_EXP
@@ -982,12 +965,12 @@ declaracion_variable_resto ::= DELIMITADOR_EXP
             validarTipos(tipoDeclaracionActual, tipoExp, "asignacion", eleft);
             String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
             
+            marcarInicializada(nombreDeclaracionActual);
             GeneradorCodigo.emitir("    " + nombreDeclaracionActual + " = " + lugarE); 
         :} 
         | ASIGNACION DELIMITADOR_EXP {: 
             errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
                 + ": variable '" + nombreDeclaracionActual + "' inicializada sin valor");
-            
         :};
 
 // ===============================================================
@@ -1029,14 +1012,21 @@ valor_lista ::= expresion:e
 // ===============================================================
 
 asignacion ::= IDENTIFICADOR:id ASIGNACION expresion:e DELIMITADOR_EXP {: 
-                   String tipoVar = verificarUso((String)id, idleft);
-                   String tipoVarLimpio = tipoVar.contains("|") ? tipoVar.split("\\|")[0] : tipoVar;
+                   Simbolo simb = buscarSimbolo((String)id);
+                   String tipoVarLimpio;
+                   if (simb == null) {
+                       errorSemantico("Linea " + idleft + ": variable '" + id + "' no fue declarada.");
+                       tipoVarLimpio = "error";
+                   } else {
+                       tipoVarLimpio = simb.tipo;
+                   }
                    validarTipos(tipoVarLimpio, e, "asignacion", idleft);
                    String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
+                   marcarInicializada((String)id);  // NUEVO
                    GeneradorCodigo.emitir("    " + id + " = " + lugarE); :}
              | acceso_arreglo:arr ASIGNACION expresion:e DELIMITADOR_EXP {:
                    String[] partes = arr.split("\\|");
-                   String tipoArr = partes[0];           // Ya viene sin "|"
+                   String tipoArr = partes[0];
                    String posicion = partes.length >= 3 ? partes[2] : arr;
                    String lugarE = e.contains("|") ? e.split("\\|")[1] : e;
                    validarTipos(tipoArr, e, "asignacion", ((Symbol)CUP$parser$stack.peek()).left);
@@ -1390,20 +1380,32 @@ exp_logica ::= exp_relacional:e1 resto_logica:r
                 {:
                     String tipo1  = e1.contains("|") ? e1.split("\\|")[0] : e1;
                     String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                    String opR    = r != null ? (r.contains("|") ? r.split("\\|")[0] : null) : null;
-                    String lugarR = r != null ? (r.contains("|") ? r.split("\\|")[1] : r) : null;
-                    String tipoR  = r != null ? (r.contains("|") ? r.split("\\|")[2] : r) : null;
-                    if (tipoR != null && !tipoR.equals("error")) {
-                        if (!tipo1.equals("bool") || !tipoR.equals("bool")) {
-                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left + ": Operadores logicos requieren tipos bool.");
+                    
+                    if (r == null) {
+                        RESULT = e1;
+                    } else {
+                        String[] partesR = r.split("\\|");
+                        if (partesR.length < 3) {
                             RESULT = "error|?";
                         } else {
-                            String t = GeneradorCodigo.nuevoTemp();
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " @ " + lugarR);
-                            RESULT = "bool|" + t;
+                            String opR    = partesR[0];
+                            String lugarR = partesR[1];
+                            String tipoR  = partesR[2];
+                            
+                            if (!tipo1.equals("bool") && !tipo1.equals("error")) {
+                                errorSemantico("Linea " + e1left  // CAMBIO: antes era peek()
+                                    + ": Operadores logicos requieren tipos bool, se encontro '" + tipo1 + "'.");
+                                RESULT = "error|?";
+                            } else if (!tipoR.equals("bool") && !tipoR.equals("error")) {
+                                errorSemantico("Linea " + e1left  // CAMBIO: antes era peek()
+                                    + ": Operadores logicos requieren tipos bool, se encontro '" + tipoR + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                String t = GeneradorCodigo.nuevoTemp();
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " @ " + lugarR);
+                                RESULT = "bool|" + t;
+                            }
                         }
-                    } else {
-                        RESULT = e1;
                     }
                 :};
 
@@ -1411,15 +1413,33 @@ exp_logica ::= exp_relacional:e1 resto_logica:r
 resto_logica ::= OPERADOR_LOGICO_BINARIO exp_relacional:e resto_logica:r {:
                         String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                         String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                        if (r != null) {
+                        if (r != null && r.split("\\|").length >= 3) {
                             String opR    = r.split("\\|")[0];
                             String lugarR = r.split("\\|")[1];
                             String tipoR  = r.split("\\|")[2];
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " @ " + lugarR);
-                            RESULT = "@|" + t + "|" + tipo;
+                            if (!tipo.equals("bool") && !tipo.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": Operadores logicos requieren tipos bool, se encontro '" + tipo + "'.");
+                                RESULT = "error|?";
+                            } else if (!tipoR.equals("bool") && !tipoR.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": Operadores logicos requieren tipos bool, se encontro '" + tipoR + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                String t = GeneradorCodigo.nuevoTemp("bool");
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " @ " + lugarR);
+                                RESULT = "@|" + t + "|bool";
+                            }
+                        } else if (r != null) {
+                            RESULT = "error|?";
                         } else {
-                            RESULT = "@|" + lugar + "|" + tipo;
+                            if (!tipo.equals("bool") && !tipo.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": Operadores logicos requieren tipos bool, se encontro '" + tipo + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                RESULT = "@|" + lugar + "|bool";
+                            }
                         }
                     :}
                 | /* vacio */ {: RESULT = null; :};
@@ -1666,17 +1686,17 @@ exp_potencia ::= valor:e1 resto_potencia:r
                     {:  
                         String tipo  = e1.contains("|") ? e1.split("\\|")[0] : e1;
                         String lugar = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                        if (r != null && !r.equals("error")) {
+                        if (r != null && r.split("\\|").length >= 3) {
                             String opR    = r.split("\\|")[0];
                             String lugarR = r.split("\\|")[1];
                             String tipoR  = r.split("\\|")[2];
 
                             if (!tipo.equals("int") && !tipo.equals("error")) {
-                                errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                errorSemantico("Linea " + e1left 
                                     + ": el operador '^' solo aplica a tipo int, se encontro '" + tipo + "'.");
                                 RESULT = "error|?";
                             } else if (!tipoR.equals("int") && !tipoR.equals("error")) {
-                                errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                                errorSemantico("Linea " + e1left 
                                     + ": el operador '^' solo aplica a tipo int, se encontro '" + tipoR + "'.");
                                 RESULT = "error|?";
                             } else {
@@ -1684,6 +1704,8 @@ exp_potencia ::= valor:e1 resto_potencia:r
                                 GeneradorCodigo.emitir("    " + t + " = " + lugar + " ^ " + lugarR);
                                 RESULT = "int|" + t;
                             }
+                        } else if (r != null) {
+                            RESULT = "error|?";
                         } else {
                             RESULT = e1;
                         }
@@ -1694,18 +1716,36 @@ resto_potencia ::= POTENCIA valor:e resto_potencia:r
                     {:
                         String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                         String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                        if (r != null) {
+                        if (r != null && r.split("\\|").length >= 3) {
                             String opR    = r.split("\\|")[0];
                             String lugarR = r.split("\\|")[1];
                             String tipoR  = r.split("\\|")[2];
-                            String t = GeneradorCodigo.nuevoTemp("int");
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = "^|" + t + "|int";
+                            if (!tipo.equals("int") && !tipo.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": el operador '^' solo aplica a tipo int, se encontro '" + tipo + "'.");
+                                RESULT = "error|?";
+                            } else if (!tipoR.equals("int") && !tipoR.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": el operador '^' solo aplica a tipo int, se encontro '" + tipoR + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                String t = GeneradorCodigo.nuevoTemp("int");
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                                RESULT = "^|" + t + "|int";
+                            }
+                        } else if (r != null) {
+                            RESULT = "error|?";
                         } else {
-                            RESULT = "^|" + lugar + "|int";
+                            if (!tipo.equals("int") && !tipo.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": el operador '^' solo aplica a tipo int, se encontro '" + tipo + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                RESULT = "^|" + lugar + "|int";
+                            }
                         }
                     :}
-                | /* vacio */ {: RESULT = null; :};
+                    | /* vacio */ {: RESULT = null; :};
                 
 
 // ---------------------------------------------------------------

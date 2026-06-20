@@ -1,17 +1,37 @@
+int ~ dividir <| int ~ a, int ~ b |> |:
+    return ~ a / b!
+:|
+
+float ~ promedio <| float ~ x, float ~ y |> |:
+    float ~ suma <- 4.2!
+    return ~ suma!
+:|
+
+bool ~ esMayor <| int ~ a, int ~ b |> |:
+    return ~ greather_t<|a, b|>!
+:|
+
 empty ~ __main__ ~ <| |> |:
-    int ~ x <- 5 !          
-    int ~ y <- ++x !        
-    
-    int ~ a <- 10 !         
-    int ~ b <- --a !        
-    
-    bool ~ flag <- true !   
-    bool ~ neg <- $flag !   
-    
-    int ~ n <- -5 !         
-    
-    int ~ arr <<2>><<2>> <- |: 1, 2, 3, 4 :| !
-    int ~ arr2 <<3>><<3>> ! 
-    
-    cout ~ <| "y: " ~ y ~ " b: " ~ b ~ " neg: " ~ neg ~ " n: " ~ n |>!
+    int ~ n1 <- 10!
+    int ~ n2 <- 3!
+    string ~ texto <- "prueba"!
+    float ~ resultado!
+    bool ~ flag1 <- true!
+    bool ~ flag2 <- false!
+
+    int ~ div <- dividir <| n1, n2 |>!
+
+    resultado <- promedio <| 4.5, 5.5 |>!
+
+    bool ~ comparacion <- esMayor <| n1, n2 |>!
+
+    if <| flag1 @ flag2 |> |:
+        cout ~ <| "ambos true" |>!
+    :|
+
+    int ~ suma <- n1 + n2 - 1!
+
+    int ~ potencia <- n1 ^ 2!
+
+    cout ~ <| "div: " ~ div ~ " resultado: " ~ resultado |>!
 :|

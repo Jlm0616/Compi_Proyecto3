@@ -1,53 +1,90 @@
 # ===== CODIGO INTERMEDIO =====
 
+dividir:
+    param a
+    param b
+    t0 = a
+    t1 = b
+    t2 = t0 / t1
+    return t2
+
+promedio:
+    param x
+    param y
+    declare suma, float
+    f0 = 4.2
+    suma = f0
+    f1 = suma
+    return f1
+
+esMayor:
+    param a
+    param b
+    t3 = a
+    t4 = b
+    t5 = t3 > t4
+    return t5
+
 main:
-    declare x, int
-    t0 = 5
-    x = t0
-    declare y, int
-    t1 = x
-    t2 = t1 + 1
-    x = t2
-    y = t2
-    declare a, int
-    t3 = 10
-    a = t3
-    declare b, int
-    t4 = a
-    t5 = t4 - 1
-    a = t5
-    b = t5
-    declare flag, bool
-    t6 = true
-    flag = t6
-    declare neg, bool
-    t7 = flag
-    t8 = !t7
-    neg = t8
-    declare n, int
-    t9 = 5
-    t10 = -t9
-    n = t10
-    declare arr, int
-    t11 = 1
-    t12 = 2
-    t13 = 3
-    t14 = 4
-    arr[0][0] = t11
-    arr[0][1] = t12
-    arr[1][0] = t13
-    arr[1][1] = t14
-    declare arr2, int
-    t15 = "y: "
-    write t15
-    write y
-    t16 = " b: "
-    write t16
-    write b
-    t17 = " neg: "
-    write t17
-    write neg
-    t18 = " n: "
-    write t18
-    write n
+    declare n1, int
+    t6 = 10
+    n1 = t6
+    declare n2, int
+    t7 = 3
+    n2 = t7
+    declare texto, string
+    t8 = "prueba"
+    texto = t8
+    declare resultado, float
+    declare flag1, bool
+    t9 = true
+    flag1 = t9
+    declare flag2, bool
+    t10 = false
+    flag2 = t10
+    declare div, int
+    t11 = n1
+    t12 = n2
+    param t11
+    param t12
+    t13 = call dividir, 2
+    div = t13
+    f2 = 4.5
+    f3 = 5.5
+    param f2
+    param f3
+    t14 = call promedio, 2
+    resultado = t14
+    declare comparacion, bool
+    t15 = n1
+    t16 = n2
+    param t15
+    param t16
+    t17 = call esMayor, 2
+    comparacion = t17
+    t18 = flag1
+    t19 = flag2
+    t20 = t18 @ t19
+    ifFalse t20 goto L0
+    t21 = "ambos true"
+    write t21
+L0:
+    declare suma, int
+    t22 = n1
+    t23 = n2
+    t24 = 1
+    t25 = t23 - t24
+    t26 = t22 + t25
+    suma = t26
+    declare potencia, int
+    t27 = n1
+    t28 = 2
+    t29 = t27 ^ t28
+    potencia = t29
+    t30 = "div: "
+    write t30
+    write div
+    t31 = " resultado: "
+    write t31
+    write resultado
 # ===== FIN DEL CODIGO INTERMEDIO =====
