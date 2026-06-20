@@ -1,7 +1,29 @@
-empty ~ __main__ ~ <| |> |:
-    int ~ x <- -5!
-    float ~ y <- -3.14!
-    char ~ c <- 'a'!
+int ~ identidad <| int ~ n |> |:
+    return ~ n!
+:|
 
-    cout ~ <| x ~ y ~ c |>!
+empty ~ __main__ ~ <| |> |:
+    int ~ a <- 5!
+    int ~ b <- 3!
+    int ~ c <- 2!
+    float ~ f <- 1.5!
+    string ~ w <- "x"!
+    bool ~ flag1 <- true!
+    bool ~ flag2 <- false!
+    char ~ ch <- 'z'!
+
+    ¡¡ Caso 1: tipo incompatible escondido en medio de parentesis anidados, dentro de termino, dentro de aritmetica
+    int ~ r1 <- a + <|b * <|c / w|>|> - a!
+
+    ¡¡ Caso 2: mezcla de potencia (debe ser int) con resultado de una llamada a funcion que retorna int, pero encadenado con float
+    int ~ r2 <- identidad <|a|> ^ identidad <|b|> ^ f!
+
+    ¡¡ Caso 3: cadena logica larguisima con el error en el unico lugar donde NO es el extremo
+    bool ~ r3 <- flag1 @ flag1 @ flag1 @ flag2 @ ch @ flag1!
+
+    ¡¡ Caso 4: resta encadenada empezando con char, terminando en int (el primero es el raro, no el ultimo)
+    int ~ r4 <- ch - a - b - c!
+
+    ¡¡ Caso 5: modulo en medio de una cadena de multiplicaciones con el char fuera de posicion exacta del operador especial
+    int ~ r5 <- a * b % ch * c!
 :|

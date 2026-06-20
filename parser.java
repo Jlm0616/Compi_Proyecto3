@@ -1872,7 +1872,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 agregarParametro((String)id, "int", idleft); parametrosActuales.add("int"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "int", idleft); parametrosActuales.add("int"); GeneradorCodigo.emitir("    param " + id + ", int"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1884,7 +1884,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		 agregarParametro((String)id, "int[][]", idleft); parametrosActuales.add("int[][]"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "int[][]", idleft); parametrosActuales.add("int[][]"); GeneradorCodigo.emitir("    param " + id + ", int[][]"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1896,7 +1896,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		 agregarParametro((String)id, "float[][]", idleft); parametrosActuales.add("float[][]"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "float[][]", idleft); parametrosActuales.add("float[][]"); GeneradorCodigo.emitir("    param " + id + ", float[][]"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1908,7 +1908,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 agregarParametro((String)id, "float", idleft); parametrosActuales.add("float"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "float", idleft); parametrosActuales.add("float"); GeneradorCodigo.emitir("    param " + id + ", float"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1920,7 +1920,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 agregarParametro((String)id, "bool", idleft); parametrosActuales.add("bool"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "bool", idleft); parametrosActuales.add("bool"); GeneradorCodigo.emitir("    param " + id + ", bool"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1932,7 +1932,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 agregarParametro((String)id, "char", idleft); parametrosActuales.add("char"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "char", idleft); parametrosActuales.add("char"); GeneradorCodigo.emitir("    param " + id + ", char"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1944,7 +1944,7 @@ class CUP$parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		 agregarParametro((String)id, "string", idleft); parametrosActuales.add("string"); GeneradorCodigo.emitir("    param " + id); 
+		 agregarParametro((String)id, "string", idleft); parametrosActuales.add("string"); GeneradorCodigo.emitir("    param " + id + ", string"); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("parametro",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2639,16 +2639,18 @@ class CUP$parser$actions {
             errorSemantico("Linea " + idleft + ": funcion '" + id + "' no fue declarada.");
             RESULT = "error|?";
         } else {
+            String tipoRetorno = tablaFunciones.get((String)id);  // NUEVO
             java.util.ArrayList<String> params = tablaParametros.get((String)id);
             if (params != null && params.size() != misArgumentos.size()) {
                 errorSemantico("Linea " + idleft + ": la funcion '" + id + "' espera " + params.size() + " argumento(s) pero se encontraron " + misArgumentos.size() + ".");
                 for (int i = 0; i < misArgumentos.size(); i++) {
+                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);  // NUEVO
                     String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
-                    GeneradorCodigo.emitir("    param " + lugarArg);
+                    GeneradorCodigo.emitir("    param " + lugarArg + ", " + tipoArg);  // CAMBIO: agregado tipo
                 }
-                String t = GeneradorCodigo.nuevoTemp();
+                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);  // CAMBIO: tipo de retorno
                 GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + misArgumentos.size());
-                RESULT = tablaFunciones.get((String)id) + "|" + t;
+                RESULT = tipoRetorno + "|" + t;
             } else if (params != null) {
                 for (int i = 0; i < params.size(); i++) {
                     String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);
@@ -2656,19 +2658,20 @@ class CUP$parser$actions {
                         errorSemantico("Linea " + idleft + ": argumento " + (i+1) + " de funcion '" + id + "' esperaba tipo '" + params.get(i) + "' pero se encontro '" + tipoArg + "'.");
                     }
                     String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
-                    GeneradorCodigo.emitir("    param " + lugarArg);
+                    GeneradorCodigo.emitir("    param " + lugarArg + ", " + params.get(i));  // CAMBIO: agregado tipo (del parametro esperado)
                 }
-                String t = GeneradorCodigo.nuevoTemp();
+                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);  // CAMBIO: tipo de retorno
                 GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + params.size());
-                RESULT = tablaFunciones.get((String)id) + "|" + t;
+                RESULT = tipoRetorno + "|" + t;
             } else {
                 for (int i = 0; i < misArgumentos.size(); i++) {
+                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);  // NUEVO
                     String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
-                    GeneradorCodigo.emitir("    param " + lugarArg);
+                    GeneradorCodigo.emitir("    param " + lugarArg + ", " + tipoArg);  // CAMBIO: agregado tipo
                 }
-                String t = GeneradorCodigo.nuevoTemp();
+                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);  // CAMBIO: tipo de retorno
                 GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + misArgumentos.size());
-                RESULT = tablaFunciones.get((String)id) + "|" + t;
+                RESULT = tipoRetorno + "|" + t;
             }
         }
     
@@ -3601,17 +3604,19 @@ class CUP$parser$actions {
 		 
                             String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
                             String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                            if (r != null && !r.equals("error|?")) {
+                            if (r != null && r.split("\\|").length >= 3) {
                                 String op    = r.split("\\|")[0];
                                 String lugar2 = r.split("\\|")[1];
                                 String tipo2  = r.split("\\|")[2];
 
                                 String nombreOp = op.equals("+") ? "suma" : "resta";
-                                validarTipos(tipo1, tipo2, nombreOp, ((Symbol)CUP$parser$stack.peek()).left);
+                                validarTipos(tipo1, tipo2, nombreOp, e1left);
                                 
                                 String t = GeneradorCodigo.nuevoTemp(tipo1); 
                                 GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " " + op + " " + lugar2);
                                 RESULT = tipo1 + "|" + t;
+                            } else if (r != null) {
+                                RESULT = "error|?";
                             } else {
                                 RESULT = e1;
                             }
@@ -3633,13 +3638,21 @@ class CUP$parser$actions {
 		
                         String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                         String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                        if (r != null) {
+                        if (r != null && r.split("\\|").length >= 3) {
                             String opR    = r.split("\\|")[0];
                             String lugarR = r.split("\\|")[1];
                             String tipoR  = r.split("\\|")[2];
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = "+|" + t + "|" + tipo;
+                            if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": tipos incompatibles en operacion 'suma', se encontraron '" + tipo + "' y '" + tipoR + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                String t = GeneradorCodigo.nuevoTemp(tipo);
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                                RESULT = "+|" + t + "|" + tipo;
+                            }
+                        } else if (r != null) {
+                            RESULT = "error|?";
                         } else {
                             RESULT = "+|" + lugar + "|" + tipo;
                         }
@@ -3661,13 +3674,21 @@ class CUP$parser$actions {
 		
                         String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                         String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                        if (r != null) {
+                        if (r != null && r.split("\\|").length >= 3) {
                             String opR    = r.split("\\|")[0];
                             String lugarR = r.split("\\|")[1];
                             String tipoR  = r.split("\\|")[2];
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = "-|" + t + "|" + tipo;
+                            if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
+                                errorSemantico("Linea " + eleft 
+                                    + ": tipos incompatibles en operacion 'resta', se encontraron '" + tipo + "' y '" + tipoR + "'.");
+                                RESULT = "error|?";
+                            } else {
+                                String t = GeneradorCodigo.nuevoTemp(tipo);
+                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                                RESULT = "-|" + t + "|" + tipo;
+                            }
+                        } else if (r != null) {
+                            RESULT = "error|?";
                         } else {
                             RESULT = "-|" + lugar + "|" + tipo;
                         }
@@ -3703,22 +3724,24 @@ class CUP$parser$actions {
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];
                         if (opR.equals("%") && !tipo.equals("int") && !tipo.equals("error")) {
-                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                            errorSemantico("Linea " + e1left 
                                 + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
                             RESULT = "error|?";
                         } else if (opR.equals("%") && !tipoR.equals("int") && !tipoR.equals("error")) {
-                            errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left 
+                            errorSemantico("Linea " + e1left 
                                 + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
                             RESULT = "error|?";
                         } else {
                             String nombreOp = opR.equals("*") ? "multiplicacion" 
                                         : opR.equals("/") ? "division" 
                                         : "modulo";
-                            validarTipos(tipo, tipoR, nombreOp, ((Symbol)CUP$parser$stack.peek()).left);
+                            validarTipos(tipo, tipoR, nombreOp, e1left);
                             String t = GeneradorCodigo.nuevoTemp(tipo);
                             GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
                             RESULT = tipo + "|" + t;
                         }
+                    } else if (r != null) {
+                        RESULT = "error|?";
                     } else {
                         RESULT = e1;
                     }
@@ -3740,13 +3763,21 @@ class CUP$parser$actions {
 		
                     String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                     String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (r != null) {
+                    if (r != null && r.split("\\|").length >= 3) {
                         String opR    = r.split("\\|")[0];
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];
-                        String t = GeneradorCodigo.nuevoTemp(tipo);
-                        GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                        RESULT = "*|" + t + "|" + tipo;
+                        if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
+                            errorSemantico("Linea " + eleft 
+                                + ": tipos incompatibles en operacion 'multiplicacion', se encontraron '" + tipo + "' y '" + tipoR + "'.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = "*|" + t + "|" + tipo;
+                        }
+                    } else if (r != null) {
+                        RESULT = "error|?";
                     } else {
                         RESULT = "*|" + lugar + "|" + tipo;
                     }
@@ -3768,13 +3799,21 @@ class CUP$parser$actions {
 		
                     String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                     String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (r != null) {
+                    if (r != null && r.split("\\|").length >= 3) {
                         String opR    = r.split("\\|")[0];
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];
-                        String t = GeneradorCodigo.nuevoTemp(tipo);
-                        GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                        RESULT = "/|" + t + "|" + tipo;
+                        if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
+                            errorSemantico("Linea " + eleft 
+                                + ": tipos incompatibles en operacion 'division', se encontraron '" + tipo + "' y '" + tipoR + "'.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = "/|" + t + "|" + tipo;
+                        }
+                    } else if (r != null) {
+                        RESULT = "error|?";
                     } else {
                         RESULT = "/|" + lugar + "|" + tipo;
                     }
@@ -3796,13 +3835,25 @@ class CUP$parser$actions {
 		
                     String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
                     String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (r != null) {
+                    if (r != null && r.split("\\|").length >= 3) {
                         String opR    = r.split("\\|")[0];
                         String lugarR = r.split("\\|")[1];
                         String tipoR  = r.split("\\|")[2];
-                        String t = GeneradorCodigo.nuevoTemp(tipo);
-                        GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                        RESULT = "%|" + t + "|" + tipo;
+                        if (!tipo.equals("int") && !tipo.equals("error")) {
+                            errorSemantico("Linea " + eleft 
+                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
+                            RESULT = "error|?";
+                        } else if (!tipoR.equals("int") && !tipoR.equals("error")) {
+                            errorSemantico("Linea " + eleft 
+                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
+                            RESULT = "error|?";
+                        } else {
+                            String t = GeneradorCodigo.nuevoTemp(tipo);
+                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
+                            RESULT = "%|" + t + "|" + tipo;
+                        }
+                    } else if (r != null) {
+                        RESULT = "error|?";
                     } else {
                         RESULT = "%|" + lugar + "|" + tipo;
                     }
