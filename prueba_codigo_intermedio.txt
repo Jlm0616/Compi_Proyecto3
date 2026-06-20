@@ -1,90 +1,112 @@
 # ===== CODIGO INTERMEDIO =====
 
-dividir:
-    param a
-    param b
-    t0 = a
-    t1 = b
-    t2 = t0 / t1
-    return t2
-
-promedio:
-    param x
-    param y
-    declare suma, float
-    f0 = 4.2
-    suma = f0
-    f1 = suma
-    return f1
-
-esMayor:
-    param a
-    param b
-    t3 = a
-    t4 = b
-    t5 = t3 > t4
-    return t5
-
 main:
-    declare n1, int
-    t6 = 10
-    n1 = t6
-    declare n2, int
-    t7 = 3
-    n2 = t7
-    declare texto, string
-    t8 = "prueba"
-    texto = t8
-    declare resultado, float
-    declare flag1, bool
-    t9 = true
-    flag1 = t9
-    declare flag2, bool
-    t10 = false
-    flag2 = t10
-    declare div, int
-    t11 = n1
-    t12 = n2
-    param t11
-    param t12
-    t13 = call dividir, 2
-    div = t13
-    f2 = 4.5
-    f3 = 5.5
-    param f2
-    param f3
-    t14 = call promedio, 2
-    resultado = t14
-    declare comparacion, bool
-    t15 = n1
-    t16 = n2
-    param t15
-    param t16
-    t17 = call esMayor, 2
-    comparacion = t17
-    t18 = flag1
-    t19 = flag2
+    declare f1, bool
+    t0 = true
+    f1 = t0
+    declare f2, bool
+    t1 = false
+    f2 = t1
+    declare f3, bool
+    t2 = true
+    f3 = t2
+    declare f4, bool
+    t3 = false
+    f4 = t3
+    declare r1, bool
+    t4 = f1
+    t5 = f2
+    t6 = t4 @ t5
+    r1 = t6
+    declare r2, bool
+    t7 = f1
+    t8 = f2
+    t9 = t7 # t8
+    r2 = t9
+    declare r3, bool
+    t10 = f1
+    t11 = !t10
+    r3 = t11
+    declare r4, bool
+    t12 = f1
+    t13 = f2
+    t14 = f3
+    t15 = t13 # t14
+    t16 = t12 @ t15
+    r4 = t16
+    declare r5, bool
+    t17 = f1
+    t18 = f2
+    t19 = f3
     t20 = t18 @ t19
-    ifFalse t20 goto L0
-    t21 = "ambos true"
-    write t21
-L0:
-    declare suma, int
-    t22 = n1
-    t23 = n2
-    t24 = 1
-    t25 = t23 - t24
-    t26 = t22 + t25
-    suma = t26
-    declare potencia, int
-    t27 = n1
-    t28 = 2
-    t29 = t27 ^ t28
-    potencia = t29
-    t30 = "div: "
-    write t30
-    write div
-    t31 = " resultado: "
-    write t31
-    write resultado
+    t21 = t17 # t20
+    r5 = t21
+    declare r6, bool
+    t22 = f1
+    t23 = !t22
+    t24 = f2
+    t25 = t23 @ t24
+    r6 = t25
+    declare r7, bool
+    t26 = f1
+    t27 = f2
+    t28 = !t27
+    t29 = t26 @ t28
+    r7 = t29
+    declare r8, bool
+    t30 = f1
+    t31 = !t30
+    t32 = f2
+    t33 = !t32
+    t34 = t31 # t33
+    r8 = t34
+    declare r9, bool
+    t35 = f1
+    t36 = f2
+    t37 = f3
+    t38 = f4
+    t39 = t37 # t38
+    t40 = t36 @ t39
+    t41 = t35 @ t40
+    r9 = t41
+    declare r10, bool
+    t42 = f1
+    t43 = f2
+    t44 = t42 @ t43
+    t45 = f3
+    t46 = !t45
+    t47 = f4
+    t48 = t46 @ t47
+    t49 = t44 # t48
+    r10 = t49
+    t50 = "r1: "
+    write t50
+    write r1
+    t51 = " r2: "
+    write t51
+    write r2
+    t52 = " r3: "
+    write t52
+    write r3
+    t53 = "r4: "
+    write t53
+    write r4
+    t54 = " r5: "
+    write t54
+    write r5
+    t55 = "r6: "
+    write t55
+    write r6
+    t56 = " r7: "
+    write t56
+    write r7
+    t57 = " r8: "
+    write t57
+    write r8
+    t58 = "r9: "
+    write t58
+    write r9
+    t59 = " r10: "
+    write t59
+    write r10
 # ===== FIN DEL CODIGO INTERMEDIO =====

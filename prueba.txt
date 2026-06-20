@@ -1,37 +1,24 @@
-int ~ dividir <| int ~ a, int ~ b |> |:
-    return ~ a / b!
-:|
-
-float ~ promedio <| float ~ x, float ~ y |> |:
-    float ~ suma <- 4.2!
-    return ~ suma!
-:|
-
-bool ~ esMayor <| int ~ a, int ~ b |> |:
-    return ~ greather_t<|a, b|>!
-:|
-
 empty ~ __main__ ~ <| |> |:
-    int ~ n1 <- 10!
-    int ~ n2 <- 3!
-    string ~ texto <- "prueba"!
-    float ~ resultado!
-    bool ~ flag1 <- true!
-    bool ~ flag2 <- false!
+    bool ~ f1 <- true!
+    bool ~ f2 <- false!
+    bool ~ f3 <- true!
+    bool ~ f4 <- false!
 
-    int ~ div <- dividir <| n1, n2 |>!
+    bool ~ r1 <- f1 @ f2!
+    bool ~ r2 <- f1 # f2!
+    bool ~ r3 <- $f1!
+    
+    bool ~ r4 <- f1 @ f2 # f3!
+    bool ~ r5 <- f1 # f2 @ f3!
+    bool ~ r6 <- $f1 @ f2!
+    bool ~ r7 <- f1 @ $f2!
+    bool ~ r8 <- $f1 # $f2!
+    
+    bool ~ r9 <- f1 @ f2 @ f3 # f4!
+    bool ~ r10 <- <|f1 @ f2|> # <|$f3 @ f4|>!
 
-    resultado <- promedio <| 4.5, 5.5 |>!
-
-    bool ~ comparacion <- esMayor <| n1, n2 |>!
-
-    if <| flag1 @ flag2 |> |:
-        cout ~ <| "ambos true" |>!
-    :|
-
-    int ~ suma <- n1 + n2 - 1!
-
-    int ~ potencia <- n1 ^ 2!
-
-    cout ~ <| "div: " ~ div ~ " resultado: " ~ resultado |>!
+    cout ~ <| "r1: " ~ r1 ~ " r2: " ~ r2 ~ " r3: " ~ r3 |>!
+    cout ~ <| "r4: " ~ r4 ~ " r5: " ~ r5 |>!
+    cout ~ <| "r6: " ~ r6 ~ " r7: " ~ r7 ~ " r8: " ~ r8 |>!
+    cout ~ <| "r9: " ~ r9 ~ " r10: " ~ r10 |>!
 :|
