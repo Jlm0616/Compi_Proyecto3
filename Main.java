@@ -91,6 +91,17 @@ public class Main {
         if (Lexer.erroresLexicos == 0 && parser.erroresSintacticos == 0 && parser.erroresSemanticos == 0) {
             GeneradorCodigo.cerrar();
             System.out.println(ANSI_GREEN + "\nCodigo intermedio generado en: " + archivoIntermedio + ANSI_RESET);
+
+            // ===========================================================
+            // SEXTO PASO: GENERAR CODIGO MIPS A PARTIR DEL CODIGO INTERMEDIO
+            // ===========================================================
+            try {
+                String archivoAsm = GeneradorMIPS.generar(archivoIntermedio);
+                System.out.println(ANSI_GREEN + "Codigo MIPS generado en:    " + archivoAsm + ANSI_RESET);
+            } catch (IOException e) {
+                System.out.println(ANSI_RED + "[ERROR] No se pudo generar el codigo MIPS: " + e.getMessage() + ANSI_RESET);
+            }
+
         } else {
             GeneradorCodigo.cerrarConError(archivoIntermedio);
             System.out.println(ANSI_RED + "\n[ERROR] Codigo intermedio no generado debido a errores en el analisis." + ANSI_RESET);

@@ -3102,6 +3102,7 @@ class CUP$parser$actions {
                         GeneradorCodigo.emitir("_switch" + switchActual + ":");
                         setLugarSwitch(switchActual, lugarE);
                         String tsw = "tsw" + switchActual;
+                        GeneradorCodigo.emitir("    declare " + tsw + ", int");
                         GeneradorCodigo.emitir("    " + tsw + " = 1");
                         pilaBreak.push("_sw" + switchActual + "_end");
                      

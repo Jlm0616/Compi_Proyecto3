@@ -1294,6 +1294,7 @@ switch_sentencia ::= SWITCH SEPARADOR INICIO_PARENTESIS expresion:e FIN_PARENTES
                         GeneradorCodigo.emitir("_switch" + switchActual + ":");
                         setLugarSwitch(switchActual, lugarE);
                         String tsw = "tsw" + switchActual;
+                        GeneradorCodigo.emitir("    declare " + tsw + ", int");
                         GeneradorCodigo.emitir("    " + tsw + " = 1");
                         pilaBreak.push("_sw" + switchActual + "_end");
                      :} 
