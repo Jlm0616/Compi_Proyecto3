@@ -1586,7 +1586,7 @@ class CUP$parser$actions {
             {
               Object RESULT =null;
  
-                    GeneradorCodigo.emitir("\nmain:"); 
+                    GeneradorCodigo.emitir("main:");
                     tipoFuncionActual = "empty";
                     funcionActual = "main";
                 

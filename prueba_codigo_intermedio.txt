@@ -1,68 +1,57 @@
 # ===== CODIGO INTERMEDIO =====
-
 main:
-    declare numero, int
-    t0 = 20
-    numero = t0
-    declare flag, bool
-    t1 = true
-    flag = t1
-    t2 = numero
-    t3 = 45
-    t4 = t2 <= t3
-    ifFalse t4 goto L0
-    t5 = "rama if"
-    write t5
-    t6 = flag
-    ifFalse t6 goto L1
-    t7 = "if interno"
+    declare base, int
+    t0 = 2
+    base = t0
+    declare exponente, int
+    t1 = 10
+    exponente = t1
+    declare resultado, int
+    t2 = 0
+    resultado = t2
+    t3 = base
+    t4 = exponente
+    t5 = t3 ^ t4
+    resultado = t5
+    t6 = "2 elevado a 10 es: "
+    write t6
+    write resultado
+    t7 = "\n"
     write t7
-L1:
-    t8 = "fin if"
-    write t8
-    goto L2
-L0:
-    t9 = "rama else"
-    write t9
-    declare contador, int
+    declare base2, int
+    t8 = 5
+    base2 = t8
+    declare exponente2, int
+    t9 = 0
+    exponente2 = t9
+    declare resultado2, int
     t10 = 0
-    contador = t10
-_dowhile1_start:
-    t11 = "iteracion"
-    write t11
-    t12 = contador
-_switch1:
-    declare tsw1, int
-    tsw1 = 1
-    t13 = 0
-_case1_1:
-    t14 = tsw1 == 0
-    if t14 goto _case1_1_b
-    t15 = t12 == t13
-    if t15 goto _case1_1_b
-    goto _case1_1_e
-_case1_1_b:
-    tsw1 = 0
-    t16 = "caso 0"
-    write t16
-    goto _sw1_end
-_case1_1_e:
-_default1:
-    t17 = "default"
-    write t17
-_sw1_end:
-    t18 = contador
-    t19 = 1
-    t20 = t18 + t19
-    contador = t20
-    t21 = contador
-    t22 = 1
-    t23 = t21 < t22
-    if t23 goto _dowhile1_start
-_dowhile1_end:
-    t24 = "fin else"
-    write t24
-L2:
-    t25 = "fin programa"
-    write t25
+    resultado2 = t10
+    t11 = base2
+    t12 = exponente2
+    t13 = t11 ^ t12
+    resultado2 = t13
+    t14 = "5 elevado a 0 es: "
+    write t14
+    write resultado2
+    t15 = "\n"
+    write t15
+    declare base3, int
+    t16 = 3
+    base3 = t16
+    declare exponente3, int
+    t17 = 4
+    exponente3 = t17
+    declare resultado3, int
+    t18 = 0
+    resultado3 = t18
+    t19 = base3
+    t20 = exponente3
+    t21 = t19 ^ t20
+    resultado3 = t21
+    t22 = "3 elevado a 4 es: "
+    write t22
+    write resultado3
+    t23 = "\n"
+    write t23
 # ===== FIN DEL CODIGO INTERMEDIO =====

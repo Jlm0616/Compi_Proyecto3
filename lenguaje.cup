@@ -663,7 +663,7 @@ programa ::= lista_funciones {: pushScope("GLOBAL (MAIN)"); :} funcion_main {: p
 
 funcion_main ::= EMPTY SEPARADOR PALABRA_MAIN SEPARADOR INICIO_PARENTESIS FIN_PARENTESIS 
                 {: 
-                    GeneradorCodigo.emitir("\nmain:"); 
+                    GeneradorCodigo.emitir("main:");
                     tipoFuncionActual = "empty";
                     funcionActual = "main";
                 :} 

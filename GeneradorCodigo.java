@@ -100,7 +100,10 @@ public class GeneradorCodigo {
     // Recibe: instruccion - linea de codigo a emitir
     // ===============================================================
     public static void emitir(String instruccion) {
-        if (writer != null) writer.println(instruccion);
+        if (writer != null) {
+            String segura = instruccion.replace("\n", "\\n").replace("\t", "\\t");
+            writer.println(segura);
+        }
     }
     
     // ===============================================================

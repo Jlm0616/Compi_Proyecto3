@@ -22,6 +22,9 @@ public class GeneradorMIPS {
     // Contador para generar etiquetas unicas en comparaciones de punto flotante
     static int contadorCmp = 0;
 
+    // Contador para generar etiquetas unicas en el bucle de potencia (^)
+    static int contadorPow = 0;
+
     // Lineas crudas del archivo de 3D
     static List<String> lineas3D = new ArrayList<>();
 
@@ -179,6 +182,7 @@ public class GeneradorMIPS {
         stringsLiterales.clear();
         contadorStrings = 0;
         contadorCmp = 0;
+        contadorPow = 0;
         lineas3D.clear();
         renombrados.clear();
 
@@ -477,7 +481,21 @@ public class GeneradorMIPS {
                         case "*": sb.append("mul $t0, $t1, $t2\n"); break;
                         case "/": sb.append("div $t1, $t2\n"); sb.append("mflo $t0\n"); break;
                         case "%": sb.append("div $t1, $t2\n"); sb.append("mfhi $t0\n"); break;
-                        case "^": sb.append("# TODO potencia (ver mas adelante)\n"); break;
+                        case "^":
+                            // MIPS no tiene instruccion de potencia: se calcula con un
+                            // bucle que multiplica la base por si misma "exponente" veces.
+                            // $t1 = base, $t2 = exponente (ya cargados arriba).
+                            // $t0 = acumulador (resultado), inicia en 1.
+                            String etqInicio = "_pow" + (contadorPow++) + "_start";
+                            String etqFin = "_pow" + (contadorPow++) + "_end";
+                            sb.append("li $t0, 1\n");                          // acumulador = 1
+                            sb.append(etqInicio).append(":\n");
+                            sb.append("blez $t2, ").append(etqFin).append("\n"); // si exponente <= 0, terminar
+                            sb.append("mul $t0, $t0, $t1\n");                  // acumulador *= base
+                            sb.append("addi $t2, $t2, -1\n");                  // exponente--
+                            sb.append("j ").append(etqInicio).append("\n");
+                            sb.append(etqFin).append(":\n");
+                            break;
                     }
                     sb.append("sw $t0, ").append(destino).append("\n");
                 }

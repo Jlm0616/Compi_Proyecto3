@@ -188,7 +188,11 @@ OpLogicoUnario = "$"
 {NumeroFlotante}     { return symbol(sym.NUMERO_FLOTANTE, Double.parseDouble(yytext())); }
 {NotacionCientifica} { return symbol(sym.NOTACION_CIENTIFICA, yytext()); }
 {Fraccionario}       { return symbol(sym.FRACCIONARIO, yytext()); }
-{Cadena}             { return symbol(sym.CADENA, yytext().substring(1, yytext().length()-1)); }
+{Cadena}             { 
+                        String contenido = yytext().substring(1, yytext().length()-1);
+                        contenido = contenido.replace("\\n", "\n").replace("\\t", "\t");
+                        return symbol(sym.CADENA, contenido);
+                      }
 {Caracter}           { return symbol(sym.CARACTER, yytext().charAt(1)); }
 {Identificador}      { return symbol(sym.IDENTIFICADOR, yytext()); }
 

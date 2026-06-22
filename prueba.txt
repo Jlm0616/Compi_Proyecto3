@@ -1,36 +1,25 @@
 empty ~ __main__ ~ <| |> |:
-    int ~ numero <- 20!
-    bool ~ flag <- true!
+    int ~ base <- 2!
+    int ~ exponente <- 10!
+    int ~ resultado <- 0!
 
-    if <| less_te<|numero, 45|> |> |:
-        cout ~ <| "rama if" |>!
-        
-        if <| flag |> |:
-            cout ~ <| "if interno" |>!
-        :|
-        
-        cout ~ <| "fin if" |>!
-    :|
-    else |:
-        cout ~ <| "rama else" |>!
-        
-        int ~ contador <- 0!
-        do |:
-            cout ~ <| "iteracion" |>!
-            
-            switch ~ <|contador|> |:
-                case~ 0:
-                    cout ~ <| "caso 0" |>!
-                    break!
-                default:
-                    cout ~ <| "default" |>!
-            :|
-            
-            contador <- contador + 1!
-        :| while <|less_t<|contador, 1|>|>!
-        
-        cout ~ <| "fin else" |>!
-    :|
+    resultado <- base ^ exponente!
 
-    cout ~ <| "fin programa" |>!
+    cout ~ <| "2 elevado a 10 es: " |>! cout ~ <| resultado |>! cout ~ <| "\n" |>!
+
+    int ~ base2 <- 5!
+    int ~ exponente2 <- 0!
+    int ~ resultado2 <- 0!
+
+    resultado2 <- base2 ^ exponente2!
+
+    cout ~ <| "5 elevado a 0 es: " |>! cout ~ <| resultado2 |>! cout ~ <| "\n" |>!
+
+    int ~ base3 <- 3!
+    int ~ exponente3 <- 4!
+    int ~ resultado3 <- 0!
+
+    resultado3 <- base3 ^ exponente3!
+
+    cout ~ <| "3 elevado a 4 es: " |>! cout ~ <| resultado3 |>! cout ~ <| "\n" |>!
 :|
