@@ -418,6 +418,9 @@ parser code {:
     // ===============================================================
 
     static java.util.ArrayList<String> temporalesArreglo = new java.util.ArrayList<>();
+
+    static java.util.Stack<String> pilaAcumTermino = new java.util.Stack<>();
+    static java.util.Stack<String> pilaAcumAritmetica = new java.util.Stack<>();
 :}
 
 // ===============================================================
@@ -1389,11 +1392,14 @@ caso_default ::= DEFAULT DOS_PUNTOS
 // 5.17 EXPRESIONES (JERARQUIA DE PRECEDENCIA)
 // ===============================================================
 // La jerarquia es:
-//   1. exp_logica   (operadores logicos @, #)
+//   1. exp_logica    (operadores logicos @, #)
 //   2. exp_relacional (<, >, <=, >=, ==, !=)
-//   3. exp_aritmetica (+, -)
-//   4. exp_termino    (*, /, %)
-//   5. exp_factor     (literales, variables, parentesis)
+//   3. exp_aritmetica (+, -)        [pilaAcumAritmetica]
+//   4. exp_termino   (*, /, %)      [pilaAcumTermino]
+//   5. exp_potencia  (^)
+//   6. exp_factor    (++ -- - NOT)
+//   7. valor         (literales, id, llamadas)
+
 
 expresion ::= exp_logica:e{: RESULT = e; :};
 
@@ -1574,187 +1580,138 @@ exp_relacional ::= LESS_T INICIO_PARENTESIS exp_aritmetica:e1 COMA exp_aritmetic
 // 5.17.3 EXPRESIONES ARITMETICAS (SUMA Y RESTA)
 // ---------------------------------------------------------------
 
-exp_aritmetica ::= exp_termino:e1 resto_aritmetica:r {: 
-                            String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
-                            String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                            if (r != null && r.split("\\|").length >= 3) {
-                                String op    = r.split("\\|")[0];
-                                String lugar2 = r.split("\\|")[1];
-                                String tipo2  = r.split("\\|")[2];
+exp_aritmetica ::= exp_termino:e1
+                {: pilaAcumAritmetica.push(e1); :}
+                resto_aritmetica:r
+                {:
+                    String base = pilaAcumAritmetica.pop();
+                    RESULT = (r == null) ? base : r;
+                :};
 
-                                String nombreOp = op.equals("+") ? "suma" : "resta";
-                                validarTipos(tipo1, tipo2, nombreOp, e1left);
-                                
-                                String t = GeneradorCodigo.nuevoTemp(tipo1); 
-                                GeneradorCodigo.emitir("    " + t + " = " + lugar1 + " " + op + " " + lugar2);
-                                RESULT = tipo1 + "|" + t;
-                            } else if (r != null) {
-                                RESULT = "error|?";
-                            } else {
-                                RESULT = e1;
-                            }
-                        :};
-
-/* Operadores de suma y resta en cadena */
-resto_aritmetica ::= MAS exp_termino:e resto_aritmetica:r {:
-                        String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
-                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                        if (r != null && r.split("\\|").length >= 3) {
-                            String opR    = r.split("\\|")[0];
-                            String lugarR = r.split("\\|")[1];
-                            String tipoR  = r.split("\\|")[2];
-                            if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
-                                errorSemantico("Linea " + eleft 
-                                    + ": tipos incompatibles en operacion 'suma', se encontraron '" + tipo + "' y '" + tipoR + "'.");
-                                RESULT = "error|?";
-                            } else {
-                                String t = GeneradorCodigo.nuevoTemp(tipo);
-                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                                RESULT = "+|" + t + "|" + tipo;
-                            }
-                        } else if (r != null) {
-                            RESULT = "error|?";
-                        } else {
-                            RESULT = "+|" + lugar + "|" + tipo;
-                        }
-                    :}
-                    | MENOS exp_termino:e resto_aritmetica:r {:
-                        String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
-                        String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                        if (r != null && r.split("\\|").length >= 3) {
-                            String opR    = r.split("\\|")[0];
-                            String lugarR = r.split("\\|")[1];
-                            String tipoR  = r.split("\\|")[2];
-                            if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
-                                errorSemantico("Linea " + eleft 
-                                    + ": tipos incompatibles en operacion 'resta', se encontraron '" + tipo + "' y '" + tipoR + "'.");
-                                RESULT = "error|?";
-                            } else {
-                                String t = GeneradorCodigo.nuevoTemp(tipo);
-                                GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                                RESULT = "-|" + t + "|" + tipo;
-                            }
-                        } else if (r != null) {
-                            RESULT = "error|?";
-                        } else {
-                            RESULT = "-|" + lugar + "|" + tipo;
-                        }
-                    :}
-                    | /* vacio */ {: RESULT = null; :};
+resto_aritmetica ::= MAS exp_termino:e
+                {:
+                    String acum     = pilaAcumAritmetica.peek();
+                    String tipoAcum = acum.contains("|") ? acum.split("\\|")[0] : acum;
+                    String lugarAcum= acum.contains("|") ? acum.split("\\|")[1] : acum;
+                    String tipoE    = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugarE   = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipoAcum.equals(tipoE) && !tipoAcum.equals("error") && !tipoE.equals("error")) {
+                        errorSemantico("Linea " + eleft + ": tipos incompatibles en 'suma'.");
+                        pilaAcumAritmetica.set(pilaAcumAritmetica.size()-1, "error|?");
+                    } else {
+                        String t = GeneradorCodigo.nuevoTemp(tipoAcum);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugarAcum + " + " + lugarE);
+                        pilaAcumAritmetica.set(pilaAcumAritmetica.size()-1, tipoAcum + "|" + t);
+                    }
+                :}
+                resto_aritmetica:r
+                {:
+                    RESULT = (r == null) ? pilaAcumAritmetica.peek() : r;
+                :}
+              | MENOS exp_termino:e
+                {:
+                    String acum     = pilaAcumAritmetica.peek();
+                    String tipoAcum = acum.contains("|") ? acum.split("\\|")[0] : acum;
+                    String lugarAcum= acum.contains("|") ? acum.split("\\|")[1] : acum;
+                    String tipoE    = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugarE   = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipoAcum.equals(tipoE) && !tipoAcum.equals("error") && !tipoE.equals("error")) {
+                        errorSemantico("Linea " + eleft + ": tipos incompatibles en 'resta'.");
+                        pilaAcumAritmetica.set(pilaAcumAritmetica.size()-1, "error|?");
+                    } else {
+                        String t = GeneradorCodigo.nuevoTemp(tipoAcum);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugarAcum + " - " + lugarE);
+                        pilaAcumAritmetica.set(pilaAcumAritmetica.size()-1, tipoAcum + "|" + t);
+                    }
+                :}
+                resto_aritmetica:r
+                {:
+                    RESULT = (r == null) ? pilaAcumAritmetica.peek() : r;
+                :}
+              | /* vacio */ {: RESULT = null; :};
 
 // ---------------------------------------------------------------
 // 5.17.4 EXPRESIONES DE TERMINO (MULTIPLICACION, DIVISION, MODULO)
 // ---------------------------------------------------------------
 
-exp_termino ::= exp_factor:e1 resto_termino:r {: 
-                    String tipo = e1.contains("|") ? e1.split("\\|")[0] : e1;
-                    String lugar = e1.contains("|") ? e1.split("\\|")[1] : e1;
-                    if (r != null && r.split("\\|").length >= 3) {
-                        String opR    = r.split("\\|")[0];
-                        String lugarR = r.split("\\|")[1];
-                        String tipoR  = r.split("\\|")[2];
-                        if (opR.equals("%") && !tipo.equals("int") && !tipo.equals("error")) {
-                            errorSemantico("Linea " + e1left 
-                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
-                            RESULT = "error|?";
-                        } else if (opR.equals("%") && !tipoR.equals("int") && !tipoR.equals("error")) {
-                            errorSemantico("Linea " + e1left 
-                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
-                            RESULT = "error|?";
-                        } else {
-                            String nombreOp = opR.equals("*") ? "multiplicacion" 
-                                        : opR.equals("/") ? "division" 
-                                        : "modulo";
-                            validarTipos(tipo, tipoR, nombreOp, e1left);
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = tipo + "|" + t;
-                        }
-                    } else if (r != null) {
-                        RESULT = "error|?";
-                    } else {
-                        RESULT = e1;
-                    }
+exp_termino ::= exp_potencia:e1
+                {: pilaAcumTermino.push(e1); :}
+                resto_termino:r
+                {:
+                    String base = pilaAcumTermino.pop();
+                    RESULT = (r == null) ? base : r;
                 :};
 
-/* Operadores de multiplicacion, division y modulo en cadena */
-resto_termino ::= MULTIPLICACION exp_factor:e resto_termino:r {:
-                    String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
-                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (r != null && r.split("\\|").length >= 3) {
-                        String opR    = r.split("\\|")[0];
-                        String lugarR = r.split("\\|")[1];
-                        String tipoR  = r.split("\\|")[2];
-                        if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
-                            errorSemantico("Linea " + eleft 
-                                + ": tipos incompatibles en operacion 'multiplicacion', se encontraron '" + tipo + "' y '" + tipoR + "'.");
-                            RESULT = "error|?";
-                        } else {
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = "*|" + t + "|" + tipo;
-                        }
-                    } else if (r != null) {
-                        RESULT = "error|?";
+resto_termino ::= MULTIPLICACION exp_potencia:e
+                {:
+                    String acum      = pilaAcumTermino.peek();
+                    String tipoAcum  = acum.contains("|") ? acum.split("\\|")[0] : acum;
+                    String lugarAcum = acum.contains("|") ? acum.split("\\|")[1] : acum;
+                    String tipoE     = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugarE    = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipoAcum.equals(tipoE) && !tipoAcum.equals("error") && !tipoE.equals("error")) {
+                        errorSemantico("Linea " + eleft + ": tipos incompatibles en 'multiplicacion'.");
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, "error|?");
                     } else {
-                        RESULT = "*|" + lugar + "|" + tipo;
+                        String t = GeneradorCodigo.nuevoTemp(tipoAcum);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugarAcum + " * " + lugarE);
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, tipoAcum + "|" + t);
                     }
                 :}
-                | DIVISION exp_factor:e resto_termino:r {:
-                    String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
-                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (r != null && r.split("\\|").length >= 3) {
-                        String opR    = r.split("\\|")[0];
-                        String lugarR = r.split("\\|")[1];
-                        String tipoR  = r.split("\\|")[2];
-                        if (!tipo.equals(tipoR) && !tipo.equals("error") && !tipoR.equals("error")) {
-                            errorSemantico("Linea " + eleft 
-                                + ": tipos incompatibles en operacion 'division', se encontraron '" + tipo + "' y '" + tipoR + "'.");
-                            RESULT = "error|?";
-                        } else {
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = "/|" + t + "|" + tipo;
-                        }
-                    } else if (r != null) {
-                        RESULT = "error|?";
+                resto_termino:r
+                {:
+                    RESULT = (r == null) ? pilaAcumTermino.peek() : r;
+                :}
+              | DIVISION exp_potencia:e
+                {:
+                    String acum      = pilaAcumTermino.peek();
+                    String tipoAcum  = acum.contains("|") ? acum.split("\\|")[0] : acum;
+                    String lugarAcum = acum.contains("|") ? acum.split("\\|")[1] : acum;
+                    String tipoE     = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugarE    = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipoAcum.equals(tipoE) && !tipoAcum.equals("error") && !tipoE.equals("error")) {
+                        errorSemantico("Linea " + eleft + ": tipos incompatibles en 'division'.");
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, "error|?");
                     } else {
-                        RESULT = "/|" + lugar + "|" + tipo;
+                        String t = GeneradorCodigo.nuevoTemp(tipoAcum);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugarAcum + " / " + lugarE);
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, tipoAcum + "|" + t);
                     }
                 :}
-                | MODULO exp_factor:e resto_termino:r {:
-                    String tipo  = e.contains("|") ? e.split("\\|")[0] : e;
-                    String lugar = e.contains("|") ? e.split("\\|")[1] : e;
-                    if (r != null && r.split("\\|").length >= 3) {
-                        String opR    = r.split("\\|")[0];
-                        String lugarR = r.split("\\|")[1];
-                        String tipoR  = r.split("\\|")[2];
-                        if (!tipo.equals("int") && !tipo.equals("error")) {
-                            errorSemantico("Linea " + eleft 
-                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipo + "'.");
-                            RESULT = "error|?";
-                        } else if (!tipoR.equals("int") && !tipoR.equals("error")) {
-                            errorSemantico("Linea " + eleft 
-                                + ": el operador '%' solo aplica a tipo int, se encontro tipo '" + tipoR + "'.");
-                            RESULT = "error|?";
-                        } else {
-                            String t = GeneradorCodigo.nuevoTemp(tipo);
-                            GeneradorCodigo.emitir("    " + t + " = " + lugar + " " + opR + " " + lugarR);
-                            RESULT = "%|" + t + "|" + tipo;
-                        }
-                    } else if (r != null) {
-                        RESULT = "error|?";
+                resto_termino:r
+                {:
+                    RESULT = (r == null) ? pilaAcumTermino.peek() : r;
+                :}
+              | MODULO exp_potencia:e
+                {:
+                    String acum      = pilaAcumTermino.peek();
+                    String tipoAcum  = acum.contains("|") ? acum.split("\\|")[0] : acum;
+                    String lugarAcum = acum.contains("|") ? acum.split("\\|")[1] : acum;
+                    String tipoE     = e.contains("|") ? e.split("\\|")[0] : e;
+                    String lugarE    = e.contains("|") ? e.split("\\|")[1] : e;
+                    if (!tipoAcum.equals("int") && !tipoAcum.equals("error")) {
+                        errorSemantico("Linea " + eleft + ": '%' solo aplica a int.");
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, "error|?");
+                    } else if (!tipoE.equals("int") && !tipoE.equals("error")) {
+                        errorSemantico("Linea " + eleft + ": '%' solo aplica a int.");
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, "error|?");
                     } else {
-                        RESULT = "%|" + lugar + "|" + tipo;
+                        String t = GeneradorCodigo.nuevoTemp(tipoAcum);
+                        GeneradorCodigo.emitir("    " + t + " = " + lugarAcum + " % " + lugarE);
+                        pilaAcumTermino.set(pilaAcumTermino.size()-1, tipoAcum + "|" + t);
                     }
                 :}
-                | /* vacio */ {: RESULT = null; :};
+                resto_termino:r
+                {:
+                    RESULT = (r == null) ? pilaAcumTermino.peek() : r;
+                :}
+              | /* vacio */ {: RESULT = null; :};
 
 // ---------------------------------------------------------------
 // 5.17.5 POTENCIA
 // ---------------------------------------------------------------
 
-exp_potencia ::= valor:e1 resto_potencia:r
+exp_potencia ::= exp_factor:e1 resto_potencia:r 
                     {:  
                         String tipo  = e1.contains("|") ? e1.split("\\|")[0] : e1;
                         String lugar = e1.contains("|") ? e1.split("\\|")[1] : e1;
@@ -1893,7 +1850,7 @@ exp_factor ::= INCREMENTO IDENTIFICADOR:id
                         RESULT = "error|?";
                     }
                 :}
-             | exp_potencia:e {: RESULT = e; :};
+             | valor:e {: RESULT = e; :};
 
 // ---------------------------------------------------------------
 // 5.17.7 VALORES ATOMICOS (literales, variables, llamadas)

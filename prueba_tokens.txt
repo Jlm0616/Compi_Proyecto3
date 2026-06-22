@@ -9,40 +9,73 @@ SEPARADOR                 ~                    1
 INICIO_PARENTESIS         <|                   1
 FIN_PARENTESIS            |>                   1
 INICIO_BLOQUE             |:                   1
-INT                       int                  3
-SEPARADOR                 ~                    3
-IDENTIFICADOR             a                    3
-ASIGNACION                <-                   3
-NUMERO_ENTERO             2                    3
-DELIMITADOR_EXP           !                    3
 INT                       int                  4
 SEPARADOR                 ~                    4
-IDENTIFICADOR             b                    4
+IDENTIFICADOR             x                    4
 ASIGNACION                <-                   4
+INICIO_PARENTESIS         <|                   4
+INICIO_PARENTESIS         <|                   4
+INICIO_PARENTESIS         <|                   4
+NUMERO_ENTERO             2                    4
+MAS                       +                    4
 NUMERO_ENTERO             3                    4
+FIN_PARENTESIS            |>                   4
+MULTIPLICACION            *                    4
+INICIO_PARENTESIS         <|                   4
+NUMERO_ENTERO             4                    4
+MENOS                     -                    4
+NUMERO_ENTERO             1                    4
+FIN_PARENTESIS            |>                   4
+FIN_PARENTESIS            |>                   4
+POTENCIA                  ^                    4
+INICIO_PARENTESIS         <|                   4
+NUMERO_ENTERO             2                    4
+MENOS                     -                    4
+NUMERO_ENTERO             1                    4
+FIN_PARENTESIS            |>                   4
+FIN_PARENTESIS            |>                   4
 DELIMITADOR_EXP           !                    4
-INT                       int                  5
+COUT                      cout                 5
 SEPARADOR                 ~                    5
-IDENTIFICADOR             c                    5
-ASIGNACION                <-                   5
-NUMERO_ENTERO             5                    5
+INICIO_PARENTESIS         <|                   5
+CADENA                    ((2+3)*(4-1))^(2-1) =  5
+FIN_PARENTESIS            |>                   5
 DELIMITADOR_EXP           !                    5
-INT                       int                  6
-SEPARADOR                 ~                    6
-IDENTIFICADOR             d                    6
-ASIGNACION                <-                   6
-NUMERO_ENTERO             7                    6
-DELIMITADOR_EXP           !                    6
-INT                       int                  7
-SEPARADOR                 ~                    7
-IDENTIFICADOR             e                    7
-ASIGNACION                <-                   7
-NUMERO_ENTERO             11                   7
-DELIMITADOR_EXP           !                    7
+COUT                      cout                 5
+SEPARADOR                 ~                    5
+INICIO_PARENTESIS         <|                   5
+IDENTIFICADOR             x                    5
+FIN_PARENTESIS            |>                   5
+DELIMITADOR_EXP           !                    5
+COUT                      cout                 5
+SEPARADOR                 ~                    5
+INICIO_PARENTESIS         <|                   5
+CADENA                    
+                    5
+FIN_PARENTESIS            |>                   5
+DELIMITADOR_EXP           !                    5
+INT                       int                  9
+SEPARADOR                 ~                    9
+IDENTIFICADOR             y                    9
+ASIGNACION                <-                   9
+NUMERO_ENTERO             100                  9
+DIVISION                  /                    9
+NUMERO_ENTERO             10                   9
+DIVISION                  /                    9
+NUMERO_ENTERO             2                    9
+DIVISION                  /                    9
+NUMERO_ENTERO             5                    9
+DELIMITADOR_EXP           !                    9
 COUT                      cout                 10
 SEPARADOR                 ~                    10
 INICIO_PARENTESIS         <|                   10
-CADENA                    === DIAGNOSTICO DE EXPRESION === 10
+CADENA                    100/10/2/5 =         10
+FIN_PARENTESIS            |>                   10
+DELIMITADOR_EXP           !                    10
+COUT                      cout                 10
+SEPARADOR                 ~                    10
+INICIO_PARENTESIS         <|                   10
+IDENTIFICADOR             y                    10
 FIN_PARENTESIS            |>                   10
 DELIMITADOR_EXP           !                    10
 COUT                      cout                 10
@@ -52,171 +85,86 @@ CADENA
                     10
 FIN_PARENTESIS            |>                   10
 DELIMITADOR_EXP           !                    10
-COUT                      cout                 11
-SEPARADOR                 ~                    11
-INICIO_PARENTESIS         <|                   11
-CADENA                    
-                    11
-FIN_PARENTESIS            |>                   11
-DELIMITADOR_EXP           !                    11
 INT                       int                  13
 SEPARADOR                 ~                    13
-IDENTIFICADOR             paso1                13
+IDENTIFICADOR             z                    13
 ASIGNACION                <-                   13
-IDENTIFICADOR             a                    13
-MAS                       +                    13
-IDENTIFICADOR             b                    13
+NUMERO_ENTERO             100                  13
+MENOS                     -                    13
+NUMERO_ENTERO             30                   13
+MENOS                     -                    13
+NUMERO_ENTERO             20                   13
+MENOS                     -                    13
+NUMERO_ENTERO             10                   13
 DELIMITADOR_EXP           !                    13
-INT                       int                  14
+COUT                      cout                 14
 SEPARADOR                 ~                    14
-IDENTIFICADOR             paso2                14
-ASIGNACION                <-                   14
-IDENTIFICADOR             b                    14
-MULTIPLICACION            *                    14
-IDENTIFICADOR             c                    14
+INICIO_PARENTESIS         <|                   14
+CADENA                    100-30-20-10 =       14
+FIN_PARENTESIS            |>                   14
 DELIMITADOR_EXP           !                    14
-INT                       int                  15
-SEPARADOR                 ~                    15
-IDENTIFICADOR             paso3                15
-ASIGNACION                <-                   15
-IDENTIFICADOR             d                    15
-DIVISION                  /                    15
-IDENTIFICADOR             e                    15
-DELIMITADOR_EXP           !                    15
-INT                       int                  16
-SEPARADOR                 ~                    16
-IDENTIFICADOR             paso4                16
-ASIGNACION                <-                   16
-NUMERO_ENTERO             2                    16
-POTENCIA                  ^                    16
-NUMERO_ENTERO             3                    16
-DELIMITADOR_EXP           !                    16
-INT                       int                  17
-SEPARADOR                 ~                    17
-IDENTIFICADOR             paso5                17
-ASIGNACION                <-                   17
-IDENTIFICADOR             d                    17
-DIVISION                  /                    17
-IDENTIFICADOR             e                    17
-MODULO                    %                    17
-NUMERO_ENTERO             2                    17
-DELIMITADOR_EXP           !                    17
+COUT                      cout                 14
+SEPARADOR                 ~                    14
+INICIO_PARENTESIS         <|                   14
+IDENTIFICADOR             z                    14
+FIN_PARENTESIS            |>                   14
+DELIMITADOR_EXP           !                    14
+COUT                      cout                 14
+SEPARADOR                 ~                    14
+INICIO_PARENTESIS         <|                   14
+CADENA                    
+                    14
+FIN_PARENTESIS            |>                   14
+DELIMITADOR_EXP           !                    14
 INT                       int                  18
 SEPARADOR                 ~                    18
-IDENTIFICADOR             paso6                18
+IDENTIFICADOR             w                    18
 ASIGNACION                <-                   18
-IDENTIFICADOR             d                    18
-DIVISION                  /                    18
-IDENTIFICADOR             e                    18
-MODULO                    %                    18
 NUMERO_ENTERO             2                    18
 POTENCIA                  ^                    18
 NUMERO_ENTERO             3                    18
+POTENCIA                  ^                    18
+NUMERO_ENTERO             2                    18
 DELIMITADOR_EXP           !                    18
-INT                       int                  19
+COUT                      cout                 19
 SEPARADOR                 ~                    19
-IDENTIFICADOR             r1                   19
-ASIGNACION                <-                   19
-IDENTIFICADOR             a                    19
-MAS                       +                    19
-IDENTIFICADOR             b                    19
-MULTIPLICACION            *                    19
-IDENTIFICADOR             c                    19
-MENOS                     -                    19
-IDENTIFICADOR             d                    19
-DIVISION                  /                    19
-IDENTIFICADOR             e                    19
-MODULO                    %                    19
-NUMERO_ENTERO             2                    19
-POTENCIA                  ^                    19
-NUMERO_ENTERO             3                    19
+INICIO_PARENTESIS         <|                   19
+CADENA                    2^3^2 =              19
+FIN_PARENTESIS            |>                   19
 DELIMITADOR_EXP           !                    19
-COUT                      cout                 21
-SEPARADOR                 ~                    21
-INICIO_PARENTESIS         <|                   21
-CADENA                    a =                  21
-FIN_PARENTESIS            |>                   21
-DELIMITADOR_EXP           !                    21
-COUT                      cout                 21
-SEPARADOR                 ~                    21
-INICIO_PARENTESIS         <|                   21
-IDENTIFICADOR             a                    21
-FIN_PARENTESIS            |>                   21
-DELIMITADOR_EXP           !                    21
-COUT                      cout                 21
-SEPARADOR                 ~                    21
-INICIO_PARENTESIS         <|                   21
+COUT                      cout                 19
+SEPARADOR                 ~                    19
+INICIO_PARENTESIS         <|                   19
+IDENTIFICADOR             w                    19
+FIN_PARENTESIS            |>                   19
+DELIMITADOR_EXP           !                    19
+COUT                      cout                 19
+SEPARADOR                 ~                    19
+INICIO_PARENTESIS         <|                   19
 CADENA                    
-                    21
-FIN_PARENTESIS            |>                   21
-DELIMITADOR_EXP           !                    21
-COUT                      cout                 22
-SEPARADOR                 ~                    22
-INICIO_PARENTESIS         <|                   22
-CADENA                    b =                  22
-FIN_PARENTESIS            |>                   22
-DELIMITADOR_EXP           !                    22
-COUT                      cout                 22
-SEPARADOR                 ~                    22
-INICIO_PARENTESIS         <|                   22
-IDENTIFICADOR             b                    22
-FIN_PARENTESIS            |>                   22
-DELIMITADOR_EXP           !                    22
-COUT                      cout                 22
-SEPARADOR                 ~                    22
-INICIO_PARENTESIS         <|                   22
-CADENA                    
-                    22
-FIN_PARENTESIS            |>                   22
-DELIMITADOR_EXP           !                    22
-COUT                      cout                 23
-SEPARADOR                 ~                    23
-INICIO_PARENTESIS         <|                   23
-CADENA                    c =                  23
-FIN_PARENTESIS            |>                   23
-DELIMITADOR_EXP           !                    23
-COUT                      cout                 23
-SEPARADOR                 ~                    23
-INICIO_PARENTESIS         <|                   23
-IDENTIFICADOR             c                    23
-FIN_PARENTESIS            |>                   23
-DELIMITADOR_EXP           !                    23
-COUT                      cout                 23
-SEPARADOR                 ~                    23
-INICIO_PARENTESIS         <|                   23
-CADENA                    
-                    23
-FIN_PARENTESIS            |>                   23
-DELIMITADOR_EXP           !                    23
-COUT                      cout                 24
+                    19
+FIN_PARENTESIS            |>                   19
+DELIMITADOR_EXP           !                    19
+INT                       int                  24
 SEPARADOR                 ~                    24
-INICIO_PARENTESIS         <|                   24
-CADENA                    d =                  24
-FIN_PARENTESIS            |>                   24
-DELIMITADOR_EXP           !                    24
-COUT                      cout                 24
-SEPARADOR                 ~                    24
-INICIO_PARENTESIS         <|                   24
-IDENTIFICADOR             d                    24
-FIN_PARENTESIS            |>                   24
-DELIMITADOR_EXP           !                    24
-COUT                      cout                 24
-SEPARADOR                 ~                    24
-INICIO_PARENTESIS         <|                   24
-CADENA                    
-                    24
-FIN_PARENTESIS            |>                   24
+IDENTIFICADOR             m                    24
+ASIGNACION                <-                   24
+NUMERO_ENTERO             100                  24
+MODULO                    %                    24
+NUMERO_ENTERO             30                   24
+MODULO                    %                    24
+NUMERO_ENTERO             7                    24
 DELIMITADOR_EXP           !                    24
 COUT                      cout                 25
 SEPARADOR                 ~                    25
 INICIO_PARENTESIS         <|                   25
-CADENA                    e =                  25
+CADENA                    100%30%7 =           25
 FIN_PARENTESIS            |>                   25
 DELIMITADOR_EXP           !                    25
 COUT                      cout                 25
 SEPARADOR                 ~                    25
 INICIO_PARENTESIS         <|                   25
-IDENTIFICADOR             e                    25
+IDENTIFICADOR             m                    25
 FIN_PARENTESIS            |>                   25
 DELIMITADOR_EXP           !                    25
 COUT                      cout                 25
@@ -226,61 +174,34 @@ CADENA
                     25
 FIN_PARENTESIS            |>                   25
 DELIMITADOR_EXP           !                    25
-COUT                      cout                 26
-SEPARADOR                 ~                    26
-INICIO_PARENTESIS         <|                   26
-CADENA                    
-                    26
-FIN_PARENTESIS            |>                   26
-DELIMITADOR_EXP           !                    26
-COUT                      cout                 28
-SEPARADOR                 ~                    28
-INICIO_PARENTESIS         <|                   28
-CADENA                    paso1: a + b =       28
-FIN_PARENTESIS            |>                   28
-DELIMITADOR_EXP           !                    28
-COUT                      cout                 28
-SEPARADOR                 ~                    28
-INICIO_PARENTESIS         <|                   28
-IDENTIFICADOR             paso1                28
-FIN_PARENTESIS            |>                   28
-DELIMITADOR_EXP           !                    28
-COUT                      cout                 28
-SEPARADOR                 ~                    28
-INICIO_PARENTESIS         <|                   28
-CADENA                    
-                    28
-FIN_PARENTESIS            |>                   28
-DELIMITADOR_EXP           !                    28
-COUT                      cout                 29
+INT                       int                  29
 SEPARADOR                 ~                    29
-INICIO_PARENTESIS         <|                   29
-CADENA                    paso2: b * c =       29
-FIN_PARENTESIS            |>                   29
-DELIMITADOR_EXP           !                    29
-COUT                      cout                 29
-SEPARADOR                 ~                    29
-INICIO_PARENTESIS         <|                   29
-IDENTIFICADOR             paso2                29
-FIN_PARENTESIS            |>                   29
-DELIMITADOR_EXP           !                    29
-COUT                      cout                 29
-SEPARADOR                 ~                    29
-INICIO_PARENTESIS         <|                   29
-CADENA                    
-                    29
-FIN_PARENTESIS            |>                   29
+IDENTIFICADOR             r                    29
+ASIGNACION                <-                   29
+NUMERO_ENTERO             1                    29
+MAS                       +                    29
+NUMERO_ENTERO             2                    29
+MULTIPLICACION            *                    29
+NUMERO_ENTERO             3                    29
+MAS                       +                    29
+NUMERO_ENTERO             4                    29
+MULTIPLICACION            *                    29
+NUMERO_ENTERO             5                    29
+MAS                       +                    29
+NUMERO_ENTERO             6                    29
+MULTIPLICACION            *                    29
+NUMERO_ENTERO             7                    29
 DELIMITADOR_EXP           !                    29
 COUT                      cout                 30
 SEPARADOR                 ~                    30
 INICIO_PARENTESIS         <|                   30
-CADENA                    paso3: d / e =       30
+CADENA                    1+2*3+4*5+6*7 =      30
 FIN_PARENTESIS            |>                   30
 DELIMITADOR_EXP           !                    30
 COUT                      cout                 30
 SEPARADOR                 ~                    30
 INICIO_PARENTESIS         <|                   30
-IDENTIFICADOR             paso3                30
+IDENTIFICADOR             r                    30
 FIN_PARENTESIS            |>                   30
 DELIMITADOR_EXP           !                    30
 COUT                      cout                 30
@@ -290,324 +211,41 @@ CADENA
                     30
 FIN_PARENTESIS            |>                   30
 DELIMITADOR_EXP           !                    30
-COUT                      cout                 31
-SEPARADOR                 ~                    31
-INICIO_PARENTESIS         <|                   31
-CADENA                    paso4: 2 ^ 3 =       31
-FIN_PARENTESIS            |>                   31
-DELIMITADOR_EXP           !                    31
-COUT                      cout                 31
-SEPARADOR                 ~                    31
-INICIO_PARENTESIS         <|                   31
-IDENTIFICADOR             paso4                31
-FIN_PARENTESIS            |>                   31
-DELIMITADOR_EXP           !                    31
-COUT                      cout                 31
-SEPARADOR                 ~                    31
-INICIO_PARENTESIS         <|                   31
-CADENA                    
-                    31
-FIN_PARENTESIS            |>                   31
-DELIMITADOR_EXP           !                    31
-COUT                      cout                 32
-SEPARADOR                 ~                    32
-INICIO_PARENTESIS         <|                   32
-CADENA                    paso5: d / e % 2 =   32
-FIN_PARENTESIS            |>                   32
-DELIMITADOR_EXP           !                    32
-COUT                      cout                 32
-SEPARADOR                 ~                    32
-INICIO_PARENTESIS         <|                   32
-IDENTIFICADOR             paso5                32
-FIN_PARENTESIS            |>                   32
-DELIMITADOR_EXP           !                    32
-COUT                      cout                 32
-SEPARADOR                 ~                    32
-INICIO_PARENTESIS         <|                   32
-CADENA                    
-                    32
-FIN_PARENTESIS            |>                   32
-DELIMITADOR_EXP           !                    32
-COUT                      cout                 33
-SEPARADOR                 ~                    33
-INICIO_PARENTESIS         <|                   33
-CADENA                    paso6: d / e % 2 ^ 3 =  33
-FIN_PARENTESIS            |>                   33
-DELIMITADOR_EXP           !                    33
-COUT                      cout                 33
-SEPARADOR                 ~                    33
-INICIO_PARENTESIS         <|                   33
-IDENTIFICADOR             paso6                33
-FIN_PARENTESIS            |>                   33
-DELIMITADOR_EXP           !                    33
-COUT                      cout                 33
-SEPARADOR                 ~                    33
-INICIO_PARENTESIS         <|                   33
-CADENA                    
-                    33
-FIN_PARENTESIS            |>                   33
-DELIMITADOR_EXP           !                    33
-COUT                      cout                 34
+INT                       int                  34
 SEPARADOR                 ~                    34
-INICIO_PARENTESIS         <|                   34
-CADENA                    r1 =                 34
-FIN_PARENTESIS            |>                   34
+IDENTIFICADOR             s                    34
+ASIGNACION                <-                   34
+NUMERO_ENTERO             10                   34
+MENOS                     -                    34
+NUMERO_ENTERO             2                    34
+MULTIPLICACION            *                    34
+NUMERO_ENTERO             3                    34
+MAS                       +                    34
+NUMERO_ENTERO             8                    34
+DIVISION                  /                    34
+NUMERO_ENTERO             4                    34
+MODULO                    %                    34
+NUMERO_ENTERO             3                    34
 DELIMITADOR_EXP           !                    34
-COUT                      cout                 34
-SEPARADOR                 ~                    34
-INICIO_PARENTESIS         <|                   34
-IDENTIFICADOR             r1                   34
-FIN_PARENTESIS            |>                   34
-DELIMITADOR_EXP           !                    34
-COUT                      cout                 34
-SEPARADOR                 ~                    34
-INICIO_PARENTESIS         <|                   34
+COUT                      cout                 35
+SEPARADOR                 ~                    35
+INICIO_PARENTESIS         <|                   35
+CADENA                    10-2*3+8/4%3 =       35
+FIN_PARENTESIS            |>                   35
+DELIMITADOR_EXP           !                    35
+COUT                      cout                 35
+SEPARADOR                 ~                    35
+INICIO_PARENTESIS         <|                   35
+IDENTIFICADOR             s                    35
+FIN_PARENTESIS            |>                   35
+DELIMITADOR_EXP           !                    35
+COUT                      cout                 35
+SEPARADOR                 ~                    35
+INICIO_PARENTESIS         <|                   35
 CADENA                    
-                    34
-FIN_PARENTESIS            |>                   34
-DELIMITADOR_EXP           !                    34
-COUT                      cout                 37
-SEPARADOR                 ~                    37
-INICIO_PARENTESIS         <|                   37
-CADENA                    
-=== DIAGNOSTICO DE PRECEDENCIA === 37
-FIN_PARENTESIS            |>                   37
-DELIMITADOR_EXP           !                    37
-COUT                      cout                 37
-SEPARADOR                 ~                    37
-INICIO_PARENTESIS         <|                   37
-CADENA                    
-                    37
-FIN_PARENTESIS            |>                   37
-DELIMITADOR_EXP           !                    37
-COUT                      cout                 38
-SEPARADOR                 ~                    38
-INICIO_PARENTESIS         <|                   38
-CADENA                    
-                    38
-FIN_PARENTESIS            |>                   38
-DELIMITADOR_EXP           !                    38
-INT                       int                  40
-SEPARADOR                 ~                    40
-IDENTIFICADOR             t1                   40
-ASIGNACION                <-                   40
-IDENTIFICADOR             a                    40
-MAS                       +                    40
-IDENTIFICADOR             b                    40
-MULTIPLICACION            *                    40
-IDENTIFICADOR             c                    40
-DELIMITADOR_EXP           !                    40
-INT                       int                  41
-SEPARADOR                 ~                    41
-IDENTIFICADOR             t2                   41
-ASIGNACION                <-                   41
-IDENTIFICADOR             d                    41
-DIVISION                  /                    41
-IDENTIFICADOR             e                    41
-MODULO                    %                    41
-NUMERO_ENTERO             2                    41
-DELIMITADOR_EXP           !                    41
-INT                       int                  42
-SEPARADOR                 ~                    42
-IDENTIFICADOR             t3                   42
-ASIGNACION                <-                   42
-NUMERO_ENTERO             2                    42
-POTENCIA                  ^                    42
-NUMERO_ENTERO             3                    42
-DELIMITADOR_EXP           !                    42
-INT                       int                  43
-SEPARADOR                 ~                    43
-IDENTIFICADOR             t4                   43
-ASIGNACION                <-                   43
-IDENTIFICADOR             t1                   43
-MENOS                     -                    43
-IDENTIFICADOR             t2                   43
-MODULO                    %                    43
-IDENTIFICADOR             t3                   43
-DELIMITADOR_EXP           !                    43
-INT                       int                  44
-SEPARADOR                 ~                    44
-IDENTIFICADOR             t5                   44
-ASIGNACION                <-                   44
-INICIO_PARENTESIS         <|                   44
-IDENTIFICADOR             a                    44
-MAS                       +                    44
-IDENTIFICADOR             b                    44
-MULTIPLICACION            *                    44
-IDENTIFICADOR             c                    44
-FIN_PARENTESIS            |>                   44
-MENOS                     -                    44
-INICIO_PARENTESIS         <|                   44
-IDENTIFICADOR             d                    44
-DIVISION                  /                    44
-IDENTIFICADOR             e                    44
-MODULO                    %                    44
-NUMERO_ENTERO             2                    44
-POTENCIA                  ^                    44
-NUMERO_ENTERO             3                    44
-FIN_PARENTESIS            |>                   44
-DELIMITADOR_EXP           !                    44
-COUT                      cout                 46
-SEPARADOR                 ~                    46
-INICIO_PARENTESIS         <|                   46
-CADENA                    a + b * c =          46
-FIN_PARENTESIS            |>                   46
-DELIMITADOR_EXP           !                    46
-COUT                      cout                 46
-SEPARADOR                 ~                    46
-INICIO_PARENTESIS         <|                   46
-IDENTIFICADOR             t1                   46
-FIN_PARENTESIS            |>                   46
-DELIMITADOR_EXP           !                    46
-COUT                      cout                 46
-SEPARADOR                 ~                    46
-INICIO_PARENTESIS         <|                   46
-CADENA                    
-                    46
-FIN_PARENTESIS            |>                   46
-DELIMITADOR_EXP           !                    46
-COUT                      cout                 47
-SEPARADOR                 ~                    47
-INICIO_PARENTESIS         <|                   47
-CADENA                    d / e % 2 =          47
-FIN_PARENTESIS            |>                   47
-DELIMITADOR_EXP           !                    47
-COUT                      cout                 47
-SEPARADOR                 ~                    47
-INICIO_PARENTESIS         <|                   47
-IDENTIFICADOR             t2                   47
-FIN_PARENTESIS            |>                   47
-DELIMITADOR_EXP           !                    47
-COUT                      cout                 47
-SEPARADOR                 ~                    47
-INICIO_PARENTESIS         <|                   47
-CADENA                    
-                    47
-FIN_PARENTESIS            |>                   47
-DELIMITADOR_EXP           !                    47
-COUT                      cout                 48
-SEPARADOR                 ~                    48
-INICIO_PARENTESIS         <|                   48
-CADENA                    2 ^ 3 =              48
-FIN_PARENTESIS            |>                   48
-DELIMITADOR_EXP           !                    48
-COUT                      cout                 48
-SEPARADOR                 ~                    48
-INICIO_PARENTESIS         <|                   48
-IDENTIFICADOR             t3                   48
-FIN_PARENTESIS            |>                   48
-DELIMITADOR_EXP           !                    48
-COUT                      cout                 48
-SEPARADOR                 ~                    48
-INICIO_PARENTESIS         <|                   48
-CADENA                    
-                    48
-FIN_PARENTESIS            |>                   48
-DELIMITADOR_EXP           !                    48
-COUT                      cout                 49
-SEPARADOR                 ~                    49
-INICIO_PARENTESIS         <|                   49
-CADENA                    t1 - t2 % t3 =       49
-FIN_PARENTESIS            |>                   49
-DELIMITADOR_EXP           !                    49
-COUT                      cout                 49
-SEPARADOR                 ~                    49
-INICIO_PARENTESIS         <|                   49
-IDENTIFICADOR             t4                   49
-FIN_PARENTESIS            |>                   49
-DELIMITADOR_EXP           !                    49
-COUT                      cout                 49
-SEPARADOR                 ~                    49
-INICIO_PARENTESIS         <|                   49
-CADENA                    
-                    49
-FIN_PARENTESIS            |>                   49
-DELIMITADOR_EXP           !                    49
-COUT                      cout                 50
-SEPARADOR                 ~                    50
-INICIO_PARENTESIS         <|                   50
-CADENA                    (a + b * c) - (d / e % 2 ^ 3) =  50
-FIN_PARENTESIS            |>                   50
-DELIMITADOR_EXP           !                    50
-COUT                      cout                 50
-SEPARADOR                 ~                    50
-INICIO_PARENTESIS         <|                   50
-IDENTIFICADOR             t5                   50
-FIN_PARENTESIS            |>                   50
-DELIMITADOR_EXP           !                    50
-COUT                      cout                 50
-SEPARADOR                 ~                    50
-INICIO_PARENTESIS         <|                   50
-CADENA                    
-                    50
-FIN_PARENTESIS            |>                   50
-DELIMITADOR_EXP           !                    50
-COUT                      cout                 53
-SEPARADOR                 ~                    53
-INICIO_PARENTESIS         <|                   53
-CADENA                    
-=== CON PARENTESIS EXPLICITOS === 53
-FIN_PARENTESIS            |>                   53
-DELIMITADOR_EXP           !                    53
-COUT                      cout                 53
-SEPARADOR                 ~                    53
-INICIO_PARENTESIS         <|                   53
-CADENA                    
-                    53
-FIN_PARENTESIS            |>                   53
-DELIMITADOR_EXP           !                    53
-COUT                      cout                 54
-SEPARADOR                 ~                    54
-INICIO_PARENTESIS         <|                   54
-CADENA                    
-                    54
-FIN_PARENTESIS            |>                   54
-DELIMITADOR_EXP           !                    54
-INT                       int                  56
-SEPARADOR                 ~                    56
-IDENTIFICADOR             conParentesis        56
-ASIGNACION                <-                   56
-IDENTIFICADOR             a                    56
-MAS                       +                    56
-INICIO_PARENTESIS         <|                   56
-IDENTIFICADOR             b                    56
-MULTIPLICACION            *                    56
-IDENTIFICADOR             c                    56
-FIN_PARENTESIS            |>                   56
-MENOS                     -                    56
-INICIO_PARENTESIS         <|                   56
-INICIO_PARENTESIS         <|                   56
-IDENTIFICADOR             d                    56
-DIVISION                  /                    56
-IDENTIFICADOR             e                    56
-FIN_PARENTESIS            |>                   56
-MODULO                    %                    56
-INICIO_PARENTESIS         <|                   56
-NUMERO_ENTERO             2                    56
-POTENCIA                  ^                    56
-NUMERO_ENTERO             3                    56
-FIN_PARENTESIS            |>                   56
-FIN_PARENTESIS            |>                   56
-DELIMITADOR_EXP           !                    56
-COUT                      cout                 57
-SEPARADOR                 ~                    57
-INICIO_PARENTESIS         <|                   57
-CADENA                    a + (b*c) - ((d/e) % (2^3)) =  57
-FIN_PARENTESIS            |>                   57
-DELIMITADOR_EXP           !                    57
-COUT                      cout                 57
-SEPARADOR                 ~                    57
-INICIO_PARENTESIS         <|                   57
-IDENTIFICADOR             conParentesis        57
-FIN_PARENTESIS            |>                   57
-DELIMITADOR_EXP           !                    57
-COUT                      cout                 57
-SEPARADOR                 ~                    57
-INICIO_PARENTESIS         <|                   57
-CADENA                    
-                    57
-FIN_PARENTESIS            |>                   57
-DELIMITADOR_EXP           !                    57
-FIN_BLOQUE                :|                   59
+                    35
+FIN_PARENTESIS            |>                   35
+DELIMITADOR_EXP           !                    35
+FIN_BLOQUE                :|                   38
 
 === FIN DEL ANALISIS ===

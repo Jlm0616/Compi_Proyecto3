@@ -1,235 +1,111 @@
 # ===== CODIGO INTERMEDIO =====
 main:
-    declare a, int
+    declare x, int
     __t0 = 2
-    a = __t0
-    declare b, int
     __t1 = 3
-    b = __t1
-    declare c, int
-    __t2 = 5
-    c = __t2
-    declare d, int
-    __t3 = 7
-    d = __t3
-    declare e, int
-    __t4 = 11
-    e = __t4
-    __t5 = "=== DIAGNOSTICO DE EXPRESION ==="
-    write __t5
-    __t6 = "\n"
-    write __t6
-    __t7 = "\n"
-    write __t7
-    declare paso1, int
-    __t8 = a
-    __t9 = b
-    __t10 = __t8 + __t9
-    paso1 = __t10
-    declare paso2, int
-    __t11 = b
-    __t12 = c
-    __t13 = __t11 * __t12
-    paso2 = __t13
-    declare paso3, int
-    __t14 = d
-    __t15 = e
-    __t16 = __t14 / __t15
-    paso3 = __t16
-    declare paso4, int
-    __t17 = 2
-    __t18 = 3
-    __t19 = __t17 ^ __t18
-    paso4 = __t19
-    declare paso5, int
-    __t20 = d
-    __t21 = e
-    __t22 = 2
-    __t23 = __t21 % __t22
-    __t24 = __t20 / __t23
-    paso5 = __t24
-    declare paso6, int
-    __t25 = d
-    __t26 = e
-    __t27 = 2
-    __t28 = 3
-    __t29 = __t27 ^ __t28
-    __t30 = __t26 % __t29
-    __t31 = __t25 / __t30
-    paso6 = __t31
-    declare r1, int
-    __t32 = a
-    __t33 = b
-    __t34 = c
-    __t35 = __t33 * __t34
-    __t36 = d
-    __t37 = e
-    __t38 = 2
-    __t39 = 3
-    __t40 = __t38 ^ __t39
-    __t41 = __t37 % __t40
-    __t42 = __t36 / __t41
-    __t43 = __t35 - __t42
-    __t44 = __t32 + __t43
-    r1 = __t44
-    __t45 = "a = "
-    write __t45
-    write a
-    __t46 = "\n"
-    write __t46
-    __t47 = "b = "
-    write __t47
-    write b
-    __t48 = "\n"
-    write __t48
-    __t49 = "c = "
-    write __t49
-    write c
-    __t50 = "\n"
-    write __t50
-    __t51 = "d = "
-    write __t51
-    write d
-    __t52 = "\n"
-    write __t52
-    __t53 = "e = "
-    write __t53
-    write e
-    __t54 = "\n"
-    write __t54
-    __t55 = "\n"
-    write __t55
-    __t56 = "paso1: a + b = "
-    write __t56
-    write paso1
-    __t57 = "\n"
-    write __t57
-    __t58 = "paso2: b * c = "
+    __t2 = __t0 + __t1
+    __t3 = 4
+    __t4 = 1
+    __t5 = __t3 - __t4
+    __t6 = __t2 * __t5
+    __t7 = 2
+    __t8 = 1
+    __t9 = __t7 - __t8
+    __t10 = __t6 ^ __t9
+    x = __t10
+    __t11 = "((2+3)*(4-1))^(2-1) = "
+    write __t11
+    write x
+    __t12 = "\n"
+    write __t12
+    declare y, int
+    __t13 = 100
+    __t14 = 10
+    __t15 = __t13 / __t14
+    __t16 = 2
+    __t17 = __t15 / __t16
+    __t18 = 5
+    __t19 = __t17 / __t18
+    y = __t19
+    __t20 = "100/10/2/5 = "
+    write __t20
+    write y
+    __t21 = "\n"
+    write __t21
+    declare z, int
+    __t22 = 100
+    __t23 = 30
+    __t24 = __t22 - __t23
+    __t25 = 20
+    __t26 = __t24 - __t25
+    __t27 = 10
+    __t28 = __t26 - __t27
+    z = __t28
+    __t29 = "100-30-20-10 = "
+    write __t29
+    write z
+    __t30 = "\n"
+    write __t30
+    declare w, int
+    __t31 = 2
+    __t32 = 3
+    __t33 = 2
+    __t34 = __t32 ^ __t33
+    __t35 = __t31 ^ __t34
+    w = __t35
+    __t36 = "2^3^2 = "
+    write __t36
+    write w
+    __t37 = "\n"
+    write __t37
+    declare m, int
+    __t38 = 100
+    __t39 = 30
+    __t40 = __t38 % __t39
+    __t41 = 7
+    __t42 = __t40 % __t41
+    m = __t42
+    __t43 = "100%30%7 = "
+    write __t43
+    write m
+    __t44 = "\n"
+    write __t44
+    declare r, int
+    __t45 = 1
+    __t46 = 2
+    __t47 = 3
+    __t48 = __t46 * __t47
+    __t49 = __t45 + __t48
+    __t50 = 4
+    __t51 = 5
+    __t52 = __t50 * __t51
+    __t53 = __t49 + __t52
+    __t54 = 6
+    __t55 = 7
+    __t56 = __t54 * __t55
+    __t57 = __t53 + __t56
+    r = __t57
+    __t58 = "1+2*3+4*5+6*7 = "
     write __t58
-    write paso2
+    write r
     __t59 = "\n"
     write __t59
-    __t60 = "paso3: d / e = "
-    write __t60
-    write paso3
-    __t61 = "\n"
-    write __t61
-    __t62 = "paso4: 2 ^ 3 = "
-    write __t62
-    write paso4
-    __t63 = "\n"
-    write __t63
-    __t64 = "paso5: d / e % 2 = "
-    write __t64
-    write paso5
-    __t65 = "\n"
-    write __t65
-    __t66 = "paso6: d / e % 2 ^ 3 = "
-    write __t66
-    write paso6
-    __t67 = "\n"
-    write __t67
-    __t68 = "r1 = "
-    write __t68
-    write r1
-    __t69 = "\n"
-    write __t69
-    __t70 = "\n=== DIAGNOSTICO DE PRECEDENCIA ==="
-    write __t70
-    __t71 = "\n"
+    declare s, int
+    __t60 = 10
+    __t61 = 2
+    __t62 = 3
+    __t63 = __t61 * __t62
+    __t64 = __t60 - __t63
+    __t65 = 8
+    __t66 = 4
+    __t67 = __t65 / __t66
+    __t68 = 3
+    __t69 = __t67 % __t68
+    __t70 = __t64 + __t69
+    s = __t70
+    __t71 = "10-2*3+8/4%3 = "
     write __t71
+    write s
     __t72 = "\n"
     write __t72
-    declare t1, int
-    __t73 = a
-    __t74 = b
-    __t75 = c
-    __t76 = __t74 * __t75
-    __t77 = __t73 + __t76
-    t1 = __t77
-    declare t2, int
-    __t78 = d
-    __t79 = e
-    __t80 = 2
-    __t81 = __t79 % __t80
-    __t82 = __t78 / __t81
-    t2 = __t82
-    declare t3, int
-    __t83 = 2
-    __t84 = 3
-    __t85 = __t83 ^ __t84
-    t3 = __t85
-    declare t4, int
-    __t86 = t1
-    __t87 = t2
-    __t88 = t3
-    __t89 = __t87 % __t88
-    __t90 = __t86 - __t89
-    t4 = __t90
-    declare t5, int
-    __t91 = a
-    __t92 = b
-    __t93 = c
-    __t94 = __t92 * __t93
-    __t95 = __t91 + __t94
-    __t96 = d
-    __t97 = e
-    __t98 = 2
-    __t99 = 3
-    __t100 = __t98 ^ __t99
-    __t101 = __t97 % __t100
-    __t102 = __t96 / __t101
-    __t103 = __t95 - __t102
-    t5 = __t103
-    __t104 = "a + b * c = "
-    write __t104
-    write t1
-    __t105 = "\n"
-    write __t105
-    __t106 = "d / e % 2 = "
-    write __t106
-    write t2
-    __t107 = "\n"
-    write __t107
-    __t108 = "2 ^ 3 = "
-    write __t108
-    write t3
-    __t109 = "\n"
-    write __t109
-    __t110 = "t1 - t2 % t3 = "
-    write __t110
-    write t4
-    __t111 = "\n"
-    write __t111
-    __t112 = "(a + b * c) - (d / e % 2 ^ 3) = "
-    write __t112
-    write t5
-    __t113 = "\n"
-    write __t113
-    __t114 = "\n=== CON PARENTESIS EXPLICITOS ==="
-    write __t114
-    __t115 = "\n"
-    write __t115
-    __t116 = "\n"
-    write __t116
-    declare conParentesis, int
-    __t117 = a
-    __t118 = b
-    __t119 = c
-    __t120 = __t118 * __t119
-    __t121 = d
-    __t122 = e
-    __t123 = __t121 / __t122
-    __t124 = 2
-    __t125 = 3
-    __t126 = __t124 ^ __t125
-    __t127 = __t123 % __t126
-    __t128 = __t120 - __t127
-    __t129 = __t117 + __t128
-    conParentesis = __t129
-    __t130 = "a + (b*c) - ((d/e) % (2^3)) = "
-    write __t130
-    write conParentesis
-    __t131 = "\n"
-    write __t131
 # ===== FIN DEL CODIGO INTERMEDIO =====
