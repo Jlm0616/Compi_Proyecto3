@@ -210,15 +210,45 @@ public class GeneradorMIPS {
     }
 
     static String tipoDe(String operando) {
+
+        // ---------------------------------------------------------------
+        // 1. DETECTAR ACCESO A ARREGLO: "mat[0][0]" o "mat[i][j]"
+        // ---------------------------------------------------------------
+        Matcher mArr = Pattern.compile("^(\\w+)\\[.*\\]\\[.*\\]$").matcher(operando);
+        if (mArr.matches()) {
+            String nombreArr = mArr.group(1);
+            if (simbolos.containsKey(nombreArr)) {
+                String tipoArr = simbolos.get(nombreArr);
+                if (tipoArr.endsWith("[]")) {
+                    String resultado = tipoArr.replace("[]", "");
+                    return resultado;
+                }
+                return tipoArr;
+            }
+            if (nombreArr.startsWith("f") && !nombreArr.startsWith("fi")) {
+                return "float";
+            }
+            return "int";
+        }
+
+        // ---------------------------------------------------------------
+        // 2. BUSCAR EN TABLA DE SIMBOLOS
+        // ---------------------------------------------------------------
         if (simbolos.containsKey(operando)) {
-            return simbolos.get(operando);
+            String resultado = simbolos.get(operando);
+            return resultado;
         }
+
+        // ---------------------------------------------------------------
+        // 3. LITERALES NUMERICOS
+        // ---------------------------------------------------------------
         if (esLiteralNumerico(operando)) {
-            return operando.contains(".") ? "float" : "int";
+            String resultado = operando.contains(".") ? "float" : "int";
+            return resultado;
         }
+
         return "int";
     }
-
     // ===============================================================
     // 2.6 PRIMERA PASADA: recolectar variables, temporales y strings
     // ===============================================================
@@ -247,6 +277,25 @@ public class GeneradorMIPS {
                     }
                 } else {
                     simbolos.put(nombre, tipo);
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // DETECTAR ASIGNACION DE ARREGLO: "t8 = mat[0][0]"
+            // ---------------------------------------------------------------
+            Matcher mArrAsign = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\[.*\\]\\[.*\\]$").matcher(linea);
+            if (mArrAsign.matches()) {
+                String temp = mArrAsign.group(1);
+                String arr = mArrAsign.group(2);
+                if (!simbolos.containsKey(temp) && simbolos.containsKey(arr)) {
+                    String tipoArr = simbolos.get(arr);
+                    if (tipoArr.endsWith("[]")) {
+                        String tipoBase = tipoArr.replace("[]", "");
+                        simbolos.put(temp, tipoBase);
+                    } else {
+                        simbolos.put(temp, tipoArr);
+                    }
                 }
                 continue;
             }

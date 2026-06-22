@@ -1,12 +1,37 @@
 empty ~ __main__ ~ <| |> |:
-    int ~ n!
-    float ~ f!
 
-    cout ~ <| "Ingresa un entero: " |>!
-    cin ~ n!
-    cout ~ <| "Leiste: " |>! cout ~ <| n |>! cout ~ <| "\n" |>!
+    float ~ mat <<2>><<2>> <- |: 0.0, 0.0, 0.0, 0.0 :|!
 
-    cout ~ <| "Ingresa un flotante: " |>!
-    cin ~ f!
-    cout ~ <| "Leiste: " |>! cout ~ <| f |>! cout ~ <| "\n" |>!
+    int ~ i <- 0!
+    int ~ j <- 0!
+    float ~ temp <- 0.0!
+
+    cout ~ <| "Ingresa 4 valores:" |>! cout ~ <| "\n" |>!
+
+    i <- 0!
+    do |:
+        j <- 0!
+        do |:
+            cout ~ <| "mat[" |>! cout ~ <| i |>! cout ~ <| "][" |>! cout ~ <| j |>! cout ~ <| "] = " |>!
+            cin ~ temp!
+            mat<<i>><<j>> <- temp!
+            j <- j + 1!
+        :| while <| less_t<|j, 2|> |>!
+        i <- i + 1!
+    :| while <| less_t<|i, 2|> |>!
+
+    cout ~ <| "\n=== MATRIZ INGRESADA ===" |>! cout ~ <| "\n" |>!
+
+    i <- 0!
+    do |:
+        j <- 0!
+        do |:
+            cout ~ <| mat<<i>><<j>> |>!
+            cout ~ <| " " |>!
+            j <- j + 1!
+        :| while <| less_t<|j, 2|> |>!
+        cout ~ <| "\n" |>!
+        i <- i + 1!
+    :| while <| less_t<|i, 2|> |>!
+
 :|

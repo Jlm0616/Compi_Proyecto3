@@ -1,21 +1,99 @@
 # ===== CODIGO INTERMEDIO =====
 main:
-    declare n, int
-    declare f, float
-    t0 = "Ingresa un entero: "
-    write t0
-    read n
-    t1 = "Leiste: "
-    write t1
-    write n
-    t2 = "\n"
+    declare mat, float[2][2]
+    f0 = 0.0
+    f1 = 0.0
+    f2 = 0.0
+    f3 = 0.0
+    mat[0][0] = f0
+    mat[0][1] = f1
+    mat[1][0] = f2
+    mat[1][1] = f3
+    declare i, int
+    t0 = 0
+    i = t0
+    declare j, int
+    t1 = 0
+    j = t1
+    declare temp, float
+    f4 = 0.0
+    temp = f4
+    t2 = "Ingresa 4 valores:"
     write t2
-    t3 = "Ingresa un flotante: "
+    t3 = "\n"
     write t3
-    read f
-    t4 = "Leiste: "
-    write t4
-    write f
-    t5 = "\n"
-    write t5
+    t4 = 0
+    i = t4
+_dowhile1_start:
+    t5 = 0
+    j = t5
+_dowhile2_start:
+    t6 = "mat["
+    write t6
+    write i
+    t7 = "]["
+    write t7
+    write j
+    t8 = "] = "
+    write t8
+    read temp
+    t9 = i
+    t10 = j
+    t11 = mat[t9][t10]
+    f5 = temp
+    mat[t9][t10] = f5
+    t12 = j
+    t13 = 1
+    t14 = t12 + t13
+    j = t14
+    t15 = j
+    t16 = 2
+    t17 = t15 < t16
+    if t17 goto _dowhile2_start
+_dowhile2_end:
+    t18 = i
+    t19 = 1
+    t20 = t18 + t19
+    i = t20
+    t21 = i
+    t22 = 2
+    t23 = t21 < t22
+    if t23 goto _dowhile1_start
+_dowhile1_end:
+    t24 = "\n=== MATRIZ INGRESADA ==="
+    write t24
+    t25 = "\n"
+    write t25
+    t26 = 0
+    i = t26
+_dowhile3_start:
+    t27 = 0
+    j = t27
+_dowhile4_start:
+    t28 = i
+    t29 = j
+    t30 = mat[t28][t29]
+    write t30
+    t31 = " "
+    write t31
+    t32 = j
+    t33 = 1
+    t34 = t32 + t33
+    j = t34
+    t35 = j
+    t36 = 2
+    t37 = t35 < t36
+    if t37 goto _dowhile4_start
+_dowhile4_end:
+    t38 = "\n"
+    write t38
+    t39 = i
+    t40 = 1
+    t41 = t39 + t40
+    i = t41
+    t42 = i
+    t43 = 2
+    t44 = t42 < t43
+    if t44 goto _dowhile3_start
+_dowhile3_end:
 # ===== FIN DEL CODIGO INTERMEDIO =====
