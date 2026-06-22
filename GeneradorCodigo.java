@@ -67,9 +67,9 @@ public class GeneradorCodigo {
     // ===============================================================
     public static String nuevoTemp(String tipo) {
         if (tipo != null && tipo.equals("float")) {
-            return "f" + (contadorTempFloat++);
+            return "__f" + (contadorTempFloat++);
         } else {
-            return "t" + (contadorTempInt++);
+            return "__t" + (contadorTempInt++);
         }
     }
 

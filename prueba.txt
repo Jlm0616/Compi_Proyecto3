@@ -1,37 +1,59 @@
 empty ~ __main__ ~ <| |> |:
 
-    float ~ mat <<2>><<2>> <- |: 0.0, 0.0, 0.0, 0.0 :|!
+    int ~ a <- 2!
+    int ~ b <- 3!
+    int ~ c <- 5!
+    int ~ d <- 7!
+    int ~ e <- 11!
 
-    int ~ i <- 0!
-    int ~ j <- 0!
-    float ~ temp <- 0.0!
+    ¡¡ === DIAGNOSTICO PASO A PASO ===
+    cout ~ <| "=== DIAGNOSTICO DE EXPRESION ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
 
-    cout ~ <| "Ingresa 4 valores:" |>! cout ~ <| "\n" |>!
+    int ~ paso1 <- a + b!
+    int ~ paso2 <- b * c!
+    int ~ paso3 <- d / e!
+    int ~ paso4 <- 2 ^ 3!
+    int ~ paso5 <- d / e % 2!
+    int ~ paso6 <- d / e % 2 ^ 3!
+    int ~ r1 <- a + b * c - d / e % 2 ^ 3!
 
-    i <- 0!
-    do |:
-        j <- 0!
-        do |:
-            cout ~ <| "mat[" |>! cout ~ <| i |>! cout ~ <| "][" |>! cout ~ <| j |>! cout ~ <| "] = " |>!
-            cin ~ temp!
-            mat<<i>><<j>> <- temp!
-            j <- j + 1!
-        :| while <| less_t<|j, 2|> |>!
-        i <- i + 1!
-    :| while <| less_t<|i, 2|> |>!
+    cout ~ <| "a = " |>! cout ~ <| a |>! cout ~ <| "\n" |>!
+    cout ~ <| "b = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
+    cout ~ <| "c = " |>! cout ~ <| c |>! cout ~ <| "\n" |>!
+    cout ~ <| "d = " |>! cout ~ <| d |>! cout ~ <| "\n" |>!
+    cout ~ <| "e = " |>! cout ~ <| e |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
 
-    cout ~ <| "\n=== MATRIZ INGRESADA ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "paso1: a + b = " |>! cout ~ <| paso1 |>! cout ~ <| "\n" |>!
+    cout ~ <| "paso2: b * c = " |>! cout ~ <| paso2 |>! cout ~ <| "\n" |>!
+    cout ~ <| "paso3: d / e = " |>! cout ~ <| paso3 |>! cout ~ <| "\n" |>!
+    cout ~ <| "paso4: 2 ^ 3 = " |>! cout ~ <| paso4 |>! cout ~ <| "\n" |>!
+    cout ~ <| "paso5: d / e % 2 = " |>! cout ~ <| paso5 |>! cout ~ <| "\n" |>!
+    cout ~ <| "paso6: d / e % 2 ^ 3 = " |>! cout ~ <| paso6 |>! cout ~ <| "\n" |>!
+    cout ~ <| "r1 = " |>! cout ~ <| r1 |>! cout ~ <| "\n" |>!
 
-    i <- 0!
-    do |:
-        j <- 0!
-        do |:
-            cout ~ <| mat<<i>><<j>> |>!
-            cout ~ <| " " |>!
-            j <- j + 1!
-        :| while <| less_t<|j, 2|> |>!
-        cout ~ <| "\n" |>!
-        i <- i + 1!
-    :| while <| less_t<|i, 2|> |>!
+    ¡¡ === DIAGNOSTICO DE PRECEDENCIA ===
+    cout ~ <| "\n=== DIAGNOSTICO DE PRECEDENCIA ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    int ~ t1 <- a + b * c!
+    int ~ t2 <- d / e % 2!
+    int ~ t3 <- 2 ^ 3!
+    int ~ t4 <- t1 - t2 % t3!
+    int ~ t5 <- <| a + b * c |> - <| d / e % 2 ^ 3 |>!
+
+    cout ~ <| "a + b * c = " |>! cout ~ <| t1 |>! cout ~ <| "\n" |>!
+    cout ~ <| "d / e % 2 = " |>! cout ~ <| t2 |>! cout ~ <| "\n" |>!
+    cout ~ <| "2 ^ 3 = " |>! cout ~ <| t3 |>! cout ~ <| "\n" |>!
+    cout ~ <| "t1 - t2 % t3 = " |>! cout ~ <| t4 |>! cout ~ <| "\n" |>!
+    cout ~ <| "(a + b * c) - (d / e % 2 ^ 3) = " |>! cout ~ <| t5 |>! cout ~ <| "\n" |>!
+
+    ¡¡ === DIAGNOSTICO CON PARENTESIS ===
+    cout ~ <| "\n=== CON PARENTESIS EXPLICITOS ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    int ~ conParentesis <- a + <| b * c |> - <| <| d / e |> % <| 2 ^ 3 |> |>!
+    cout ~ <| "a + (b*c) - ((d/e) % (2^3)) = " |>! cout ~ <| conParentesis |>! cout ~ <| "\n" |>!
 
 :|

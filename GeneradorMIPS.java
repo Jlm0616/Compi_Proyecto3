@@ -49,21 +49,18 @@ public class GeneradorMIPS {
     // por una version segura (ej. "b" -> "var_b").
 
     static void renombrarPalabrasReservadas() {
-        Set<String> nombresDetectados = new LinkedHashSet<>();
+        // Solo detectar nombres que vienen de DECLARACIONES EXPLICITAS del usuario
+        Set<String> nombresDeclarados = new LinkedHashSet<>();
         for (String linea : lineas3D) {
             if (linea.startsWith("declare ")) {
                 String resto = linea.substring("declare ".length());
                 String nombre = resto.split(",", 2)[0].trim();
-                nombresDetectados.add(nombre);
-                continue;
-            }
-            Matcher mDef = Pattern.compile("^(\\w+)\\s*=").matcher(linea);
-            if (mDef.find()) {
-                nombresDetectados.add(mDef.group(1));
+                nombresDeclarados.add(nombre);
             }
         }
 
-        for (String nombre : nombresDetectados) {
+        // Verificar cuales necesitan renombrado
+        for (String nombre : nombresDeclarados) {
             nombreSeguro(nombre);
         }
 
@@ -76,6 +73,7 @@ public class GeneradorMIPS {
         }
         if (!hayConflictos) return;
 
+        // Sustituir en todas las lineas
         List<String> lineasCorregidas = new ArrayList<>();
         for (String linea : lineas3D) {
             String nueva = linea;
@@ -120,13 +118,17 @@ public class GeneradorMIPS {
     ));
 
     // Genera un nombre seguro: si el nombre coincide con una palabra reservada,
-    // se le antepone "var_"
+    // se le antepone "var_". Los temporales con prefijo "__" (espacio reservado
+    // del compilador, ver GeneradorCodigo.nuevoTemp) se excluyen siempre del
+    // renombrado, porque por diseno nunca pueden colisionar con un mnemonico
+    // de MIPS ni con un identificador de usuario.
     static String nombreSeguro(String nombreOriginal) {
         if (renombrados.containsKey(nombreOriginal)) {
             return renombrados.get(nombreOriginal);
         }
         String seguro = nombreOriginal;
-        if (PALABRAS_RESERVADAS_MIPS.contains(nombreOriginal.toLowerCase())) {
+        if (!nombreOriginal.startsWith("__")
+                && PALABRAS_RESERVADAS_MIPS.contains(nombreOriginal.toLowerCase())) {
             seguro = "var_" + nombreOriginal;
         }
         renombrados.put(nombreOriginal, seguro);
@@ -225,7 +227,10 @@ public class GeneradorMIPS {
                 }
                 return tipoArr;
             }
-            if (nombreArr.startsWith("f") && !nombreArr.startsWith("fi")) {
+            // Sin registro en la tabla de simbolos: inferir por el prefijo del
+            // TEMPORAL DEL COMPILADOR (no de un identificador de usuario), que
+            // siempre empieza con "__". Si no matchea, se asume int por defecto.
+            if (nombreArr.startsWith("__f")) {
                 return "float";
             }
             return "int";
@@ -276,13 +281,17 @@ public class GeneradorMIPS {
                         simbolos.put(nombre, tipoBase + "[]");
                     }
                 } else {
-                    simbolos.put(nombre, tipo);
+                    String tipoActual = simbolos.get(nombre);
+                    if (tipoActual == null || 
+                        (!tipoActual.equals("string") && !tipoActual.equals("char") && !tipoActual.equals("bool"))) {
+                        simbolos.put(nombre, tipo);
+                    }
                 }
                 continue;
             }
 
             // ---------------------------------------------------------------
-            // DETECTAR ASIGNACION DE ARREGLO: "t8 = mat[0][0]"
+            // DETECTAR ASIGNACION DE ARREGLO: "__t8 = mat[0][0]"
             // ---------------------------------------------------------------
             Matcher mArrAsign = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\[.*\\]\\[.*\\]$").matcher(linea);
             if (mArrAsign.matches()) {
@@ -313,9 +322,18 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.6.3 TEMPORALES: t0, t1, f0, f1, etc.
+            // 2.6.3 TEMPORALES DEL COMPILADOR: __t0, __t1, __f0, __f1, etc.
             // ---------------------------------------------------------------
-            Matcher mTemp = Pattern.compile("^([tf]\\d+)\\s*=\\s*(.*)$").matcher(linea);
+            // El prefijo "__" (doble guion bajo) es el espacio de nombres
+            // reservado para temporales generados automaticamente por
+            // GeneradorCodigo.nuevoTemp(). Esto evita que choquen con
+            // variables de usuario que el programador puede nombrar
+            // libremente, incluyendo nombres como "t5" o "f2" (misma
+            // convencion que usa C#: identificadores con "__" se reservan
+            // para nombres generados por el compilador). Variables internas
+            // que no sigan este patron (ej. tswN del switch) requieren su
+            // propio "declare" explicito.
+            Matcher mTemp = Pattern.compile("^(__[tf]\\d+)\\s*=\\s*(.*)$").matcher(linea);
             if (mTemp.matches()) {
                 String nombreTemp = mTemp.group(1);
                 String ladoDerecho = mTemp.group(2);
@@ -330,7 +348,7 @@ public class GeneradorMIPS {
                     } else if (ladoDerecho.matches("-?\\d+\\.\\d+")) {
                         tipoInferido = "float";
                     } else {
-                        tipoInferido = nombreTemp.startsWith("f") ? "float" : "int";
+                        tipoInferido = nombreTemp.startsWith("__f") ? "float" : "int";
                     }
                     simbolos.put(nombreTemp, tipoInferido);
                 }
@@ -385,7 +403,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.2 LECTURA DE ELEMENTO DE ARREGLO: "t5 = arr[i][j]"
+            // 2.7.2 LECTURA DE ELEMENTO DE ARREGLO: "__t5 = arr[i][j]"
             // ---------------------------------------------------------------
             Matcher mArrGet = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\[(.+)\\]\\[(.+)\\]$").matcher(linea);
             if (mArrGet.matches()) {
@@ -460,7 +478,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.4 COPIA SIMPLE: "x = t0"
+            // 2.7.4 COPIA SIMPLE: "x = __t0"
             // ---------------------------------------------------------------
             Matcher mCopia = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)$").matcher(linea);
             if (mCopia.matches()) {
@@ -504,7 +522,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.6 COMPARACIONES RELACIONALES: "t4 = t2 <= t3"
+            // 2.7.6 COMPARACIONES RELACIONALES: "__t4 = __t2 <= __t3"
             // ---------------------------------------------------------------
             Matcher mRel = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*(<=|>=|==|!=|<|>)\\s*(\\S+)$").matcher(linea);
             if (mRel.matches()) {
@@ -577,7 +595,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.8 NEGACION LOGICA: "t11 = !t10"
+            // 2.7.8 NEGACION LOGICA: "__t11 = !__t10"
             // ---------------------------------------------------------------
             Matcher mNot = Pattern.compile("^(\\w+)\\s*=\\s*!(\\S+)$").matcher(linea);
             if (mNot.matches()) {
@@ -590,7 +608,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.9 NEGACION ARITMETICA: "t3 = - t2"
+            // 2.7.9 NEGACION ARITMETICA: "__t3 = - __t2"
             // ---------------------------------------------------------------
             Matcher mNeg = Pattern.compile("^(\\w+)\\s*=\\s*-\\s*(\\S+)$").matcher(linea);
             if (mNeg.matches()) {
@@ -658,7 +676,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.11 IMPRESION POR PANTALLA: "write t5"
+            // 2.7.11 IMPRESION POR PANTALLA: "write __t5"
             // ---------------------------------------------------------------
             Matcher mWrite = Pattern.compile("^write\\s+(\\S+)$").matcher(linea);
             if (mWrite.matches()) {
