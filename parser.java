@@ -2752,11 +2752,13 @@ class CUP$parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-        String t = verificarUso((String)id, idleft);
-        String tipoT = t.contains("|") ? t.split("\\|")[0] : t;
-        if (!tipoT.equals("int") && !tipoT.equals("float") && !tipoT.equals("error")) {
-            errorSemantico("Linea " + idleft + ": cin solo puede leer variables int o float, se encontro tipo '" + tipoT + "'.");
+        Simbolo s = buscarSimbolo((String)id);
+        if (s == null) {
+            errorSemantico("Linea " + idleft + ": variable '" + id + "' no fue declarada.");
+        } else if (!s.tipo.equals("int") && !s.tipo.equals("float")) {
+            errorSemantico("Linea " + idleft + ": cin solo puede leer variables int o float, se encontro tipo '" + s.tipo + "'.");
         } else {
+            marcarInicializada((String)id);
             GeneradorCodigo.emitir("    read " + id);
         }
     

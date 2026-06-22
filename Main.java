@@ -96,7 +96,8 @@ public class Main {
             // SEXTO PASO: GENERAR CODIGO MIPS A PARTIR DEL CODIGO INTERMEDIO
             // ===========================================================
             try {
-                String archivoAsm = GeneradorMIPS.generar(archivoIntermedio);
+                String archivoAsm = nombreBase + ".asm";
+                GeneradorMIPS.generar(archivoIntermedio, archivoAsm);
                 System.out.println(ANSI_GREEN + "Codigo MIPS generado en:    " + archivoAsm + ANSI_RESET);
             } catch (IOException e) {
                 System.out.println(ANSI_RED + "[ERROR] No se pudo generar el codigo MIPS: " + e.getMessage() + ANSI_RESET);

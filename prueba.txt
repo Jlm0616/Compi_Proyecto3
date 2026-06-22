@@ -1,25 +1,12 @@
 empty ~ __main__ ~ <| |> |:
-    int ~ base <- 2!
-    int ~ exponente <- 10!
-    int ~ resultado <- 0!
+    int ~ n!
+    float ~ f!
 
-    resultado <- base ^ exponente!
+    cout ~ <| "Ingresa un entero: " |>!
+    cin ~ n!
+    cout ~ <| "Leiste: " |>! cout ~ <| n |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "2 elevado a 10 es: " |>! cout ~ <| resultado |>! cout ~ <| "\n" |>!
-
-    int ~ base2 <- 5!
-    int ~ exponente2 <- 0!
-    int ~ resultado2 <- 0!
-
-    resultado2 <- base2 ^ exponente2!
-
-    cout ~ <| "5 elevado a 0 es: " |>! cout ~ <| resultado2 |>! cout ~ <| "\n" |>!
-
-    int ~ base3 <- 3!
-    int ~ exponente3 <- 4!
-    int ~ resultado3 <- 0!
-
-    resultado3 <- base3 ^ exponente3!
-
-    cout ~ <| "3 elevado a 4 es: " |>! cout ~ <| resultado3 |>! cout ~ <| "\n" |>!
+    cout ~ <| "Ingresa un flotante: " |>!
+    cin ~ f!
+    cout ~ <| "Leiste: " |>! cout ~ <| f |>! cout ~ <| "\n" |>!
 :|

@@ -1,57 +1,21 @@
 # ===== CODIGO INTERMEDIO =====
 main:
-    declare base, int
-    t0 = 2
-    base = t0
-    declare exponente, int
-    t1 = 10
-    exponente = t1
-    declare resultado, int
-    t2 = 0
-    resultado = t2
-    t3 = base
-    t4 = exponente
-    t5 = t3 ^ t4
-    resultado = t5
-    t6 = "2 elevado a 10 es: "
-    write t6
-    write resultado
-    t7 = "\n"
-    write t7
-    declare base2, int
-    t8 = 5
-    base2 = t8
-    declare exponente2, int
-    t9 = 0
-    exponente2 = t9
-    declare resultado2, int
-    t10 = 0
-    resultado2 = t10
-    t11 = base2
-    t12 = exponente2
-    t13 = t11 ^ t12
-    resultado2 = t13
-    t14 = "5 elevado a 0 es: "
-    write t14
-    write resultado2
-    t15 = "\n"
-    write t15
-    declare base3, int
-    t16 = 3
-    base3 = t16
-    declare exponente3, int
-    t17 = 4
-    exponente3 = t17
-    declare resultado3, int
-    t18 = 0
-    resultado3 = t18
-    t19 = base3
-    t20 = exponente3
-    t21 = t19 ^ t20
-    resultado3 = t21
-    t22 = "3 elevado a 4 es: "
-    write t22
-    write resultado3
-    t23 = "\n"
-    write t23
+    declare n, int
+    declare f, float
+    t0 = "Ingresa un entero: "
+    write t0
+    read n
+    t1 = "Leiste: "
+    write t1
+    write n
+    t2 = "\n"
+    write t2
+    t3 = "Ingresa un flotante: "
+    write t3
+    read f
+    t4 = "Leiste: "
+    write t4
+    write f
+    t5 = "\n"
+    write t5
 # ===== FIN DEL CODIGO INTERMEDIO =====

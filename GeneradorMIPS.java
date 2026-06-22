@@ -1,12 +1,19 @@
+// ===================================================================
+// 1. IMPORTACIONES Y CONFIGURACION INICIAL
+// ===================================================================
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-// GeneradorMIPS.java
+// ===================================================================
+// 2. CLASE PRINCIPAL GeneradorMIPS
+// ===================================================================
+
 public class GeneradorMIPS {
 
     // ===============================================================
-    // ESTRUCTURAS DE DATOS PARA LA PRIMERA PASADA
+    // 2.0 ESTRUCTURAS DE DATOS PARA LA PRIMERA PASADA
     // ===============================================================
 
     // nombre de variable/temporal -> tipo ("int", "float", "bool", "char", "string")
@@ -14,6 +21,9 @@ public class GeneradorMIPS {
 
     // nombre de variable arreglo -> tamano total en palabras (para arreglos 2D)
     static LinkedHashMap<String, Integer> arreglos = new LinkedHashMap<>();
+
+    // nombre de variable arreglo -> numero de columnas (necesario para calcular el offset)
+    static LinkedHashMap<String, Integer> arregloColumnas = new LinkedHashMap<>();
 
     // strings literales encontrados -> etiqueta generada (str0, str1, ...)
     static LinkedHashMap<String, String> stringsLiterales = new LinkedHashMap<>();
@@ -28,22 +38,17 @@ public class GeneradorMIPS {
     // Lineas crudas del archivo de 3D
     static List<String> lineas3D = new ArrayList<>();
 
-    // Mapa de renombrado: nombre original del 3D -> nombre seguro usado en el .asm
-    // (solo contiene entradas para los nombres que chocaban con una palabra
-    // reservada de MIPS, por ejemplo "b" -> "var_b")
+    // Mapa de renombrado: nombre original -> nombre seguro usado en el .asm
     static Map<String, String> renombrados = new HashMap<>();
 
     // ===============================================================
-    // RENOMBRADO DE IDENTIFICADORES QUE CHOCAN CON PALABRAS RESERVADAS
+    // 2.1 RENOMBRADO DE IDENTIFICADORES QUE CHOCAN CON PALABRAS RESERVADAS
     // ===============================================================
-    // Recorre lineas3D, detecta cualquier identificador definido (ya sea por
-    // "declare nombre, tipo" o por una asignacion "nombre = ...") cuyo nombre
-    // coincida con un mnemonico de MIPS, y sustituye TODAS sus apariciones en
-    // todas las lineas por una version segura (ej. "b" -> "var_b"). Esto debe
-    // ejecutarse ANTES de primeraPasada()/segundaPasada(), para que el resto
-    // del pipeline nunca vea los nombres conflictivos.
+    // Recorre lineas3D, detecta cualquier identificador definido cuyo nombre
+    // coincida con un mnemonico de MIPS, y sustituye TODAS sus apariciones
+    // por una version segura (ej. "b" -> "var_b").
+
     static void renombrarPalabrasReservadas() {
-        // 1. Detectar todos los identificadores definidos en el programa
         Set<String> nombresDetectados = new LinkedHashSet<>();
         for (String linea : lineas3D) {
             if (linea.startsWith("declare ")) {
@@ -58,13 +63,10 @@ public class GeneradorMIPS {
             }
         }
 
-        // 2. Quedarnos solo con los que en verdad chocan con una palabra
-        // reservada, y calcular su nombre seguro
         for (String nombre : nombresDetectados) {
-            nombreSeguro(nombre); // registra en "renombrados" si aplica
+            nombreSeguro(nombre);
         }
 
-        // 3. Si no hay ningun choque, no hace falta tocar nada
         boolean hayConflictos = false;
         for (Map.Entry<String, String> e : renombrados.entrySet()) {
             if (!e.getKey().equals(e.getValue())) {
@@ -74,16 +76,13 @@ public class GeneradorMIPS {
         }
         if (!hayConflictos) return;
 
-        // 4. Sustituir cada nombre conflictivo por su version segura en TODAS
-        // las lineas, usando limites de palabra para no afectar coincidencias
-        // parciales (por ejemplo, no tocar "tabla" al renombrar "b").
         List<String> lineasCorregidas = new ArrayList<>();
         for (String linea : lineas3D) {
             String nueva = linea;
             for (Map.Entry<String, String> e : renombrados.entrySet()) {
                 String original = e.getKey();
                 String seguro = e.getValue();
-                if (original.equals(seguro)) continue; // no necesitaba cambio
+                if (original.equals(seguro)) continue;
                 nueva = nueva.replaceAll("\\b" + Pattern.quote(original) + "\\b", seguro);
             }
             lineasCorregidas.add(nueva);
@@ -93,49 +92,35 @@ public class GeneradorMIPS {
     }
 
     // ===============================================================
-    // PALABRAS RESERVADAS DE MIPS/SPIM
+    // 2.2 PALABRAS RESERVADAS DE MIPS/SPIM
     // ===============================================================
     // Todos los mnemonicos de instrucciones (y pseudo-instrucciones) son
-    // identificadores reservados para el ensamblador: no se pueden usar como
-    // etiquetas de variables. Si el codigo fuente del usuario declara una
-    // variable con uno de estos nombres (el caso clasico es "b", que es el
-    // opcode de branch), el ensamblado falla con un syntax error en QtSpim.
-    // Esta lista cubre los mnemonicos que mas comunmente chocan con nombres
-    // cortos de variables reales.
+    // identificadores reservados para el ensamblador.
+
     static final Set<String> PALABRAS_RESERVADAS_MIPS = new HashSet<>(Arrays.asList(
-        // Pseudo-instrucciones y saltos de una sola letra/abreviatura corta
         "b", "j", "jr", "jal", "jalr",
-        // Carga/almacenamiento
         "la", "li", "lw", "sw", "lb", "sb", "lh", "sh",
         "l.s", "s.s", "l.d", "s.d", "li.s", "li.d",
         "lui", "move", "mfhi", "mflo", "mfc1", "mtc1",
-        // Aritmetica entera
         "add", "addu", "addi", "addiu", "sub", "subu",
         "mul", "mult", "multu", "div", "divu", "neg", "negu",
         "and", "andi", "or", "ori", "xor", "xori", "nor", "not",
         "sll", "srl", "sra", "rem", "abs",
-        // Aritmetica de punto flotante
         "add.s", "sub.s", "mul.s", "div.s", "neg.s", "abs.s",
         "add.d", "sub.d", "mul.d", "div.d", "neg.d", "abs.d",
         "mov.s", "mov.d", "cvt.s.w", "cvt.w.s", "cvt.d.w", "cvt.w.d",
-        // Comparaciones (set y branch)
         "slt", "slti", "sltu", "sltiu", "sle", "sgt", "sge", "seq", "sne",
         "beq", "bne", "blt", "ble", "bgt", "bge", "beqz", "bnez",
         "bltz", "blez", "bgtz", "bgez",
         "c.lt.s", "c.le.s", "c.eq.s", "c.lt.d", "c.le.d", "c.eq.d",
         "bc1t", "bc1f",
-        // Llamadas al sistema y control
         "syscall", "nop", "break", "trap", "eret",
-        // Directivas comunes (por si acaso aparecen como nombre)
         "data", "text", "word", "asciiz", "ascii", "byte", "float", "double",
         "globl", "ent", "end", "space", "align", "extern"
     ));
 
-    // Genera un nombre seguro para usar en el .asm: si el nombre original
-    // coincide (sin importar mayusculas) con una palabra reservada de MIPS,
-    // se le antepone el prefijo "var_"; en caso contrario se deja igual.
-    // El resultado se cachea en "renombrados" para que el mismo nombre
-    // original siempre produzca el mismo nombre seguro.
+    // Genera un nombre seguro: si el nombre coincide con una palabra reservada,
+    // se le antepone "var_"
     static String nombreSeguro(String nombreOriginal) {
         if (renombrados.containsKey(nombreOriginal)) {
             return renombrados.get(nombreOriginal);
@@ -149,7 +134,7 @@ public class GeneradorMIPS {
     }
 
     // ===============================================================
-    // PUNTO DE ENTRADA (uso standalone: java GeneradorMIPS archivo.txt)
+    // 2.3 PUNTO DE ENTRADA (uso standalone)
     // ===============================================================
 
     public static void main(String[] args) {
@@ -157,36 +142,32 @@ public class GeneradorMIPS {
             System.out.println("Uso: java GeneradorMIPS <archivo_codigo_intermedio.txt>");
             return;
         }
-
         try {
-            generar(args[0]);
+            String archivoEntrada = args[0];
+            String archivoSalida = archivoEntrada.replaceAll("\\.[^.]+$", "") + ".asm";
+            generar(archivoEntrada, archivoSalida);
+            System.out.println("Archivo MIPS generado: " + archivoSalida);
         } catch (IOException e) {
-            System.out.println("Error leyendo el archivo: " + e.getMessage());
+            System.out.println("Error generando MIPS: " + e.getMessage());
         }
     }
 
     // ===============================================================
-    // METODO REUTILIZABLE: genera el .asm a partir del archivo de 3D
-    // y devuelve la ruta del archivo .asm creado.
-    //
-    // Se puede llamar tanto desde main() (uso standalone) como desde
-    // Main.java (justo despues de generar el codigo intermedio).
-    // No imprime nada en consola; lo unico que importa es el .asm.
+    // 2.4 METODO GENERAR (llamable desde Main.java)
     // ===============================================================
+    // Genera el .asm a partir del archivo de 3D y devuelve la ruta del .asm creado.
+    // No imprime nada en consola; lo unico que importa es el .asm.
 
-    static String generar(String archivoEntrada) throws IOException {
-        // Reseteamos el estado por si se llama mas de una vez en el mismo
-        // proceso (por ejemplo, si Main.java se reutiliza en pruebas)
+    static String generar(String archivoEntrada, String archivoSalida) throws IOException {
         simbolos.clear();
         arreglos.clear();
+        arregloColumnas.clear();
         stringsLiterales.clear();
         contadorStrings = 0;
         contadorCmp = 0;
         contadorPow = 0;
         lineas3D.clear();
         renombrados.clear();
-
-        String archivoSalida = archivoEntrada.replaceAll("\\.[^.]+$", "") + ".asm";
 
         leerArchivo(archivoEntrada);
         renombrarPalabrasReservadas();
@@ -206,27 +187,20 @@ public class GeneradorMIPS {
     }
 
     // ===============================================================
-    // UTILIDADES PARA SABER SI UN OPERANDO ES FLOTANTE
+    // 2.5 UTILIDADES PARA TIPOS
     // ===============================================================
 
-    // Determina si un nombre (variable, temporal o literal) es de tipo float
     static boolean esFloat(String operando) {
         if (simbolos.containsKey(operando)) {
             return simbolos.get(operando).equals("float");
         }
-        // Si no esta en la tabla, puede ser un literal numerico: 3.14
         return operando.contains(".");
     }
 
-    // Indica si el string es un literal numerico (no nombre de variable)
     static boolean esLiteralNumerico(String s) {
         return s.matches("-?\\d+(\\.\\d+)?");
     }
 
-    // Genera la instruccion para cargar un operando ENTERO/BOOL/CHAR en el
-    // registro indicado: "li $reg, valor" si es un literal numerico puro,
-    // o "lw $reg, operando" si es una variable/temporal en memoria.
-    // (Para floats se usa l.s directamente, ver los bloques que lo manejan.)
     static String cargarEntero(String registro, String operando) {
         if (esLiteralNumerico(operando) && !operando.contains(".")) {
             return "li " + registro + ", " + operando + "\n";
@@ -235,9 +209,6 @@ public class GeneradorMIPS {
         }
     }
 
-    // Devuelve el tipo de un operando ("int", "float", "bool", "char", "string")
-    // consultando la tabla de simbolos. Si no esta registrado, se infiere por
-    // forma (literal numerico con punto -> float, sin punto -> int).
     static String tipoDe(String operando) {
         if (simbolos.containsKey(operando)) {
             return simbolos.get(operando);
@@ -245,11 +216,81 @@ public class GeneradorMIPS {
         if (esLiteralNumerico(operando)) {
             return operando.contains(".") ? "float" : "int";
         }
-        return "int"; // valor por defecto si no se reconoce
+        return "int";
     }
 
     // ===============================================================
-    // SEGUNDA PASADA: traduccion de cada linea de 3D a MIPS
+    // 2.6 PRIMERA PASADA: recolectar variables, temporales y strings
+    // ===============================================================
+
+    static void primeraPasada() {
+        for (String linea : lineas3D) {
+
+            // ---------------------------------------------------------------
+            // 2.6.1 DECLARACIONES EXPLICITAS: "declare nombre, tipo"
+            // ---------------------------------------------------------------
+            if (linea.startsWith("declare ")) {
+                String resto = linea.substring("declare ".length());
+                String[] partes = resto.split(",", 2);
+                String nombre = partes[0].trim();
+                String tipo = partes[1].trim();
+
+                if (tipo.contains("[")) {
+                    String tipoBase = tipo.substring(0, tipo.indexOf('['));
+                    Matcher m = Pattern.compile("\\[(\\d+)\\]\\[(\\d+)\\]").matcher(tipo);
+                    if (m.find()) {
+                        int filas = Integer.parseInt(m.group(1));
+                        int cols = Integer.parseInt(m.group(2));
+                        arreglos.put(nombre, filas * cols);
+                        arregloColumnas.put(nombre, cols);
+                        simbolos.put(nombre, tipoBase + "[]");
+                    }
+                } else {
+                    simbolos.put(nombre, tipo);
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // 2.6.2 STRINGS LITERALES: cualquier linea con "..."
+            // ---------------------------------------------------------------
+            Matcher mStr = Pattern.compile("\"([^\"]*)\"").matcher(linea);
+            if (mStr.find()) {
+                String contenido = mStr.group(1);
+                if (!stringsLiterales.containsKey(contenido)) {
+                    String etiqueta = "str" + contadorStrings++;
+                    stringsLiterales.put(contenido, etiqueta);
+                }
+            }
+
+            // ---------------------------------------------------------------
+            // 2.6.3 TEMPORALES: t0, t1, f0, f1, etc.
+            // ---------------------------------------------------------------
+            Matcher mTemp = Pattern.compile("^([tf]\\d+)\\s*=\\s*(.*)$").matcher(linea);
+            if (mTemp.matches()) {
+                String nombreTemp = mTemp.group(1);
+                String ladoDerecho = mTemp.group(2);
+                if (!simbolos.containsKey(nombreTemp)) {
+                    String tipoInferido;
+                    if (ladoDerecho.matches("\"(.*)\"")) {
+                        tipoInferido = "string";
+                    } else if (ladoDerecho.matches("(true|false)")) {
+                        tipoInferido = "bool";
+                    } else if (ladoDerecho.matches("'.'")) {
+                        tipoInferido = "char";
+                    } else if (ladoDerecho.matches("-?\\d+\\.\\d+")) {
+                        tipoInferido = "float";
+                    } else {
+                        tipoInferido = nombreTemp.startsWith("f") ? "float" : "int";
+                    }
+                    simbolos.put(nombreTemp, tipoInferido);
+                }
+            }
+        }
+    }
+
+    // ===============================================================
+    // 2.7 SEGUNDA PASADA: traduccion de cada linea de 3D a MIPS
     // ===============================================================
 
     static String segundaPasada() {
@@ -257,17 +298,76 @@ public class GeneradorMIPS {
 
         for (String linea : lineas3D) {
 
-            // Ignoramos las declaraciones (ya se uso en la primera pasada)
             if (linea.startsWith("declare ")) continue;
 
-            // Etiquetas de funcion/main: "nombre:" (sin espacios, termina en ':')
-            // Las vemos mas adelante (saltos y funciones), por ahora las dejamos pasar
             if (linea.endsWith(":") && !linea.contains(" ") && !linea.contains("=")) {
                 sb.append(linea).append("\n");
                 continue;
             }
 
-            // --- ASIGNACION DE LITERAL NUMERICO: "t0 = 5"  o  "f0 = -3.14" ---
+            // ---------------------------------------------------------------
+            // 2.7.1 ESCRITURA EN ELEMENTO DE ARREGLO: "arr[i][j] = valor"
+            // ---------------------------------------------------------------
+            Matcher mArrSet = Pattern.compile("^(\\w+)\\[(.+)\\]\\[(.+)\\]\\s*=\\s*(\\S+)$").matcher(linea);
+            if (mArrSet.matches()) {
+                String arr = mArrSet.group(1);
+                String idx1 = mArrSet.group(2);
+                String idx2 = mArrSet.group(3);
+                String valor = mArrSet.group(4);
+                int cols = arregloColumnas.getOrDefault(arr, 1);
+
+                sb.append(cargarEntero("$t8", idx1));
+                sb.append("li $t9, ").append(cols).append("\n");
+                sb.append("mul $t8, $t8, $t9\n");
+                sb.append(cargarEntero("$t9", idx2));
+                sb.append("add $t8, $t8, $t9\n");
+                sb.append("sll $t8, $t8, 2\n");
+                sb.append("la $t9, ").append(arr).append("\n");
+                sb.append("add $t9, $t9, $t8\n");
+
+                if (esFloat(arr) || esFloat(valor)) {
+                    sb.append("l.s $f0, ").append(valor).append("\n");
+                    sb.append("s.s $f0, 0($t9)\n");
+                } else {
+                    sb.append(cargarEntero("$t0", valor));
+                    sb.append("sw $t0, 0($t9)\n");
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // 2.7.2 LECTURA DE ELEMENTO DE ARREGLO: "t5 = arr[i][j]"
+            // ---------------------------------------------------------------
+            Matcher mArrGet = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\[(.+)\\]\\[(.+)\\]$").matcher(linea);
+            if (mArrGet.matches()) {
+                String destino = mArrGet.group(1);
+                String arr = mArrGet.group(2);
+                String idx1 = mArrGet.group(3);
+                String idx2 = mArrGet.group(4);
+                int cols = arregloColumnas.getOrDefault(arr, 1);
+
+                sb.append(cargarEntero("$t8", idx1));
+                sb.append("li $t9, ").append(cols).append("\n");
+                sb.append("mul $t8, $t8, $t9\n");
+                sb.append(cargarEntero("$t9", idx2));
+                sb.append("add $t8, $t8, $t9\n");
+                sb.append("sll $t8, $t8, 2\n");
+                sb.append("la $t9, ").append(arr).append("\n");
+                sb.append("add $t9, $t9, $t8\n");
+
+                if (esFloat(arr) || esFloat(destino)) {
+                    sb.append("l.s $f0, 0($t9)\n");
+                    sb.append("s.s $f0, ").append(destino).append("\n");
+                } else {
+                    sb.append("lw $t0, 0($t9)\n");
+                    sb.append("sw $t0, ").append(destino).append("\n");
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // 2.7.3 ASIGNACION DE LITERALES (numeros, booleanos, caracteres, strings)
+            // ---------------------------------------------------------------
             Matcher mLit = Pattern.compile("^(\\w+)\\s*=\\s*(-?\\d+\\.?\\d*)$").matcher(linea);
             if (mLit.matches()) {
                 String destino = mLit.group(1);
@@ -282,7 +382,6 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- ASIGNACION DE BOOLEANO: "t0 = true" / "t0 = false" ---
             Matcher mBool = Pattern.compile("^(\\w+)\\s*=\\s*(true|false)$").matcher(linea);
             if (mBool.matches()) {
                 String destino = mBool.group(1);
@@ -292,7 +391,6 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- ASIGNACION DE CARACTER LITERAL: "t0 = 'a'" ---
             Matcher mChar = Pattern.compile("^(\\w+)\\s*=\\s*'(.)'$").matcher(linea);
             if (mChar.matches()) {
                 String destino = mChar.group(1);
@@ -302,7 +400,6 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- ASIGNACION DE STRING LITERAL: 't0 = "Hola"' ---
             Matcher mStrLit = Pattern.compile("^(\\w+)\\s*=\\s*\"(.*)\"$").matcher(linea);
             if (mStrLit.matches()) {
                 String destino = mStrLit.group(1);
@@ -313,7 +410,9 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- COPIA SIMPLE: "x = t0"  o  "t0 = x" ---
+            // ---------------------------------------------------------------
+            // 2.7.4 COPIA SIMPLE: "x = t0"
+            // ---------------------------------------------------------------
             Matcher mCopia = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)$").matcher(linea);
             if (mCopia.matches()) {
                 String destino = mCopia.group(1);
@@ -328,14 +427,15 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- SALTO INCONDICIONAL: "goto L2" ---
+            // ---------------------------------------------------------------
+            // 2.7.5 SALTOS (goto, ifFalse, if)
+            // ---------------------------------------------------------------
             Matcher mGoto = Pattern.compile("^goto\\s+(\\S+)$").matcher(linea);
             if (mGoto.matches()) {
                 sb.append("j ").append(mGoto.group(1)).append("\n");
                 continue;
             }
 
-            // --- SALTO CONDICIONAL FALSO: "ifFalse t4 goto L0" ---
             Matcher mIfFalse = Pattern.compile("^ifFalse\\s+(\\S+)\\s+goto\\s+(\\S+)$").matcher(linea);
             if (mIfFalse.matches()) {
                 String cond = mIfFalse.group(1);
@@ -345,7 +445,6 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- SALTO CONDICIONAL VERDADERO: "if t14 goto _case1_1_b" ---
             Matcher mIfTrue = Pattern.compile("^if\\s+(\\S+)\\s+goto\\s+(\\S+)$").matcher(linea);
             if (mIfTrue.matches()) {
                 String cond = mIfTrue.group(1);
@@ -355,7 +454,9 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- COMPARACIONES RELACIONALES: "t4 = t2 <= t3" ---
+            // ---------------------------------------------------------------
+            // 2.7.6 COMPARACIONES RELACIONALES: "t4 = t2 <= t3"
+            // ---------------------------------------------------------------
             Matcher mRel = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*(<=|>=|==|!=|<|>)\\s*(\\S+)$").matcher(linea);
             if (mRel.matches()) {
                 String destino = mRel.group(1);
@@ -373,10 +474,10 @@ public class GeneradorMIPS {
                     switch (operador) {
                         case "<":  sb.append("c.lt.s $f1, $f2\n"); break;
                         case "<=": sb.append("c.le.s $f1, $f2\n"); break;
-                        case ">":  sb.append("c.le.s $f1, $f2\n"); break; // negado abajo
-                        case ">=": sb.append("c.lt.s $f1, $f2\n"); break; // negado abajo
+                        case ">":  sb.append("c.le.s $f1, $f2\n"); break;
+                        case ">=": sb.append("c.lt.s $f1, $f2\n"); break;
                         case "==": sb.append("c.eq.s $f1, $f2\n"); break;
-                        case "!=": sb.append("c.eq.s $f1, $f2\n"); break; // negado abajo
+                        case "!=": sb.append("c.eq.s $f1, $f2\n"); break;
                     }
                     boolean negar = operador.equals(">") || operador.equals(">=") || operador.equals("!=");
                     sb.append("li $t0, 0\n");
@@ -405,7 +506,9 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- OPERADORES LOGICOS BINARIOS: "t6 = t4 @ t5" (AND) / "t6 = t4 # t5" (OR) ---
+            // ---------------------------------------------------------------
+            // 2.7.7 OPERADORES LOGICOS BINARIOS: "@" (AND), "#" (OR)
+            // ---------------------------------------------------------------
             Matcher mLogico = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*([@#])\\s*(\\S+)$").matcher(linea);
             if (mLogico.matches()) {
                 String destino = mLogico.group(1);
@@ -424,18 +527,22 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- NEGACION LOGICA (NOT): "t11 = !t10" ---
+            // ---------------------------------------------------------------
+            // 2.7.8 NEGACION LOGICA: "t11 = !t10"
+            // ---------------------------------------------------------------
             Matcher mNot = Pattern.compile("^(\\w+)\\s*=\\s*!(\\S+)$").matcher(linea);
             if (mNot.matches()) {
                 String destino = mNot.group(1);
                 String op1 = mNot.group(2);
                 sb.append(cargarEntero("$t1", op1));
-                sb.append("xori $t0, $t1, 1\n"); // invierte 0<->1 (booleano)
+                sb.append("xori $t0, $t1, 1\n");
                 sb.append("sw $t0, ").append(destino).append("\n");
                 continue;
             }
 
-            // --- NEGACION ARITMETICA UNARIA: "t3 = - t2" ---
+            // ---------------------------------------------------------------
+            // 2.7.9 NEGACION ARITMETICA: "t3 = - t2"
+            // ---------------------------------------------------------------
             Matcher mNeg = Pattern.compile("^(\\w+)\\s*=\\s*-\\s*(\\S+)$").matcher(linea);
             if (mNeg.matches()) {
                 String destino = mNeg.group(1);
@@ -452,7 +559,9 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- OPERACION ARITMETICA BINARIA: "t2 = t0 + t1" ---
+            // ---------------------------------------------------------------
+            // 2.7.10 OPERACIONES ARITMETICAS: "+", "-", "*", "/", "%", "^"
+            // ---------------------------------------------------------------
             Matcher mOp = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*([+\\-*/%^])\\s*(\\S+)$").matcher(linea);
             if (mOp.matches()) {
                 String destino = mOp.group(1);
@@ -482,17 +591,14 @@ public class GeneradorMIPS {
                         case "/": sb.append("div $t1, $t2\n"); sb.append("mflo $t0\n"); break;
                         case "%": sb.append("div $t1, $t2\n"); sb.append("mfhi $t0\n"); break;
                         case "^":
-                            // MIPS no tiene instruccion de potencia: se calcula con un
-                            // bucle que multiplica la base por si misma "exponente" veces.
-                            // $t1 = base, $t2 = exponente (ya cargados arriba).
-                            // $t0 = acumulador (resultado), inicia en 1.
+                            // Potencia: bucle que multiplica la base por si misma
                             String etqInicio = "_pow" + (contadorPow++) + "_start";
                             String etqFin = "_pow" + (contadorPow++) + "_end";
-                            sb.append("li $t0, 1\n");                          // acumulador = 1
+                            sb.append("li $t0, 1\n");
                             sb.append(etqInicio).append(":\n");
-                            sb.append("blez $t2, ").append(etqFin).append("\n"); // si exponente <= 0, terminar
-                            sb.append("mul $t0, $t0, $t1\n");                  // acumulador *= base
-                            sb.append("addi $t2, $t2, -1\n");                  // exponente--
+                            sb.append("blez $t2, ").append(etqFin).append("\n");
+                            sb.append("mul $t0, $t0, $t1\n");
+                            sb.append("addi $t2, $t2, -1\n");
                             sb.append("j ").append(etqInicio).append("\n");
                             sb.append(etqFin).append(":\n");
                             break;
@@ -502,10 +608,9 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // --- IMPRESION POR PANTALLA: "write t5" ---
-            // Usa los syscalls estandar de SPIM/MARS/QtSpim segun el tipo del
-            // operando: int/bool -> print_int (1), float -> print_float (2),
-            // string -> print_string (4), char -> print_char (11).
+            // ---------------------------------------------------------------
+            // 2.7.11 IMPRESION POR PANTALLA: "write t5"
+            // ---------------------------------------------------------------
             Matcher mWrite = Pattern.compile("^write\\s+(\\S+)$").matcher(linea);
             if (mWrite.matches()) {
                 String operando = mWrite.group(1);
@@ -528,7 +633,6 @@ public class GeneradorMIPS {
                         sb.append("syscall\n");
                         break;
                     default:
-                        // int y bool se imprimen igual: print_int (bool como 0/1)
                         sb.append("lw $a0, ").append(operando).append("\n");
                         sb.append("li $v0, 1\n");
                         sb.append("syscall\n");
@@ -537,14 +641,30 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // Si no coincide con ningun patron conocido todavia, lo dejamos como
-            // comentario para identificarlo facilmente y seguir construyendo
+            // ---------------------------------------------------------------
+            // 2.7.12 LECTURA DE CONSOLA: "read x"
+            // ---------------------------------------------------------------
+            Matcher mRead = Pattern.compile("^read\\s+(\\S+)$").matcher(linea);
+            if (mRead.matches()) {
+                String variable = mRead.group(1);
+                String tipo = tipoDe(variable);
+
+                if (tipo.equals("float")) {
+                    sb.append("li $v0, 6\n");
+                    sb.append("syscall\n");
+                    sb.append("s.s $f0, ").append(variable).append("\n");
+                } else {
+                    // int (bool y char tambien leen como entero)
+                    sb.append("li $v0, 5\n");
+                    sb.append("syscall\n");
+                    sb.append("sw $v0, ").append(variable).append("\n");
+                }
+                continue;
+            }
+
             sb.append("# PENDIENTE: ").append(linea).append("\n");
         }
 
-        // Syscall de salida (exit, codigo 10). Sin esto, QtSpim sigue
-        // ejecutando instrucciones mas alla del final de .text y termina
-        // lanzando una excepcion de "direccion de instruccion invalida".
         sb.append("li $v0, 10\n");
         sb.append("syscall\n");
 
@@ -552,19 +672,18 @@ public class GeneradorMIPS {
     }
 
     // ===============================================================
-    // GENERACION DE LA SECCION .data
+    // 2.8 GENERACION DE LA SECCION .data
     // ===============================================================
 
     static String generarData() {
         StringBuilder sb = new StringBuilder();
         sb.append(".data\n");
 
-        // 1. Variables y temporales (que no sean arreglos)
         for (Map.Entry<String, String> e : simbolos.entrySet()) {
             String nombre = e.getKey();
             String tipo = e.getValue();
 
-            if (tipo.endsWith("[]")) continue; // los arreglos se manejan aparte
+            if (tipo.endsWith("[]")) continue;
 
             switch (tipo) {
                 case "int":
@@ -576,9 +695,6 @@ public class GeneradorMIPS {
                     sb.append(nombre).append(": .float 0.0\n");
                     break;
                 case "string":
-                    // El espacio real del string se reserva donde se le asigna
-                    // un valor (linea con comillas); aqui solo reservamos un
-                    // puntero/placeholder de 4 bytes para la variable string.
                     sb.append(nombre).append(": .word 0\n");
                     break;
                 default:
@@ -586,7 +702,6 @@ public class GeneradorMIPS {
             }
         }
 
-        // 2. Arreglos
         for (Map.Entry<String, Integer> e : arreglos.entrySet()) {
             String nombre = e.getKey();
             int total = e.getValue();
@@ -603,7 +718,6 @@ public class GeneradorMIPS {
             }
         }
 
-        // 3. Strings literales
         for (Map.Entry<String, String> e : stringsLiterales.entrySet()) {
             String contenido = e.getKey();
             String etiqueta = e.getValue();
@@ -615,7 +729,7 @@ public class GeneradorMIPS {
     }
 
     // ===============================================================
-    // LECTURA DEL ARCHIVO DE 3D
+    // 2.9 LECTURA DEL ARCHIVO DE 3D
     // ===============================================================
 
     static void leerArchivo(String path) throws IOException {
@@ -623,89 +737,10 @@ public class GeneradorMIPS {
         String linea;
         while ((linea = br.readLine()) != null) {
             String limpia = linea.trim();
-            // Ignorar lineas vacias y los marcadores de inicio/fin de archivo
             if (limpia.isEmpty()) continue;
             if (limpia.startsWith("#")) continue;
             lineas3D.add(limpia);
         }
         br.close();
-    }
-
-    // ===============================================================
-    // PRIMERA PASADA: recolectar variables, temporales y strings
-    // ===============================================================
-
-    static void primeraPasada() {
-        for (String linea : lineas3D) {
-
-            // 1. Declaraciones explicitas: "declare nombre, tipo"
-            if (linea.startsWith("declare ")) {
-                // Ejemplo: declare x, int   |  declare arr, int[1][2]
-                String resto = linea.substring("declare ".length());
-                String[] partes = resto.split(",", 2);
-                String nombre = partes[0].trim();
-                String tipo = partes[1].trim();
-
-                if (tipo.contains("[")) {
-                    // Es un arreglo: int[1][2] -> dimensiones 1 y 2
-                    String tipoBase = tipo.substring(0, tipo.indexOf('['));
-                    Matcher m = Pattern.compile("\\[(\\d+)\\]\\[(\\d+)\\]").matcher(tipo);
-                    if (m.find()) {
-                        int filas = Integer.parseInt(m.group(1));
-                        int cols = Integer.parseInt(m.group(2));
-                        arreglos.put(nombre, filas * cols);
-                        simbolos.put(nombre, tipoBase + "[]"); // marca como arreglo
-                    }
-                } else {
-                    simbolos.put(nombre, tipo);
-                }
-                continue;
-            }
-
-            // 2. Strings literales: cualquier linea con "..." entre comillas
-            Matcher mStr = Pattern.compile("\"([^\"]*)\"").matcher(linea);
-            if (mStr.find()) {
-                String contenido = mStr.group(1);
-                if (!stringsLiterales.containsKey(contenido)) {
-                    String etiqueta = "str" + contadorStrings++;
-                    stringsLiterales.put(contenido, etiqueta);
-                }
-            }
-
-            // 3. Temporales: t0, t1, f0, f1, etc. (si no fueron declarados
-            // arriba con "declare"). Solo se reconocen nombres que sigan
-            // estrictamente el patron [tf]\d+ (la convencion de temporales
-            // generados por el front-end). Cualquier otra variable interna
-            // (como "tsw1" del switch) DEBE llegar con su propio "declare"
-            // desde el .cup; si no lo hace, este metodo ya NO la infiere
-            // automaticamente, y el .asm resultante mostrara el problema
-            // (etiqueta usada pero no declarada) en vez de ocultarlo.
-            Matcher mTemp = Pattern.compile("^([tf]\\d+)\\s*=\\s*(.*)$").matcher(linea);
-            if (mTemp.matches()) {
-                String nombreTemp = mTemp.group(1);
-                String ladoDerecho = mTemp.group(2);
-                if (!simbolos.containsKey(nombreTemp)) {
-                    String tipoInferido;
-                    if (ladoDerecho.matches("\"(.*)\"")) {
-                        // t3 = "Hola mundo" -> el temporal es de tipo string
-                        tipoInferido = "string";
-                    } else if (ladoDerecho.matches("(true|false)")) {
-                        // t2 = true / t2 = false -> el temporal es booleano
-                        tipoInferido = "bool";
-                    } else if (ladoDerecho.matches("'.'")) {
-                        // t1 = 'a' -> el temporal es char
-                        tipoInferido = "char";
-                    } else if (ladoDerecho.matches("-?\\d+\\.\\d+")) {
-                        // t1 = 3.14 -> literal con punto decimal: float
-                        tipoInferido = "float";
-                    } else {
-                        // Por convencion: nombres que inician con 'f' son float,
-                        // cualquier otro (t0, t1, etc.) se asume entero/bool/char
-                        tipoInferido = nombreTemp.startsWith("f") ? "float" : "int";
-                    }
-                    simbolos.put(nombreTemp, tipoInferido);
-                }
-            }
-        }
     }
 }
