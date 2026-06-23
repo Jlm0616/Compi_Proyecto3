@@ -73,20 +73,43 @@ public class GeneradorMIPS {
         }
         if (!hayConflictos) return;
 
-        // Sustituir en todas las lineas
+        // Sustituir en todas las lineas, pero NUNCA dentro de un literal de
+        // cadena (texto entre comillas dobles). Sin esto, una palabra como
+        // "b" que aparece como texto normal dentro de un string del usuario
+        // (ej. "el valor de b es: ") se renombraria por error a "var_b",
+        // corrompiendo el contenido real del string.
         List<String> lineasCorregidas = new ArrayList<>();
         for (String linea : lineas3D) {
-            String nueva = linea;
-            for (Map.Entry<String, String> e : renombrados.entrySet()) {
-                String original = e.getKey();
-                String seguro = e.getValue();
-                if (original.equals(seguro)) continue;
-                nueva = nueva.replaceAll("\\b" + Pattern.quote(original) + "\\b", seguro);
-            }
-            lineasCorregidas.add(nueva);
+            lineasCorregidas.add(renombrarFueraDeStrings(linea));
         }
         lineas3D.clear();
         lineas3D.addAll(lineasCorregidas);
+    }
+
+    // Aplica el renombrado de "renombrados" solo a los segmentos de la linea
+    // que estan FUERA de comillas dobles. Los segmentos entre comillas
+    // (literales de cadena) se copian intactos, sin tocarlos.
+    static String renombrarFueraDeStrings(String linea) {
+        StringBuilder resultado = new StringBuilder();
+        Matcher mPartes = Pattern.compile("\"[^\"]*\"|[^\"]+").matcher(linea);
+        while (mPartes.find()) {
+            String parte = mPartes.group();
+            if (parte.startsWith("\"")) {
+                // Literal de cadena: se copia tal cual, sin renombrar nada
+                resultado.append(parte);
+            } else {
+                // Fuera de comillas: aqui si se aplica el renombrado
+                String nueva = parte;
+                for (Map.Entry<String, String> e : renombrados.entrySet()) {
+                    String original = e.getKey();
+                    String seguro = e.getValue();
+                    if (original.equals(seguro)) continue;
+                    nueva = nueva.replaceAll("\\b" + Pattern.quote(original) + "\\b", seguro);
+                }
+                resultado.append(nueva);
+            }
+        }
+        return resultado.toString();
     }
 
     // ===============================================================

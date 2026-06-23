@@ -1,111 +1,321 @@
 # ===== CODIGO INTERMEDIO =====
 main:
-    declare x, int
-    __t0 = 2
-    __t1 = 3
-    __t2 = __t0 + __t1
-    __t3 = 4
-    __t4 = 1
-    __t5 = __t3 - __t4
-    __t6 = __t2 * __t5
-    __t7 = 2
-    __t8 = 1
-    __t9 = __t7 - __t8
-    __t10 = __t6 ^ __t9
-    x = __t10
-    __t11 = "((2+3)*(4-1))^(2-1) = "
-    write __t11
-    write x
-    __t12 = "\n"
-    write __t12
-    declare y, int
-    __t13 = 100
-    __t14 = 10
-    __t15 = __t13 / __t14
-    __t16 = 2
-    __t17 = __t15 / __t16
-    __t18 = 5
-    __t19 = __t17 / __t18
-    y = __t19
-    __t20 = "100/10/2/5 = "
-    write __t20
-    write y
-    __t21 = "\n"
-    write __t21
-    declare z, int
-    __t22 = 100
-    __t23 = 30
-    __t24 = __t22 - __t23
-    __t25 = 20
-    __t26 = __t24 - __t25
-    __t27 = 10
-    __t28 = __t26 - __t27
-    z = __t28
-    __t29 = "100-30-20-10 = "
-    write __t29
-    write z
-    __t30 = "\n"
-    write __t30
-    declare w, int
-    __t31 = 2
-    __t32 = 3
-    __t33 = 2
-    __t34 = __t32 ^ __t33
-    __t35 = __t31 ^ __t34
-    w = __t35
-    __t36 = "2^3^2 = "
-    write __t36
-    write w
-    __t37 = "\n"
-    write __t37
-    declare m, int
-    __t38 = 100
-    __t39 = 30
-    __t40 = __t38 % __t39
-    __t41 = 7
-    __t42 = __t40 % __t41
-    m = __t42
-    __t43 = "100%30%7 = "
-    write __t43
-    write m
-    __t44 = "\n"
-    write __t44
+    declare countA, int
+    __t0 = 0
+    countA = __t0
+    declare countB, int
+    __t1 = 0
+    countB = __t1
+    declare countC, int
+    __t2 = 0
+    countC = __t2
+    declare maxSuma, int
+    __t3 = 0
+    maxSuma = __t3
+    declare sumaFloat, float
+    __f0 = 0.0
+    sumaFloat = __f0
+    declare matriz, int[3][3]
+    __t4 = 0
+    __t5 = 0
+    __t6 = 0
+    __t7 = 0
+    __t8 = 0
+    __t9 = 0
+    __t10 = 0
+    __t11 = 0
+    __t12 = 0
+    matriz[0][0] = __t4
+    matriz[0][1] = __t5
+    matriz[0][2] = __t6
+    matriz[1][0] = __t7
+    matriz[1][1] = __t8
+    matriz[1][2] = __t9
+    matriz[2][0] = __t10
+    matriz[2][1] = __t11
+    matriz[2][2] = __t12
+    declare i, int
+    __t13 = 1
+    i = __t13
+    declare xf, float
+    __f1 = 1.5
+    xf = __f1
+_dowhile1_start:
+    declare j, int
+    __t14 = 1
+    j = __t14
+    declare yf, float
+    __f2 = 1.5
+    yf = __f2
+_dowhile2_start:
+    declare k, int
+    __t15 = 1
+    k = __t15
+_dowhile3_start:
+    declare suma, int
+    __t16 = i
+    __t17 = j
+    __t18 = __t16 + __t17
+    __t19 = k
+    __t20 = __t18 + __t19
+    suma = __t20
+    __t21 = suma
+    __t22 = maxSuma
+    __t23 = __t21 > __t22
+    ifFalse __t23 goto L0
+    __t24 = suma
+    maxSuma = __t24
+L0:
     declare r, int
-    __t45 = 1
-    __t46 = 2
-    __t47 = 3
-    __t48 = __t46 * __t47
-    __t49 = __t45 + __t48
-    __t50 = 4
-    __t51 = 5
-    __t52 = __t50 * __t51
-    __t53 = __t49 + __t52
-    __t54 = 6
-    __t55 = 7
-    __t56 = __t54 * __t55
-    __t57 = __t53 + __t56
-    r = __t57
-    __t58 = "1+2*3+4*5+6*7 = "
-    write __t58
-    write r
-    __t59 = "\n"
-    write __t59
-    declare s, int
-    __t60 = 10
-    __t61 = 2
-    __t62 = 3
-    __t63 = __t61 * __t62
-    __t64 = __t60 - __t63
-    __t65 = 8
-    __t66 = 4
-    __t67 = __t65 / __t66
-    __t68 = 3
-    __t69 = __t67 % __t68
-    __t70 = __t64 + __t69
-    s = __t70
-    __t71 = "10-2*3+8/4%3 = "
-    write __t71
-    write s
-    __t72 = "\n"
-    write __t72
+    __t25 = suma
+    __t26 = 3
+    __t27 = __t25 % __t26
+    r = __t27
+    declare categoria, char
+    __t28 = 'X'
+    categoria = __t28
+    __t29 = r
+    __t30 = 0
+    __t31 = __t29 == __t30
+    ifFalse __t31 goto L1
+    __t32 = 'X'
+    categoria = __t32
+    goto L2
+L1:
+    __t33 = r
+    __t34 = 1
+    __t35 = __t33 == __t34
+    ifFalse __t35 goto L3
+    __t36 = 'Y'
+    categoria = __t36
+    goto L4
+L3:
+    __t37 = 'Z'
+    categoria = __t37
+L4:
+L2:
+    declare cond1, bool
+    __f3 = xf
+    __f4 = yf
+    __t38 = __f3 > __f4
+    cond1 = __t38
+    declare cond2, bool
+    __t39 = suma
+    __t40 = 6
+    __t41 = __t39 == __t40
+    cond2 = __t41
+    declare combinada, bool
+    __t42 = cond1
+    __t43 = cond2
+    __t44 = __t42 @ __t43
+    combinada = __t44
+    declare negCombinada, bool
+    __t45 = combinada
+    __t46 = !__t45
+    negCombinada = __t46
+    __t47 = categoria
+_switch1:
+    declare tsw1, int
+    tsw1 = 1
+    __t48 = 'X'
+_case1_1:
+    __t49 = tsw1 == 0
+    if __t49 goto _case1_1_b
+    __t50 = __t47 == __t48
+    if __t50 goto _case1_1_b
+    goto _case1_1_e
+_case1_1_b:
+    tsw1 = 0
+    __t51 = countA
+    __t52 = 1
+    __t53 = __t51 + __t52
+    countA = __t53
+    __t54 = i
+    __t55 = 3
+    __t56 = __t54 % __t55
+    __t57 = j
+    __t58 = k
+    __t59 = __t57 + __t58
+    __t60 = 3
+    __t61 = __t59 % __t60
+    __t62 = matriz[__t56][__t61]
+    __t63 = i
+    __t64 = 3
+    __t65 = __t63 % __t64
+    __t66 = j
+    __t67 = k
+    __t68 = __t66 + __t67
+    __t69 = 3
+    __t70 = __t68 % __t69
+    __t71 = matriz[__t65][__t70]
+    __t72 = 1
+    __t73 = __t71 + __t72
+    matriz[__t56][__t61] = __t73
+    goto _sw1_end
+_case1_1_e:
+    __t74 = 'Y'
+_case1_2:
+    __t75 = tsw1 == 0
+    if __t75 goto _case1_2_b
+    __t76 = __t47 == __t74
+    if __t76 goto _case1_2_b
+    goto _case1_2_e
+_case1_2_b:
+    tsw1 = 0
+    __t77 = countB
+    __t78 = 1
+    __t79 = __t77 + __t78
+    countB = __t79
+    __t80 = combinada
+    ifFalse __t80 goto L5
+    __f5 = sumaFloat
+    __f6 = xf
+    __f7 = __f5 + __f6
+    __f8 = yf
+    __f9 = __f7 + __f8
+    sumaFloat = __f9
+L5:
+    goto _sw1_end
+_case1_2_e:
+_default1:
+    __t81 = countC
+    __t82 = 1
+    __t83 = __t81 + __t82
+    countC = __t83
+    __t84 = negCombinada
+    ifFalse __t84 goto L6
+    __f10 = sumaFloat
+    __f11 = 0.5
+    __f12 = __f10 + __f11
+    sumaFloat = __f12
+L6:
+_sw1_end:
+    __t85 = k
+    __t86 = 1
+    __t87 = __t85 + __t86
+    k = __t87
+    __t88 = k
+    __t89 = 3
+    __t90 = __t88 <= __t89
+    if __t90 goto _dowhile3_start
+_dowhile3_end:
+    __t91 = j
+    __t92 = 1
+    __t93 = __t91 + __t92
+    j = __t93
+    __t94 = j
+    __t95 = 3
+    __t96 = __t94 <= __t95
+    if __t96 goto _dowhile2_start
+_dowhile2_end:
+    __f13 = yf
+    __f14 = 1.5
+    __f15 = __f13 + __f14
+    yf = __f15
+    __t97 = i
+    __t98 = 1
+    __t99 = __t97 + __t98
+    i = __t99
+    __t100 = i
+    __t101 = 3
+    __t102 = __t100 <= __t101
+    if __t102 goto _dowhile1_start
+_dowhile1_end:
+    declare potenciaFinal, int
+    __t103 = 3
+    __t104 = maxSuma
+    __t105 = __t103 ^ __t104
+    potenciaFinal = __t105
+    __t106 = "countA(X)="
+    write __t106
+    write countA
+    __t107 = "\n"
+    write __t107
+    __t108 = "countB(Y)="
+    write __t108
+    write countB
+    __t109 = "\n"
+    write __t109
+    __t110 = "countC(Z)="
+    write __t110
+    write countC
+    __t111 = "\n"
+    write __t111
+    __t112 = "maxSuma="
+    write __t112
+    write maxSuma
+    __t113 = "\n"
+    write __t113
+    __t114 = "sumaFloat="
+    write __t114
+    write sumaFloat
+    __t115 = "\n"
+    write __t115
+    __t116 = "potencia 3^maxSuma="
+    write __t116
+    write potenciaFinal
+    __t117 = "\n"
+    write __t117
+    __t118 = "\n"
+    write __t118
+    __t119 = "Matriz fila 0: "
+    write __t119
+    __t120 = 0
+    __t121 = 0
+    __t122 = matriz[__t120][__t121]
+    write __t122
+    __t123 = " "
+    write __t123
+    __t124 = 0
+    __t125 = 1
+    __t126 = matriz[__t124][__t125]
+    write __t126
+    __t127 = " "
+    write __t127
+    __t128 = 0
+    __t129 = 2
+    __t130 = matriz[__t128][__t129]
+    write __t130
+    __t131 = "\n"
+    write __t131
+    __t132 = "Matriz fila 1: "
+    write __t132
+    __t133 = 1
+    __t134 = 0
+    __t135 = matriz[__t133][__t134]
+    write __t135
+    __t136 = " "
+    write __t136
+    __t137 = 1
+    __t138 = 1
+    __t139 = matriz[__t137][__t138]
+    write __t139
+    __t140 = " "
+    write __t140
+    __t141 = 1
+    __t142 = 2
+    __t143 = matriz[__t141][__t142]
+    write __t143
+    __t144 = "\n"
+    write __t144
+    __t145 = "Matriz fila 2: "
+    write __t145
+    __t146 = 2
+    __t147 = 0
+    __t148 = matriz[__t146][__t147]
+    write __t148
+    __t149 = " "
+    write __t149
+    __t150 = 2
+    __t151 = 1
+    __t152 = matriz[__t150][__t151]
+    write __t152
+    __t153 = " "
+    write __t153
+    __t154 = 2
+    __t155 = 2
+    __t156 = matriz[__t154][__t155]
+    write __t156
+    __t157 = "\n"
+    write __t157
 # ===== FIN DEL CODIGO INTERMEDIO =====

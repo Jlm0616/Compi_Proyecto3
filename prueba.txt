@@ -1,38 +1,84 @@
 empty ~ __main__ ~ <| |> |:
 
-    ¡¡ === TEST 1: ANIDAMIENTO PROFUNDO DE PARENTESIS ===
-    int ~ x <- <| <| <| 2 + 3 |> * <| 4 - 1 |> |> ^ <| 2 - 1 |> |>!
-    cout ~ <| "((2+3)*(4-1))^(2-1) = " |>! cout ~ <| x |>! cout ~ <| "\n" |>!
-    ¡¡ Esperado: (5*3)^1 = 15
+    ¡¡ ===== ESTRES EXTREMO FINAL (tipado fuerte respetado) =====
+    int ~ countA <- 0!
+    int ~ countB <- 0!
+    int ~ countC <- 0!
+    int ~ maxSuma <- 0!
+    float ~ sumaFloat <- 0.0!
+    int ~ matriz <<3>><<3>> <- |: 0,0,0,0,0,0,0,0,0 :|!
 
-    ¡¡ === TEST 2: CADENA DE MISMOS OPERADORES ===
-    int ~ y <- 100 / 10 / 2 / 5!
-    cout ~ <| "100/10/2/5 = " |>! cout ~ <| y |>! cout ~ <| "\n" |>!
-    ¡¡ Esperado izq-a-der: ((100/10)/2)/5 = 1
+    int ~ i <- 1!
+    float ~ xf <- 1.5!
+    do |:
+        int ~ j <- 1!
+        float ~ yf <- 1.5!
+        do |:
+            int ~ k <- 1!
+            do |:
+                int ~ suma <- i + j + k!
 
-    int ~ z <- 100 - 30 - 20 - 10!
-    cout ~ <| "100-30-20-10 = " |>! cout ~ <| z |>! cout ~ <| "\n" |>!
-    ¡¡ Esperado: ((100-30)-20)-10 = 40
+                if <| greather_t<|suma, maxSuma|> |> |:
+                    maxSuma <- suma!
+                :|
 
-    ¡¡ === TEST 3: MEZCLA DE TODOS LOS OPERADORES ===
-    int ~ w <- 2 ^ 3 ^ 2!
-    cout ~ <| "2^3^2 = " |>! cout ~ <| w |>! cout ~ <| "\n" |>!
-    ¡¡ OJO: si ^ es derecho-asociativo esperado: 2^(3^2) = 2^9 = 512
-    ¡¡      si es izquierdo-asociativo esperado: (2^3)^2 = 8^2 = 64
+                int ~ r <- suma % 3!
+                char ~ categoria <- 'X'!
 
-    ¡¡ === TEST 4: MODULO ENCADENADO ===
-    int ~ m <- 100 % 30 % 7!
-    cout ~ <| "100%30%7 = " |>! cout ~ <| m |>! cout ~ <| "\n" |>!
-    ¡¡ Esperado izq-a-der: (100%30)%7 = 10%7 = 3
+                if <| equal<|r, 0|> |> |:
+                    categoria <- 'X'!
+                :| else |:
+                    if <| equal<|r, 1|> |> |:
+                        categoria <- 'Y'!
+                    :| else |:
+                        categoria <- 'Z'!
+                    :|
+                :|
 
-    ¡¡ === TEST 5: EXPRESION LARGA MIXTA ===
-    int ~ r <- 1 + 2 * 3 + 4 * 5 + 6 * 7!
-    cout ~ <| "1+2*3+4*5+6*7 = " |>! cout ~ <| r |>! cout ~ <| "\n" |>!
-    ¡¡ Esperado: 1+6+20+42 = 69
+                ¡¡ Comparaciones float anidadas + logica booleana
+                ¡¡ (xf y yf son float puros, calculados sin mezclar con int)
+                bool ~ cond1 <- greather_t<|xf, yf|>!
+                bool ~ cond2 <- equal<|suma, 6|>!
+                bool ~ combinada <- cond1 @ cond2!
+                bool ~ negCombinada <- $combinada!
 
-    ¡¡ === TEST 6: OPERADORES MEZCLADOS SIN PARENTESIS ===
-    int ~ s <- 10 - 2 * 3 + 8 / 4 % 3!
-    cout ~ <| "10-2*3+8/4%3 = " |>! cout ~ <| s |>! cout ~ <| "\n" |>!
-    ¡¡ Esperado: 10-(2*3)+((8/4)%3) = 10-6+2 = 6
+                switch ~ <|categoria|> |:
+                    case~ 'X':
+                        countA <- countA + 1!
+                        matriz<<i % 3>><<<|j + k|> % 3>> <- matriz<<i % 3>><<<|j + k|> % 3>> + 1!
+                        break!
+                    case~ 'Y':
+                        countB <- countB + 1!
+                        if <| combinada |> |:
+                            sumaFloat <- sumaFloat + xf + yf!
+                        :|
+                        break!
+                    default:
+                        countC <- countC + 1!
+                        if <| negCombinada |> |:
+                            sumaFloat <- sumaFloat + 0.5!
+                        :|
+                :|
+
+                k <- k + 1!
+            :| while <| less_te<|k, 3|> |>!
+            j <- j + 1!
+        :| while <| less_te<|j, 3|> |>!
+        yf <- yf + 1.5!
+        i <- i + 1!
+    :| while <| less_te<|i, 3|> |>!
+
+    int ~ potenciaFinal <- 3 ^ maxSuma!
+
+    cout ~ <| "countA(X)=" |>! cout ~ <| countA |>! cout ~ <| "\n" |>!
+    cout ~ <| "countB(Y)=" |>! cout ~ <| countB |>! cout ~ <| "\n" |>!
+    cout ~ <| "countC(Z)=" |>! cout ~ <| countC |>! cout ~ <| "\n" |>!
+    cout ~ <| "maxSuma=" |>! cout ~ <| maxSuma |>! cout ~ <| "\n" |>!
+    cout ~ <| "sumaFloat=" |>! cout ~ <| sumaFloat |>! cout ~ <| "\n" |>!
+    cout ~ <| "potencia 3^maxSuma=" |>! cout ~ <| potenciaFinal |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Matriz fila 0: " |>! cout ~ <| matriz<<0>><<0>> |>! cout ~ <| " " |>! cout ~ <| matriz<<0>><<1>> |>! cout ~ <| " " |>! cout ~ <| matriz<<0>><<2>> |>! cout ~ <| "\n" |>!
+    cout ~ <| "Matriz fila 1: " |>! cout ~ <| matriz<<1>><<0>> |>! cout ~ <| " " |>! cout ~ <| matriz<<1>><<1>> |>! cout ~ <| " " |>! cout ~ <| matriz<<1>><<2>> |>! cout ~ <| "\n" |>!
+    cout ~ <| "Matriz fila 2: " |>! cout ~ <| matriz<<2>><<0>> |>! cout ~ <| " " |>! cout ~ <| matriz<<2>><<1>> |>! cout ~ <| " " |>! cout ~ <| matriz<<2>><<2>> |>! cout ~ <| "\n" |>!
 
 :|
