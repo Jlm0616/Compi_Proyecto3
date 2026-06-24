@@ -512,14 +512,20 @@ public class GeneradorMIPS {
             // ---------------------------------------------------------------
             // 2.7.3 ASIGNACION DE LITERALES (numeros, booleanos, caracteres, strings)
             // ---------------------------------------------------------------
-            Matcher mLit = Pattern.compile("^(\\w+)\\s*=\\s*(-?\\d+\\.?\\d*)$").matcher(linea);
+            Matcher mLit = Pattern.compile("^([\\w_]+)\\s*=\\s*(-?\\d+(\\.\\d+)?)$").matcher(linea);
             if (mLit.matches()) {
                 String destino = mLit.group(1);
                 String valor = mLit.group(2);
-                if (esFloat(destino)) {
+                
+                // Determinar si es float (tiene punto decimal o el destino es float)
+                boolean esFloatLiteral = valor.contains(".");
+                
+                if (esFloatLiteral || esFloat(destino)) {
+                    // Si el destino es float o el literal tiene punto
                     sb.append("li.s $f0, ").append(valor).append("\n");
                     sb.append("s.s $f0, ").append(destino).append("\n");
                 } else {
+                    // Literal entero
                     sb.append("li $t0, ").append(valor).append("\n");
                     sb.append("sw $t0, ").append(destino).append("\n");
                 }
