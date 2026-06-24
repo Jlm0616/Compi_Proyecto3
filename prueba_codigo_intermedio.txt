@@ -1,6 +1,6 @@
 # ===== CODIGO INTERMEDIO =====
 
-factorial:
+factorialRec:
     param n, int
     declare resultado, int
     __t0 = 1
@@ -16,8 +16,8 @@ L0:
     __t5 = n
     __t6 = 1
     __t7 = __t5 - __t6
-    param __t7, int
-    __t8 = call factorial, 1
+    arg __t7, int
+    __t8 = call factorialRec, 1
     prev = __t8
     __t9 = n
     __t10 = prev
@@ -26,49 +26,120 @@ L0:
     __t12 = resultado
     return __t12
 
-main:
-    __t13 = "=== FACTORIAL RECURSIVO ==="
-    write __t13
-    __t14 = "\n"
-    write __t14
-    declare r0, int
-    __t15 = 0
-    param __t15, int
-    __t16 = call factorial, 1
-    r0 = __t16
-    __t17 = "factorial(0) = "
-    write __t17
-    write r0
-    __t18 = "\n"
-    write __t18
-    declare r1, int
+factorialIter:
+    param n, int
+    declare resultado, int
+    __t13 = 1
+    resultado = __t13
+    declare i, int
+    __t14 = 1
+    i = __t14
+_dowhile1_start:
+    __t15 = resultado
+    __t16 = i
+    __t17 = __t15 * __t16
+    resultado = __t17
+    __t18 = i
     __t19 = 1
-    param __t19, int
-    __t20 = call factorial, 1
-    r1 = __t20
-    __t21 = "factorial(1) = "
-    write __t21
-    write r1
-    __t22 = "\n"
-    write __t22
-    declare r3, int
-    __t23 = 3
-    param __t23, int
-    __t24 = call factorial, 1
-    r3 = __t24
-    __t25 = "factorial(3) = "
+    __t20 = __t18 + __t19
+    i = __t20
+    __t21 = i
+    __t22 = n
+    __t23 = __t21 <= __t22
+    if __t23 goto _dowhile1_start
+_dowhile1_end:
+    __t24 = resultado
+    return __t24
+
+main:
+    __t25 = "=== FACTORIAL RECURSIVO ==="
     write __t25
-    write r3
     __t26 = "\n"
     write __t26
-    declare r5, int
-    __t27 = 5
-    param __t27, int
-    __t28 = call factorial, 1
-    r5 = __t28
-    __t29 = "factorial(5) = "
+    declare r0, int
+    __t27 = 0
+    arg __t27, int
+    __t28 = call factorialRec, 1
+    r0 = __t28
+    __t29 = "factorialRec(0) = "
     write __t29
-    write r5
+    write r0
     __t30 = "\n"
     write __t30
+    declare r1, int
+    __t31 = 1
+    arg __t31, int
+    __t32 = call factorialRec, 1
+    r1 = __t32
+    __t33 = "factorialRec(1) = "
+    write __t33
+    write r1
+    __t34 = "\n"
+    write __t34
+    declare r3, int
+    __t35 = 3
+    arg __t35, int
+    __t36 = call factorialRec, 1
+    r3 = __t36
+    __t37 = "factorialRec(3) = "
+    write __t37
+    write r3
+    __t38 = "\n"
+    write __t38
+    declare r5, int
+    __t39 = 5
+    arg __t39, int
+    __t40 = call factorialRec, 1
+    r5 = __t40
+    __t41 = "factorialRec(5) = "
+    write __t41
+    write r5
+    __t42 = "\n"
+    write __t42
+    __t43 = "\n"
+    write __t43
+    __t44 = "=== FACTORIAL ITERATIVO ==="
+    write __t44
+    __t45 = "\n"
+    write __t45
+    declare s0, int
+    __t46 = 0
+    arg __t46, int
+    __t47 = call factorialIter, 1
+    s0 = __t47
+    __t48 = "factorialIter(0) = "
+    write __t48
+    write s0
+    __t49 = "\n"
+    write __t49
+    declare s1, int
+    __t50 = 1
+    arg __t50, int
+    __t51 = call factorialIter, 1
+    s1 = __t51
+    __t52 = "factorialIter(1) = "
+    write __t52
+    write s1
+    __t53 = "\n"
+    write __t53
+    declare s3, int
+    __t54 = 3
+    arg __t54, int
+    __t55 = call factorialIter, 1
+    s3 = __t55
+    __t56 = "factorialIter(3) = "
+    write __t56
+    write s3
+    __t57 = "\n"
+    write __t57
+    declare s5, int
+    __t58 = 5
+    arg __t58, int
+    __t59 = call factorialIter, 1
+    s5 = __t59
+    __t60 = "factorialIter(5) = "
+    write __t60
+    write s5
+    __t61 = "\n"
+    write __t61
 # ===== FIN DEL CODIGO INTERMEDIO =====

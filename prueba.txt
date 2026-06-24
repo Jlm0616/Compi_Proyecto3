@@ -1,21 +1,76 @@
-int ~ factorial <| int ~ n |> |:
+¡¡ ============================================================
+¡¡  EJEMPLO: DOS FACTORIALES (Recursivo vs Iterativo)
+¡¡  Gramática: <| |> para bloques, ~ para tipos, ! para punto y coma
+¡¡ ============================================================
+
+¡¡ ---------- FACTORIAL RECURSIVO ----------
+int ~ factorialRec <| int ~ n |> |:
     int ~ resultado <- 1!
     if <| less_te <| n, 1 |> |> |:
         return ~ resultado!
     :|
-    int ~ prev <- factorial <| n - 1 |>!
+    int ~ prev <- factorialRec <| n - 1 |>!
     resultado <- n * prev!
     return ~ resultado!
 :|
 
+¡¡ ---------- FACTORIAL ITERATIVO (con do-while) ----------
+int ~ factorialIter <| int ~ n |> |:
+    int ~ resultado <- 1!
+    int ~ i <- 1!
+    do |:
+        resultado <- resultado * i!
+        i <- i + 1!
+    :| while <| less_te <| i, n |> |>!
+    return ~ resultado!
+:|
+
+¡¡ ---------- MAIN: PRUEBA AMBOS ----------
 empty ~ __main__ ~ <| |> |:
-    cout ~ <| "=== FACTORIAL RECURSIVO ===" |>! cout ~ <| "\n" |>!
-    int ~ r0 <- factorial <| 0 |>!
-    cout ~ <| "factorial(0) = " |>! cout ~ <| r0 |>! cout ~ <| "\n" |>!
-    int ~ r1 <- factorial <| 1 |>!
-    cout ~ <| "factorial(1) = " |>! cout ~ <| r1 |>! cout ~ <| "\n" |>!
-    int ~ r3 <- factorial <| 3 |>!
-    cout ~ <| "factorial(3) = " |>! cout ~ <| r3 |>! cout ~ <| "\n" |>!
-    int ~ r5 <- factorial <| 5 |>!
-    cout ~ <| "factorial(5) = " |>! cout ~ <| r5 |>! cout ~ <| "\n" |>!
+    cout ~ <| "=== FACTORIAL RECURSIVO ===" |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ r0 <- factorialRec <| 0 |>!
+    cout ~ <| "factorialRec(0) = " |>! 
+    cout ~ <| r0 |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ r1 <- factorialRec <| 1 |>!
+    cout ~ <| "factorialRec(1) = " |>! 
+    cout ~ <| r1 |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ r3 <- factorialRec <| 3 |>!
+    cout ~ <| "factorialRec(3) = " |>! 
+    cout ~ <| r3 |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ r5 <- factorialRec <| 5 |>!
+    cout ~ <| "factorialRec(5) = " |>! 
+    cout ~ <| r5 |>! 
+    cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== FACTORIAL ITERATIVO ===" |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ s0 <- factorialIter <| 0 |>!
+    cout ~ <| "factorialIter(0) = " |>! 
+    cout ~ <| s0 |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ s1 <- factorialIter <| 1 |>!
+    cout ~ <| "factorialIter(1) = " |>! 
+    cout ~ <| s1 |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ s3 <- factorialIter <| 3 |>!
+    cout ~ <| "factorialIter(3) = " |>! 
+    cout ~ <| s3 |>! 
+    cout ~ <| "\n" |>!
+    
+    int ~ s5 <- factorialIter <| 5 |>!
+    cout ~ <| "factorialIter(5) = " |>! 
+    cout ~ <| s5 |>! 
+    cout ~ <| "\n" |>!
 :|
