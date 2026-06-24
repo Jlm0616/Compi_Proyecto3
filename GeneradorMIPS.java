@@ -615,26 +615,61 @@ public class GeneradorMIPS {
                     sb.append("l.s $f2, ").append(op2).append("\n");
                     String etqTrue = "_cmp" + (contadorCmp++);
                     String etqFin = "_cmp" + (contadorCmp++);
+                    
+                    // ---------------------------------------------------------------
+                    // COMPARACIONES DE PUNTO FLOTANTE CORREGIDAS
+                    // ---------------------------------------------------------------
+                    // Para float, las instrucciones son:
+                    // - c.lt.s $f1, $f2  -> 1 si $f1 < $f2
+                    // - c.le.s $f1, $f2  -> 1 si $f1 <= $f2
+                    // - c.eq.s $f1, $f2  -> 1 si $f1 == $f2
+                    //
+                    // Para > y >= hay que invertir los operandos:
+                    // - a > b  ->  b < a   -> c.lt.s $f2, $f1
+                    // - a >= b ->  b <= a  -> c.le.s $f2, $f1
+                    // ---------------------------------------------------------------
                     switch (operador) {
-                        case "<":  sb.append("c.lt.s $f1, $f2\n"); break;
-                        case "<=": sb.append("c.le.s $f1, $f2\n"); break;
-                        case ">":  sb.append("c.lt.s $f2, $f1\n"); break; 
-                        case ">=": sb.append("c.le.s $f2, $f1\n"); break;  
-                        case "==": sb.append("c.eq.s $f1, $f2\n"); break;
-                        case "!=": sb.append("c.eq.s $f1, $f2\n"); break;
+                        case "<":  
+                            sb.append("c.lt.s $f1, $f2\n");   // $f1 < $f2
+                            break;
+                        case "<=": 
+                            sb.append("c.le.s $f1, $f2\n");   // $f1 <= $f2
+                            break;
+                        case ">":  
+                            sb.append("c.lt.s $f2, $f1\n");   // $f2 < $f1
+                            break;
+                        case ">=": 
+                            sb.append("c.le.s $f2, $f1\n");   // $f2 <= $f1 
+                            break;
+                        case "==": 
+                            sb.append("c.eq.s $f1, $f2\n");   // $f1 == $f2
+                            break;
+                        case "!=": 
+                            sb.append("c.eq.s $f1, $f2\n");   // $f1 == $f2 
+                            break;
                     }
+                    
+                    // Para >, >=, != hay que negar el resultado
                     boolean negar = operador.equals(">") || operador.equals(">=") || operador.equals("!=");
+                    
+                    // Inicializar resultado a 0 (falso)
                     sb.append("li $t0, 0\n");
+                    
                     if (negar) {
+                        // Si la condición es verdadera, saltar al final (mantener 0)
+                        // Si es falsa, poner 1 
                         sb.append("bc1t ").append(etqFin).append("\n");
                         sb.append("li $t0, 1\n");
                     } else {
+                        // Si la condición es falsa, saltar al final (mantener 0)
+                        // Si es verdadera, poner 1
                         sb.append("bc1f ").append(etqFin).append("\n");
                         sb.append("li $t0, 1\n");
                     }
                     sb.append(etqFin).append(":\n");
                     sb.append("sw $t0, ").append(destino).append("\n");
                 } else {
+                    // Comparaciones para enteros 
                     sb.append(cargarEntero("$t1", op1));
                     sb.append(cargarEntero("$t2", op2));
                     switch (operador) {
@@ -649,6 +684,7 @@ public class GeneradorMIPS {
                 }
                 continue;
             }
+
 
             // ---------------------------------------------------------------
             // 2.7.7 OPERADORES LOGICOS BINARIOS: "@" (AND), "#" (OR)
