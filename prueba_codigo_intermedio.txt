@@ -1,33 +1,75 @@
 # ===== CODIGO INTERMEDIO =====
 
-sumar:
-    param a, int
-    param b, int
+factorial:
+    param n, int
     declare resultado, int
-    __t0 = a
-    __t1 = b
-    __t2 = __t0 + __t1
-    resultado = __t2
-    __t3 = resultado
-    return __t3
+    __t0 = 1
+    resultado = __t0
+_dowhile1_start:
+    __t1 = resultado
+    return __t1
+    __t2 = n
+    __t3 = 1
+    __t4 = __t2 <= __t3
+    if __t4 goto _dowhile1_start
+_dowhile1_end:
+    declare prev, int
+    __t5 = n
+    __t6 = 1
+    __t7 = __t5 - __t6
+    param __t7, int
+    __t8 = call factorial, 1
+    prev = __t8
+    __t9 = n
+    __t10 = prev
+    __t11 = __t9 * __t10
+    resultado = __t11
+    __t12 = resultado
+    return __t12
 
 main:
-    declare x, int
-    __t4 = 10
-    x = __t4
-    declare y, int
-    __t5 = 3
-    y = __t5
-    declare s, int
-    __t6 = x
-    __t7 = y
-    param __t6, int
-    param __t7, int
-    __t8 = call sumar, 2
-    s = __t8
-    __t9 = "sumar(10,3) = "
-    write __t9
-    write s
-    __t10 = "\n"
-    write __t10
+    __t13 = "=== FACTORIAL RECURSIVO ==="
+    write __t13
+    __t14 = "\n"
+    write __t14
+    declare r0, int
+    __t15 = 0
+    param __t15, int
+    __t16 = call factorial, 1
+    r0 = __t16
+    __t17 = "factorial(0) = "
+    write __t17
+    write r0
+    __t18 = "\n"
+    write __t18
+    declare r1, int
+    __t19 = 1
+    param __t19, int
+    __t20 = call factorial, 1
+    r1 = __t20
+    __t21 = "factorial(1) = "
+    write __t21
+    write r1
+    __t22 = "\n"
+    write __t22
+    declare r3, int
+    __t23 = 3
+    param __t23, int
+    __t24 = call factorial, 1
+    r3 = __t24
+    __t25 = "factorial(3) = "
+    write __t25
+    write r3
+    __t26 = "\n"
+    write __t26
+    declare r5, int
+    __t27 = 5
+    param __t27, int
+    __t28 = call factorial, 1
+    r5 = __t28
+    __t29 = "factorial(5) = "
+    write __t29
+    write r5
+    __t30 = "\n"
+    write __t30
 # ===== FIN DEL CODIGO INTERMEDIO =====

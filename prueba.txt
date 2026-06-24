@@ -1,11 +1,21 @@
-int ~ sumar <| int ~ a, int ~ b |> |:
-    int ~ resultado <- a + b!
+int ~ factorial <| int ~ n |> |:
+    int ~ resultado <- 1!
+    do |:
+        return ~ resultado!
+    :| while <| less_te <| n, 1 |> |>!
+    int ~ prev <- factorial <| n - 1 |>!
+    resultado <- n * prev!
     return ~ resultado!
 :|
 
 empty ~ __main__ ~ <| |> |:
-    int ~ x <- 10!
-    int ~ y <- 3!
-    int ~ s <- sumar <| x, y |>!
-    cout ~ <| "sumar(10,3) = " |>! cout ~ <| s |>! cout ~ <| "\n" |>!
+    cout ~ <| "=== FACTORIAL RECURSIVO ===" |>! cout ~ <| "\n" |>!
+    int ~ r0 <- factorial <| 0 |>!
+    cout ~ <| "factorial(0) = " |>! cout ~ <| r0 |>! cout ~ <| "\n" |>!
+    int ~ r1 <- factorial <| 1 |>!
+    cout ~ <| "factorial(1) = " |>! cout ~ <| r1 |>! cout ~ <| "\n" |>!
+    int ~ r3 <- factorial <| 3 |>!
+    cout ~ <| "factorial(3) = " |>! cout ~ <| r3 |>! cout ~ <| "\n" |>!
+    int ~ r5 <- factorial <| 5 |>!
+    cout ~ <| "factorial(5) = " |>! cout ~ <| r5 |>! cout ~ <| "\n" |>!
 :|
