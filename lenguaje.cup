@@ -666,6 +666,7 @@ programa ::= lista_funciones {: pushScope("GLOBAL (MAIN)"); :} funcion_main {: p
 
 funcion_main ::= EMPTY SEPARADOR PALABRA_MAIN SEPARADOR INICIO_PARENTESIS FIN_PARENTESIS 
                 {: 
+                    GeneradorCodigo.emitir("");
                     GeneradorCodigo.emitir("main:");
                     tipoFuncionActual = "empty";
                     funcionActual = "main";
@@ -685,21 +686,22 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      tipoFuncionActual = "int";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "int");
                      tipoFuncionActual = "int";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               :}
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
               {: 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-             
                  if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
@@ -713,14 +715,16 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      tipoFuncionActual = "float";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "float");
                      tipoFuncionActual = "float";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               :}
@@ -740,14 +744,16 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      tipoFuncionActual = "bool";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "bool");
                      tipoFuncionActual = "bool";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               :}
@@ -767,14 +773,16 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
                      tipoFuncionActual = "char";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "char");
                      tipoFuncionActual = "char";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               :}

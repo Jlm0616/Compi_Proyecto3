@@ -1608,6 +1608,7 @@ class CUP$parser$actions {
             {
               Object RESULT =null;
  
+                    GeneradorCodigo.emitir("");
                     GeneradorCodigo.emitir("main:");
                     tipoFuncionActual = "empty";
                     funcionActual = "main";
@@ -1649,14 +1650,16 @@ class CUP$parser$actions {
                      tipoFuncionActual = "int";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "int");
                      tipoFuncionActual = "int";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               
@@ -1675,7 +1678,6 @@ class CUP$parser$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-7)).value;
 		 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-             
                  if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
@@ -1699,14 +1701,16 @@ class CUP$parser$actions {
                      tipoFuncionActual = "float";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "float");
                      tipoFuncionActual = "float";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               
@@ -1748,14 +1752,16 @@ class CUP$parser$actions {
                      tipoFuncionActual = "bool";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "bool");
                      tipoFuncionActual = "bool";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               
@@ -1797,14 +1803,16 @@ class CUP$parser$actions {
                      tipoFuncionActual = "char";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope("DUPLICADA_" + (String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + "_duplicada:");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + "_duplicada:");
                      funcionActual = (String)id + "_duplicada";
                  } else {
                      tablaFunciones.put((String)id, "char");
                      tipoFuncionActual = "char";
                      parametrosActuales = new java.util.ArrayList<>();
                      pushScope((String)id);
-                     GeneradorCodigo.emitir("\n" + (String)id + ":");
+                     GeneradorCodigo.emitir("");
+                     GeneradorCodigo.emitir((String)id + ":");
                      funcionActual = (String)id;
                  }
               

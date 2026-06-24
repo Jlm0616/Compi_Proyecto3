@@ -1,84 +1,11 @@
+int ~ sumar <| int ~ a, int ~ b |> |:
+    int ~ resultado <- a + b!
+    return ~ resultado!
+:|
+
 empty ~ __main__ ~ <| |> |:
-
-    ¡¡ ===== ESTRES EXTREMO FINAL (tipado fuerte respetado) =====
-    int ~ countA <- 0!
-    int ~ countB <- 0!
-    int ~ countC <- 0!
-    int ~ maxSuma <- 0!
-    float ~ sumaFloat <- 0.0!
-    int ~ matriz <<3>><<3>> <- |: 0,0,0,0,0,0,0,0,0 :|!
-
-    int ~ i <- 1!
-    float ~ xf <- 1.5!
-    do |:
-        int ~ j <- 1!
-        float ~ yf <- 1.5!
-        do |:
-            int ~ k <- 1!
-            do |:
-                int ~ suma <- i + j + k!
-
-                if <| greather_t<|suma, maxSuma|> |> |:
-                    maxSuma <- suma!
-                :|
-
-                int ~ r <- suma % 3!
-                char ~ categoria <- 'X'!
-
-                if <| equal<|r, 0|> |> |:
-                    categoria <- 'X'!
-                :| else |:
-                    if <| equal<|r, 1|> |> |:
-                        categoria <- 'Y'!
-                    :| else |:
-                        categoria <- 'Z'!
-                    :|
-                :|
-
-                ¡¡ Comparaciones float anidadas + logica booleana
-                ¡¡ (xf y yf son float puros, calculados sin mezclar con int)
-                bool ~ cond1 <- greather_t<|xf, yf|>!
-                bool ~ cond2 <- equal<|suma, 6|>!
-                bool ~ combinada <- cond1 @ cond2!
-                bool ~ negCombinada <- $combinada!
-
-                switch ~ <|categoria|> |:
-                    case~ 'X':
-                        countA <- countA + 1!
-                        matriz<<i % 3>><<<|j + k|> % 3>> <- matriz<<i % 3>><<<|j + k|> % 3>> + 1!
-                        break!
-                    case~ 'Y':
-                        countB <- countB + 1!
-                        if <| combinada |> |:
-                            sumaFloat <- sumaFloat + xf + yf!
-                        :|
-                        break!
-                    default:
-                        countC <- countC + 1!
-                        if <| negCombinada |> |:
-                            sumaFloat <- sumaFloat + 0.5!
-                        :|
-                :|
-
-                k <- k + 1!
-            :| while <| less_te<|k, 3|> |>!
-            j <- j + 1!
-        :| while <| less_te<|j, 3|> |>!
-        yf <- yf + 1.5!
-        i <- i + 1!
-    :| while <| less_te<|i, 3|> |>!
-
-    int ~ potenciaFinal <- 3 ^ maxSuma!
-
-    cout ~ <| "countA(X)=" |>! cout ~ <| countA |>! cout ~ <| "\n" |>!
-    cout ~ <| "countB(Y)=" |>! cout ~ <| countB |>! cout ~ <| "\n" |>!
-    cout ~ <| "countC(Z)=" |>! cout ~ <| countC |>! cout ~ <| "\n" |>!
-    cout ~ <| "maxSuma=" |>! cout ~ <| maxSuma |>! cout ~ <| "\n" |>!
-    cout ~ <| "sumaFloat=" |>! cout ~ <| sumaFloat |>! cout ~ <| "\n" |>!
-    cout ~ <| "potencia 3^maxSuma=" |>! cout ~ <| potenciaFinal |>! cout ~ <| "\n" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "Matriz fila 0: " |>! cout ~ <| matriz<<0>><<0>> |>! cout ~ <| " " |>! cout ~ <| matriz<<0>><<1>> |>! cout ~ <| " " |>! cout ~ <| matriz<<0>><<2>> |>! cout ~ <| "\n" |>!
-    cout ~ <| "Matriz fila 1: " |>! cout ~ <| matriz<<1>><<0>> |>! cout ~ <| " " |>! cout ~ <| matriz<<1>><<1>> |>! cout ~ <| " " |>! cout ~ <| matriz<<1>><<2>> |>! cout ~ <| "\n" |>!
-    cout ~ <| "Matriz fila 2: " |>! cout ~ <| matriz<<2>><<0>> |>! cout ~ <| " " |>! cout ~ <| matriz<<2>><<1>> |>! cout ~ <| " " |>! cout ~ <| matriz<<2>><<2>> |>! cout ~ <| "\n" |>!
-
+    int ~ x <- 10!
+    int ~ y <- 3!
+    int ~ s <- sumar <| x, y |>!
+    cout ~ <| "sumar(10,3) = " |>! cout ~ <| s |>! cout ~ <| "\n" |>!
 :|
