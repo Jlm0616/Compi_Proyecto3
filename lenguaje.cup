@@ -666,13 +666,19 @@ programa ::= lista_funciones {: pushScope("GLOBAL (MAIN)"); :} funcion_main {: p
 
 funcion_main ::= EMPTY SEPARADOR PALABRA_MAIN SEPARADOR INICIO_PARENTESIS FIN_PARENTESIS 
                 {: 
-                    GeneradorCodigo.emitir("");
-                    GeneradorCodigo.emitir("main:");
+                    // Crear ámbito para main
+                    pushScope("main");
                     tipoFuncionActual = "empty";
                     funcionActual = "main";
+                    GeneradorCodigo.emitir("");
+                    GeneradorCodigo.emitir("main:");
                 :} 
-                INICIO_BLOQUE contenido_programa FIN_BLOQUE ;
-
+                INICIO_BLOQUE contenido_programa FIN_BLOQUE
+                {:
+                    // Cerrar ámbito de main
+                    popScope();
+                :} ;
+                
 contenido_programa ::= lista_sentencias ;
 
 // ===============================================================
@@ -702,11 +708,15 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
               {: 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 // Solo verificar return si NO es main y NO es empty
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 // Si la función es main, mantener el ámbito abierto para el contenido
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               :}
           | FLOAT SEPARADOR IDENTIFICADOR:id
               {: 
@@ -731,11 +741,13 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
               {: 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               :}
           | BOOL SEPARADOR IDENTIFICADOR:id
               {: 
@@ -760,11 +772,13 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
               {: 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               :}
           | CHAR SEPARADOR IDENTIFICADOR:id
               {: 
@@ -789,11 +803,13 @@ funcion ::= INT SEPARADOR IDENTIFICADOR:id
               INICIO_PARENTESIS parametros FIN_PARENTESIS INICIO_BLOQUE lista_sentencias FIN_BLOQUE
               {: 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               :};
 
 /*Lista de 0 o mas funciones*/

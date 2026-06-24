@@ -59,119 +59,112 @@ str10: .asciiz "factorialIter(5) = "
 .text
 .globl main
 factorialRec:
-subu $sp, $sp, 72
-sw $ra, 68($sp)
-sw $fp, 64($sp)
-move $fp, $sp
-sw $a0, -4($fp)
+subu $sp, $sp, 96
+sw $ra, 92($sp)
+sw $a0, 4($sp)
 li $t0, 1
-sw $t0, -12($fp)
-lw $t0, -12($fp)
-sw $t0, -8($fp)
-lw $t0, -4($fp)
-sw $t0, -16($fp)
+sw $t0, 12($sp)
+lw $t0, 12($sp)
+sw $t0, 8($sp)
+lw $t0, 4($sp)
+sw $t0, 16($sp)
 li $t0, 1
-sw $t0, -20($fp)
-lw $t1, -16($fp)
-lw $t2, -20($fp)
+sw $t0, 20($sp)
+lw $t1, 16($sp)
+lw $t2, 20($sp)
 sle $t0, $t1, $t2
-sw $t0, -24($fp)
-lw $t0, -24($fp)
+sw $t0, 24($sp)
+lw $t0, 24($sp)
 beq $t0, $zero, L0
-lw $t0, -8($fp)
-sw $t0, -28($fp)
-lw $v0, -28($fp)
-lw $ra, 68($fp)
-lw $fp, 64($fp)
-addu $sp, $sp, 72
+lw $t0, 8($sp)
+sw $t0, 28($sp)
+lw $v0, 28($sp)
+lw $ra, 92($sp)
+addu $sp, $sp, 96
 jr $ra
 L0:
-lw $t0, -4($fp)
-sw $t0, -36($fp)
+lw $t0, 4($sp)
+sw $t0, 36($sp)
 li $t0, 1
-sw $t0, -40($fp)
-lw $t1, -36($fp)
-lw $t2, -40($fp)
+sw $t0, 40($sp)
+lw $t1, 36($sp)
+lw $t2, 40($sp)
 sub $t0, $t1, $t2
-sw $t0, -44($fp)
-lw $a0, -44($fp)
-sw $fp, 4($sp)
+sw $t0, 44($sp)
+lw $a0, 44($sp)
 jal factorialRec
-lw $fp, 4($sp)
-sw $v0, -48($fp)
-lw $t0, -48($fp)
-sw $t0, -32($fp)
-lw $t0, -4($fp)
-sw $t0, -52($fp)
-lw $t0, -32($fp)
-sw $t0, -56($fp)
-lw $t1, -52($fp)
-lw $t2, -56($fp)
+sw $v0, 48($sp)
+lw $t0, 48($sp)
+sw $t0, 32($sp)
+lw $t0, 4($sp)
+sw $t0, 52($sp)
+lw $t0, 32($sp)
+sw $t0, 56($sp)
+lw $t1, 52($sp)
+lw $t2, 56($sp)
 mul $t0, $t1, $t2
-sw $t0, -60($fp)
-lw $t0, -60($fp)
-sw $t0, -8($fp)
-lw $t0, -8($fp)
-sw $t0, -64($fp)
-lw $v0, -64($fp)
-lw $ra, 68($fp)
-lw $fp, 64($fp)
-addu $sp, $sp, 72
+sw $t0, 60($sp)
+lw $t0, 60($sp)
+sw $t0, 8($sp)
+lw $t0, 8($sp)
+sw $t0, 64($sp)
+lw $v0, 64($sp)
+lw $ra, 92($sp)
+addu $sp, $sp, 96
 jr $ra
 factorialIter:
-subu $sp, $sp, 72
-sw $ra, 68($sp)
-sw $fp, 64($sp)
-move $fp, $sp
-sw $a0, -4($fp)
+subu $sp, $sp, 96
+sw $ra, 92($sp)
+sw $a0, 4($sp)
 li $t0, 1
-sw $t0, -12($fp)
-lw $t0, -12($fp)
-sw $t0, -8($fp)
+sw $t0, 12($sp)
+lw $t0, 12($sp)
+sw $t0, 8($sp)
 li $t0, 1
-sw $t0, -20($fp)
-lw $t0, -20($fp)
-sw $t0, -16($fp)
+sw $t0, 20($sp)
+lw $t0, 20($sp)
+sw $t0, 16($sp)
 _dowhile1_start:
-lw $t0, -8($fp)
-sw $t0, -24($fp)
-lw $t0, -16($fp)
-sw $t0, -28($fp)
-lw $t1, -24($fp)
-lw $t2, -28($fp)
+lw $t0, 8($sp)
+sw $t0, 24($sp)
+lw $t0, 16($sp)
+sw $t0, 28($sp)
+lw $t1, 24($sp)
+lw $t2, 28($sp)
 mul $t0, $t1, $t2
-sw $t0, -32($fp)
-lw $t0, -32($fp)
-sw $t0, -8($fp)
-lw $t0, -16($fp)
-sw $t0, -36($fp)
+sw $t0, 32($sp)
+lw $t0, 32($sp)
+sw $t0, 8($sp)
+lw $t0, 16($sp)
+sw $t0, 36($sp)
 li $t0, 1
-sw $t0, -40($fp)
-lw $t1, -36($fp)
-lw $t2, -40($fp)
+sw $t0, 40($sp)
+lw $t1, 36($sp)
+lw $t2, 40($sp)
 add $t0, $t1, $t2
-sw $t0, -44($fp)
-lw $t0, -44($fp)
-sw $t0, -16($fp)
-lw $t0, -16($fp)
-sw $t0, -48($fp)
-lw $t0, -4($fp)
-sw $t0, -52($fp)
-lw $t1, -48($fp)
-lw $t2, -52($fp)
+sw $t0, 44($sp)
+lw $t0, 44($sp)
+sw $t0, 16($sp)
+lw $t0, 16($sp)
+sw $t0, 48($sp)
+lw $t0, 4($sp)
+sw $t0, 52($sp)
+lw $t1, 48($sp)
+lw $t2, 52($sp)
 sle $t0, $t1, $t2
-sw $t0, -56($fp)
-lw $t0, -56($fp)
+sw $t0, 56($sp)
+lw $t0, 56($sp)
 bne $t0, $zero, _dowhile1_start
 _dowhile1_end:
-lw $t0, -8($fp)
-sw $t0, -60($fp)
-lw $v0, -60($fp)
-lw $ra, 68($fp)
-lw $fp, 64($fp)
-addu $sp, $sp, 72
+lw $t0, 8($sp)
+sw $t0, 60($sp)
+lw $v0, 60($sp)
+lw $ra, 92($sp)
+addu $sp, $sp, 96
 jr $ra
 main:
+subu $sp, $sp, 32
+sw $ra, 28($sp)
 la $t0, str0
 la $t9, __t25
 sw $t0, 0($t9)
@@ -191,9 +184,7 @@ la $t9, __t27
 sw $t0, 0($t9)
 la $t9, __t27
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialRec
-lw $fp, 4($sp)
 la $t9, __t28
 sw $v0, 0($t9)
 la $t9, __t28
@@ -223,9 +214,7 @@ la $t9, __t31
 sw $t0, 0($t9)
 la $t9, __t31
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialRec
-lw $fp, 4($sp)
 la $t9, __t32
 sw $v0, 0($t9)
 la $t9, __t32
@@ -255,9 +244,7 @@ la $t9, __t35
 sw $t0, 0($t9)
 la $t9, __t35
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialRec
-lw $fp, 4($sp)
 la $t9, __t36
 sw $v0, 0($t9)
 la $t9, __t36
@@ -287,9 +274,7 @@ la $t9, __t39
 sw $t0, 0($t9)
 la $t9, __t39
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialRec
-lw $fp, 4($sp)
 la $t9, __t40
 sw $v0, 0($t9)
 la $t9, __t40
@@ -340,9 +325,7 @@ la $t9, __t46
 sw $t0, 0($t9)
 la $t9, __t46
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialIter
-lw $fp, 4($sp)
 la $t9, __t47
 sw $v0, 0($t9)
 la $t9, __t47
@@ -372,9 +355,7 @@ la $t9, __t50
 sw $t0, 0($t9)
 la $t9, __t50
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialIter
-lw $fp, 4($sp)
 la $t9, __t51
 sw $v0, 0($t9)
 la $t9, __t51
@@ -404,9 +385,7 @@ la $t9, __t54
 sw $t0, 0($t9)
 la $t9, __t54
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialIter
-lw $fp, 4($sp)
 la $t9, __t55
 sw $v0, 0($t9)
 la $t9, __t55
@@ -436,9 +415,7 @@ la $t9, __t58
 sw $t0, 0($t9)
 la $t9, __t58
 lw $a0, 0($t9)
-sw $fp, 4($sp)
 jal factorialIter
-lw $fp, 4($sp)
 la $t9, __t59
 sw $v0, 0($t9)
 la $t9, __t59

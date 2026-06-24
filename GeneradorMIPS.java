@@ -14,11 +14,8 @@ public class GeneradorMIPS {
     static List<String> lineas3D = new ArrayList<>();
     static Map<String, String> renombrados = new HashMap<>();
 
-    // nombre_funcion -> { nombre_variable -> offset_desde_fp }
     static LinkedHashMap<String, LinkedHashMap<String, Integer>> localesPorFuncion = new LinkedHashMap<>();
-    // nombre_funcion -> tamano del frame local (sin contar $ra y $fp)
     static LinkedHashMap<String, Integer> frameSizePorFuncion = new LinkedHashMap<>();
-    // nombre_funcion -> tamano total del frame (con $ra, $fp y alineacion)
     static LinkedHashMap<String, Integer> frameTotalPorFuncion = new LinkedHashMap<>();
 
     static String funcionActual = null;
@@ -26,13 +23,16 @@ public class GeneradorMIPS {
     static List<String> parametrosPendientes = new ArrayList<>();
 
     // ===============================================================
-    // ACCESO A MEMORIA: stack (locales) o .data (globales)
+    // ACCESO A MEMORIA 
     // ===============================================================
 
     static String store(String reg, String var) {
         if (dentroDeFuncion && funcionActual != null) {
             LinkedHashMap<String, Integer> loc = localesPorFuncion.get(funcionActual);
-            if (loc != null && loc.containsKey(var)) return "sw " + reg + ", " + loc.get(var) + "($fp)\n";
+            if (loc != null && loc.containsKey(var)) {
+                int offset = loc.get(var);
+                return "sw " + reg + ", " + offset + "($sp)\n";
+            }
         }
         return "la $t9, " + var + "\nsw " + reg + ", 0($t9)\n";
     }
@@ -40,7 +40,10 @@ public class GeneradorMIPS {
     static String storeF(String reg, String var) {
         if (dentroDeFuncion && funcionActual != null) {
             LinkedHashMap<String, Integer> loc = localesPorFuncion.get(funcionActual);
-            if (loc != null && loc.containsKey(var)) return "s.s " + reg + ", " + loc.get(var) + "($fp)\n";
+            if (loc != null && loc.containsKey(var)) {
+                int offset = loc.get(var);
+                return "s.s " + reg + ", " + offset + "($sp)\n";
+            }
         }
         return "la $t9, " + var + "\ns.s " + reg + ", 0($t9)\n";
     }
@@ -49,7 +52,10 @@ public class GeneradorMIPS {
         if (esLitInt(var)) return "li " + reg + ", " + var + "\n";
         if (dentroDeFuncion && funcionActual != null) {
             LinkedHashMap<String, Integer> loc = localesPorFuncion.get(funcionActual);
-            if (loc != null && loc.containsKey(var)) return "lw " + reg + ", " + loc.get(var) + "($fp)\n";
+            if (loc != null && loc.containsKey(var)) {
+                int offset = loc.get(var);
+                return "lw " + reg + ", " + offset + "($sp)\n";
+            }
         }
         return "la $t9, " + var + "\nlw " + reg + ", 0($t9)\n";
     }
@@ -58,7 +64,10 @@ public class GeneradorMIPS {
         if (esLitFloat(var)) return "li.s " + reg + ", " + var + "\n";
         if (dentroDeFuncion && funcionActual != null) {
             LinkedHashMap<String, Integer> loc = localesPorFuncion.get(funcionActual);
-            if (loc != null && loc.containsKey(var)) return "l.s " + reg + ", " + loc.get(var) + "($fp)\n";
+            if (loc != null && loc.containsKey(var)) {
+                int offset = loc.get(var);
+                return "l.s " + reg + ", " + offset + "($sp)\n";
+            }
         }
         return "la $t9, " + var + "\nl.s " + reg + ", 0($t9)\n";
     }
@@ -171,17 +180,12 @@ public class GeneradorMIPS {
     // ===============================================================
     // PRIMERA PASADA
     // ===============================================================
-    // Objetivo: para cada funcion de usuario, registrar TODAS sus
-    // variables locales (params, declares, temporales) en el stack,
-    // calculando el offset desde $fp. Las variables de main y los
-    // arreglos globales van a .data.
 
     static void primeraPasada() {
         String funcActual = null;
 
         for (String linea : lineas3D) {
 
-            // Detectar cambio de seccion (etiqueta)
             if (linea.endsWith(":") && !linea.contains(" ") && !linea.contains("=")) {
                 String etq = linea.substring(0, linea.length()-1);
                 if (!etq.equals("main") && !etq.startsWith("_") && !etq.startsWith("L")) {
@@ -189,14 +193,11 @@ public class GeneradorMIPS {
                     localesPorFuncion.put(etq, new LinkedHashMap<>());
                     frameSizePorFuncion.put(etq, 0);
                 } else {
-                    // main u etiqueta de control: no cambia la funcion actual
                     if (etq.equals("main")) funcActual = "main";
-                    // etiquetas L0, _dowhile, etc. siguen perteneciendo a funcActual
                 }
                 continue;
             }
 
-            // declare
             if (linea.startsWith("declare ")) {
                 String[] p = linea.substring("declare ".length()).split(",",2);
                 String nombre = p[0].trim(), tipo = p[1].trim();
@@ -215,7 +216,6 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // param (recibir argumento en funcion)
             if (linea.startsWith("param ")) {
                 String[] p = linea.substring("param ".length()).split(",",2);
                 String nombre = p[0].trim(), tipo = p[1].trim();
@@ -224,18 +224,15 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // strings
             Matcher ms = Pattern.compile("\"([^\"]*)\"").matcher(linea);
             if (ms.find()) {
                 String c = ms.group(1);
                 if (!stringsLiterales.containsKey(c)) stringsLiterales.put(c, "str"+(contadorStrings++));
             }
 
-            // Cualquier asignacion: registrar el lado izquierdo como local si estamos en funcion
             Matcher ma = Pattern.compile("^(\\w+)\\s*=").matcher(linea);
             if (ma.find()) {
                 String nombre = ma.group(1);
-                // Inferir tipo
                 if (!simbolosGlobales.containsKey(nombre)) {
                     String rhs = linea.substring(linea.indexOf('=')+1).trim();
                     String tipo;
@@ -250,21 +247,24 @@ public class GeneradorMIPS {
             }
         }
 
-        // Calcular frame total por funcion (8 bytes para $ra+$fp + locales, alineado a 8)
+        if (!frameSizePorFuncion.containsKey("main")) {
+            frameSizePorFuncion.put("main", 0);
+        }
         for (Map.Entry<String,Integer> e : frameSizePorFuncion.entrySet()) {
-            int total = 8 + e.getValue();
+            int total = 32 + e.getValue();
             if (total % 8 != 0) total += 4;
             frameTotalPorFuncion.put(e.getKey(), total);
         }
     }
 
     static void agregarLocal(String func, String nombre) {
-        if (func == null || func.equals("main")) return;
+        if (func == null) return;
         if (!localesPorFuncion.containsKey(func)) return;
         LinkedHashMap<String,Integer> loc = localesPorFuncion.get(func);
         if (loc.containsKey(nombre)) return;
         int fs = frameSizePorFuncion.get(func);
-        loc.put(nombre, -(fs+4));
+       
+        loc.put(nombre, (fs+4));
         frameSizePorFuncion.put(func, fs+4);
     }
 
@@ -275,7 +275,8 @@ public class GeneradorMIPS {
     static String segundaPasada() {
         StringBuilder sb = new StringBuilder();
         dentroDeFuncion = false; funcionActual = null; parametrosPendientes.clear();
-        int paramIdx = 0; // indice de param dentro de funcion (para saber $a0, $a1...)
+        int paramIdx = 0;
+        boolean mainProcesado = false;
 
         for (String linea : lineas3D) {
 
@@ -284,23 +285,38 @@ public class GeneradorMIPS {
             // ETIQUETAS
             if (linea.endsWith(":") && !linea.contains(" ") && !linea.contains("=")) {
                 String etq = linea.substring(0, linea.length()-1);
+                
+                if (etq.equals("main")) {
+                    if (!mainProcesado) {
+                        dentroDeFuncion = true;
+                        funcionActual = "main";
+                        int total = frameTotalPorFuncion.getOrDefault("main", 32);
+                        sb.append("main:\n");
+                        sb.append("subu $sp, $sp, ").append(total).append("\n");
+                        sb.append("sw $ra, ").append(total-4).append("($sp)\n");
+                       
+                        mainProcesado = true;
+                    } else {
+                        sb.append("# main duplicado ignorado\n");
+                    }
+                    continue;
+                }
+                
                 if (!etq.equals("main") && !etq.startsWith("_") && !etq.startsWith("L")) {
                     dentroDeFuncion = true; funcionActual = etq; paramIdx = 0;
                     parametrosPendientes.clear();
-                    int total = frameTotalPorFuncion.getOrDefault(etq, 8);
+                    int total = frameTotalPorFuncion.getOrDefault(etq, 32);
                     sb.append(etq).append(":\n");
                     sb.append("subu $sp, $sp, ").append(total).append("\n");
                     sb.append("sw $ra, ").append(total-4).append("($sp)\n");
-                    sb.append("sw $fp, ").append(total-8).append("($sp)\n");
-                    sb.append("move $fp, $sp\n");
+                    // NO guardar $fp, NO hacer move $fp, $sp
                 } else {
-                    if (etq.equals("main")) { dentroDeFuncion = false; funcionActual = null; }
                     sb.append(linea).append("\n");
                 }
                 continue;
             }
 
-            // PARAM (recibir argumento)
+            // PARAM
             Matcher mParam = Pattern.compile("^param\\s+(\\S+),\\s*(\\S+)$").matcher(linea);
             if (mParam.matches()) {
                 String nombre = mParam.group(1), tipo = mParam.group(2);
@@ -315,7 +331,7 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // ARG (pasar argumento)
+            // ARG
             Matcher mArg = Pattern.compile("^arg\\s+(\\S+),\\s*(\\S+)$").matcher(linea);
             if (mArg.matches()) {
                 String arg = mArg.group(1), tipo = mArg.group(2);
@@ -329,7 +345,7 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // ARREGLO ESCRITURA: arr[i][j] = val
+            // ARREGLO ESCRITURA
             Matcher mAS = Pattern.compile("^(\\w+)\\[(.+)\\]\\[(.+)\\]\\s*=\\s*(\\S+)$").matcher(linea);
             if (mAS.matches()) {
                 String arr=mAS.group(1), i1=mAS.group(2), i2=mAS.group(3), val=mAS.group(4);
@@ -343,7 +359,7 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // ARREGLO LECTURA: dest = arr[i][j]
+            // ARREGLO LECTURA
             Matcher mAG = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\[(.+)\\]\\[(.+)\\]$").matcher(linea);
             if (mAG.matches()) {
                 String dest=mAG.group(1), arr=mAG.group(2), i1=mAG.group(3), i2=mAG.group(4);
@@ -357,7 +373,7 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // LITERAL NUMERICO: dest = N
+            // LITERAL NUMERICO
             Matcher mLit = Pattern.compile("^([\\w_]+)\\s*=\\s*(-?\\d+(\\.\\d+)?)$").matcher(linea);
             if (mLit.matches()) {
                 String dest=mLit.group(1), val=mLit.group(2);
@@ -388,7 +404,7 @@ public class GeneradorMIPS {
                 sb.append(store("$t0",mS.group(1))); continue;
             }
 
-            // COPIA: dest = src
+            // COPIA
             Matcher mCop = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)$").matcher(linea);
             if (mCop.matches()) {
                 String dest=mCop.group(1), src=mCop.group(2);
@@ -444,7 +460,7 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // LOGICOS BINARIOS: @ y #
+            // LOGICOS BINARIOS
             Matcher mL = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*([@#])\\s*(\\S+)$").matcher(linea);
             if (mL.matches()) {
                 sb.append(load("$t1",mL.group(2))); sb.append(load("$t2",mL.group(4)));
@@ -459,7 +475,7 @@ public class GeneradorMIPS {
                 sb.append(store("$t0",mN.group(1))); continue;
             }
 
-            // NEGACION ARITMETICA: dest = -op
+            // NEGACION ARITMETICA
             Matcher mNeg = Pattern.compile("^(\\w+)\\s*=\\s*-\\s*(\\S+)$").matcher(linea);
             if (mNeg.matches()) {
                 String dest=mNeg.group(1), op=mNeg.group(2);
@@ -468,7 +484,7 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // ARITMETICA: dest = op1 OP op2
+            // ARITMETICA
             Matcher mOp = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*([+\\-*/%^])\\s*(\\S+)$").matcher(linea);
             if (mOp.matches()) {
                 String dest=mOp.group(1), op1=mOp.group(2), oper=mOp.group(3), op2=mOp.group(4);
@@ -504,13 +520,9 @@ public class GeneradorMIPS {
             // CALL
             Matcher mCall = Pattern.compile("^(\\w*)\\s*=\\s*call\\s+(\\w+),\\s*(\\d+)$").matcher(linea);
             if (mCall.matches()) {
-                String dest=mCall.group(1), func=mCall.group(2);
-                // Guardar $fp del llamador antes del jal porque la funcion
-                // llamada lo sobreescribe con "move $fp, $sp"
-                sb.append("sw $fp, 4($sp)\n");
+                String dest = mCall.group(1), func = mCall.group(2);
+               
                 sb.append("jal ").append(func).append("\n");
-                // Restaurar $fp del llamador despues de regresar
-                sb.append("lw $fp, 4($sp)\n");
                 if (!dest.isEmpty()) {
                     if (tipoDe(dest).equals("float")) sb.append(storeF("$f0",dest));
                     else sb.append(store("$v0",dest));
@@ -527,10 +539,9 @@ public class GeneradorMIPS {
                     if (esFloat(val)) sb.append(loadF("$f0",val));
                     else sb.append(load("$v0",val));
                 }
-                if (dentroDeFuncion && funcionActual!=null) {
-                    int total = frameTotalPorFuncion.getOrDefault(funcionActual,8);
-                    sb.append("lw $ra, ").append(total-4).append("($fp)\n");
-                    sb.append("lw $fp, ").append(total-8).append("($fp)\n");
+                if (dentroDeFuncion && funcionActual != null) {
+                    int total = frameTotalPorFuncion.getOrDefault(funcionActual,32);
+                    sb.append("lw $ra, ").append(total-4).append("($sp)\n");
                     sb.append("addu $sp, $sp, ").append(total).append("\n");
                     sb.append("jr $ra\n");
                 } else {
@@ -564,19 +575,23 @@ public class GeneradorMIPS {
             sb.append("# PENDIENTE: ").append(linea).append("\n");
         }
 
-        sb.append("li $v0, 10\nsyscall\n");
+        // Terminar main
+        if (dentroDeFuncion && funcionActual != null && funcionActual.equals("main")) {
+            sb.append("li $v0, 10\n");
+            sb.append("syscall\n");
+        }
+        
         return sb.toString();
     }
 
     // ===============================================================
-    // SECCION .data — solo variables globales (main y arreglos)
+    // SECCION .data
     // ===============================================================
 
     static String generarData() {
         StringBuilder sb = new StringBuilder();
         sb.append(".data\n");
 
-        // Juntar todas las variables locales a funciones
         Set<String> locales = new HashSet<>();
         for (LinkedHashMap<String,Integer> m : localesPorFuncion.values()) locales.addAll(m.keySet());
 

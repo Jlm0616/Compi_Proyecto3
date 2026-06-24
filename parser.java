@@ -1608,10 +1608,12 @@ class CUP$parser$actions {
             {
               Object RESULT =null;
  
-                    GeneradorCodigo.emitir("");
-                    GeneradorCodigo.emitir("main:");
+                    // Crear ámbito para main
+                    pushScope("main");
                     tipoFuncionActual = "empty";
                     funcionActual = "main";
+                    GeneradorCodigo.emitir("");
+                    GeneradorCodigo.emitir("main:");
                 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("NT$1",55, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1623,7 +1625,10 @@ class CUP$parser$actions {
               Object RESULT =null;
               // propagate RESULT from NT$1
                 RESULT = (Object) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-
+		
+                    // Cerrar ámbito de main
+                    popScope();
+                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("funcion_main",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1678,11 +1683,15 @@ class CUP$parser$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-7)).value;
 		 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 // Solo verificar return si NO es main y NO es empty
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 // Si la función es main, mantener el ámbito abierto para el contenido
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               
               CUP$parser$result = parser.getSymbolFactory().newSymbol("funcion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1729,11 +1738,13 @@ class CUP$parser$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-7)).value;
 		 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               
               CUP$parser$result = parser.getSymbolFactory().newSymbol("funcion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1780,11 +1791,13 @@ class CUP$parser$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-7)).value;
 		 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               
               CUP$parser$result = parser.getSymbolFactory().newSymbol("funcion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1831,11 +1844,13 @@ class CUP$parser$actions {
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-7)).value;
 		 
                  tablaParametros.put((String)id, new java.util.ArrayList<>(parametrosActuales));
-                 if (!tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
+                 if (!funcionActual.equals("main") && !tipoFuncionActual.equals("empty") && !funcionesConReturn.contains(funcionActual)) {
                      errorSemantico("Linea " + idleft + ": la funcion '" + id + "' no tiene sentencia 'return'.");
                  }
                  funcionesConReturn.remove(funcionActual);
-                 popScope(); 
+                 if (!funcionActual.equals("main")) {
+                     popScope();
+                 }
               
               CUP$parser$result = parser.getSymbolFactory().newSymbol("funcion",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-9)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
