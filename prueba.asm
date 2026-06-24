@@ -345,6 +345,10 @@ s.s $f0, __f1
 l.s $f0, __f1
 s.s $f0, xf
 _dowhile1_start:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 1
 sw $t0, __t14
 lw $t0, __t14
@@ -354,11 +358,19 @@ s.s $f0, __f2
 l.s $f0, __f2
 s.s $f0, yf
 _dowhile2_start:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 1
 sw $t0, __t15
 lw $t0, __t15
 sw $t0, k
 _dowhile3_start:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 lw $t0, i
 sw $t0, __t16
 lw $t0, var_j
@@ -449,7 +461,7 @@ l.s $f0, yf
 s.s $f0, __f4
 l.s $f1, __f3
 l.s $f2, __f4
-c.le.s $f1, $f2
+c.lt.s $f2, $f1
 li $t0, 0
 bc1t _cmp1
 li $t0, 1
@@ -487,11 +499,19 @@ sw $t0, negCombinada
 lw $t0, categoria
 sw $t0, __t47
 _switch1:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 1
 sw $t0, tsw1
 li $t0, 88
 sw $t0, __t48
 _case1_1:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 lw $t1, tsw1
 li $t2, 0
 seq $t0, $t1, $t2
@@ -506,6 +526,10 @@ lw $t0, __t50
 bne $t0, $zero, _case1_1_b
 j _case1_1_e
 _case1_1_b:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 0
 sw $t0, tsw1
 lw $t0, countA
@@ -604,9 +628,17 @@ lw $t0, __t73
 sw $t0, 0($t9)
 j _sw1_end
 _case1_1_e:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 89
 sw $t0, __t74
 _case1_2:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 lw $t1, tsw1
 li $t2, 0
 seq $t0, $t1, $t2
@@ -621,6 +653,10 @@ lw $t0, __t76
 bne $t0, $zero, _case1_2_b
 j _case1_2_e
 _case1_2_b:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 0
 sw $t0, tsw1
 lw $t0, countB
@@ -656,7 +692,15 @@ s.s $f0, sumaFloat
 L5:
 j _sw1_end
 _case1_2_e:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 _default1:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 lw $t0, countC
 sw $t0, __t81
 li $t0, 1
@@ -683,6 +727,10 @@ l.s $f0, __f12
 s.s $f0, sumaFloat
 L6:
 _sw1_end:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 lw $t0, k
 sw $t0, __t85
 li $t0, 1
@@ -704,6 +752,10 @@ sw $t0, __t90
 lw $t0, __t90
 bne $t0, $zero, _dowhile3_start
 _dowhile3_end:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 lw $t0, var_j
 sw $t0, __t91
 li $t0, 1
@@ -725,6 +777,10 @@ sw $t0, __t96
 lw $t0, __t96
 bne $t0, $zero, _dowhile2_start
 _dowhile2_end:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 l.s $f0, yf
 s.s $f0, __f13
 li.s $f0, 1.5
@@ -756,6 +812,10 @@ sw $t0, __t102
 lw $t0, __t102
 bne $t0, $zero, _dowhile1_start
 _dowhile1_end:
+subu $sp, $sp, 8
+sw $ra, 4($sp)
+sw $fp, 0($sp)
+move $fp, $sp
 li $t0, 3
 sw $t0, __t103
 lw $t0, maxSuma
@@ -1068,5 +1128,9 @@ sw $t0, __t157
 lw $a0, __t157
 li $v0, 4
 syscall
+lw $fp, 0($sp)
+lw $ra, 4($sp)
+addu $sp, $sp, 8
+jr $ra
 li $v0, 10
 syscall

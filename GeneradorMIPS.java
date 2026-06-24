@@ -35,11 +35,24 @@ public class GeneradorMIPS {
     // Contador para generar etiquetas unicas en el bucle de potencia (^)
     static int contadorPow = 0;
 
+    // Contador para etiquetas de funciones
+    static int contadorFunc = 0;
+
     // Lineas crudas del archivo de 3D
     static List<String> lineas3D = new ArrayList<>();
 
     // Mapa de renombrado: nombre original -> nombre seguro usado en el .asm
     static Map<String, String> renombrados = new HashMap<>();
+
+    // Stack frame para funciones
+    static LinkedHashMap<String, Integer> offsetsLocales = new LinkedHashMap<>();
+    static LinkedHashMap<String, Integer> offsetsParametros = new LinkedHashMap<>();
+    static int frameSize = 0;
+    static int paramOffset = 0;
+    static int localOffset = 0;
+    static String funcionActual = null;
+    static boolean dentroDeFuncion = false;
+    static List<String> parametrosPendientes = new ArrayList<>();
 
     // ===============================================================
     // 2.1 RENOMBRADO DE IDENTIFICADORES QUE CHOCAN CON PALABRAS RESERVADAS
@@ -193,6 +206,16 @@ public class GeneradorMIPS {
         contadorPow = 0;
         lineas3D.clear();
         renombrados.clear();
+        
+        // Limpiar datos de funciones
+        offsetsLocales.clear();
+        offsetsParametros.clear();
+        frameSize = 0;
+        paramOffset = 0;
+        localOffset = 0;
+        funcionActual = null;
+        dentroDeFuncion = false;
+        parametrosPendientes.clear();
 
         leerArchivo(archivoEntrada);
         renombrarPalabrasReservadas();
@@ -277,6 +300,7 @@ public class GeneradorMIPS {
 
         return "int";
     }
+
     // ===============================================================
     // 2.6 PRIMERA PASADA: recolectar variables, temporales y strings
     // ===============================================================
@@ -385,12 +409,42 @@ public class GeneradorMIPS {
 
     static String segundaPasada() {
         StringBuilder sb = new StringBuilder();
+        
+        // Reiniciar estado de funciones
+        dentroDeFuncion = false;
+        funcionActual = null;
+        parametrosPendientes.clear();
 
         for (String linea : lineas3D) {
 
             if (linea.startsWith("declare ")) continue;
 
+            // ---------------------------------------------------------------
+            // DETECTAR FUNCIONES CON PRÓLOGO MEJORADO
+            // ---------------------------------------------------------------
             if (linea.endsWith(":") && !linea.contains(" ") && !linea.contains("=")) {
+                String etiqueta = linea.substring(0, linea.length() - 1);
+                
+                // Si es una función (no es main)
+                if (!etiqueta.equals("main") && !etiqueta.startsWith("L")) {
+                    dentroDeFuncion = true;
+                    funcionActual = etiqueta;
+                    frameSize = 0;
+                    localOffset = 0;
+                    paramOffset = 0;
+                    offsetsLocales.clear();
+                    offsetsParametros.clear();
+                    parametrosPendientes.clear();
+                    
+                    // PRÓLOGO MEJORADO
+                    sb.append(linea).append("\n");
+                    sb.append("subu $sp, $sp, 8\n");     // Espacio para $ra y $fp
+                    sb.append("sw $ra, 4($sp)\n");       // Guardar $ra
+                    sb.append("sw $fp, 0($sp)\n");       // Guardar $fp
+                    sb.append("move $fp, $sp\n");        // $fp = $sp (frame pointer)
+                    continue;
+                }
+                
                 sb.append(linea).append("\n");
                 continue;
             }
@@ -564,8 +618,8 @@ public class GeneradorMIPS {
                     switch (operador) {
                         case "<":  sb.append("c.lt.s $f1, $f2\n"); break;
                         case "<=": sb.append("c.le.s $f1, $f2\n"); break;
-                        case ">":  sb.append("c.le.s $f1, $f2\n"); break;
-                        case ">=": sb.append("c.lt.s $f1, $f2\n"); break;
+                        case ">":  sb.append("c.lt.s $f2, $f1\n"); break; 
+                        case ">=": sb.append("c.le.s $f2, $f1\n"); break;  
                         case "==": sb.append("c.eq.s $f1, $f2\n"); break;
                         case "!=": sb.append("c.eq.s $f1, $f2\n"); break;
                     }
@@ -699,7 +753,115 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.11 IMPRESION POR PANTALLA: "write __t5"
+            // 2.7.11 PARAM - Pasar parámetro a función
+            // ---------------------------------------------------------------
+            Matcher mParam = Pattern.compile("^param\\s+(\\S+),\\s*(\\w+)$").matcher(linea);
+            if (mParam.matches()) {
+                String parametro = mParam.group(1);
+                String tipo = mParam.group(2);
+                
+                if (dentroDeFuncion) {
+                    // Es un parámetro de la función actual
+                    offsetsParametros.put(parametro, paramOffset);
+                    paramOffset += 4;  // Cada parámetro ocupa 4 bytes
+                    frameSize += 4;
+                    
+                    // El parámetro se pasa en $a0-$a3, guardarlo en el stack frame
+                    int numParam = offsetsParametros.size();
+                    if (numParam <= 4) {
+                        // Usar $a0-$a3
+                        String reg = "$a" + (numParam - 1);
+                        if (tipo.equals("float")) {
+                            sb.append("s.s ").append(reg).append(", ").append(parametro).append("\n");
+                        } else {
+                            sb.append("sw ").append(reg).append(", ").append(parametro).append("\n");
+                        }
+                    }
+                    
+                    // Registrar el parámetro en la tabla de símbolos
+                    simbolos.put(parametro, tipo);
+                } else {
+                    // Es un parámetro para una llamada a función
+                    parametrosPendientes.add(parametro);
+                    
+                    // Cargar en $a0-$a3
+                    if (tipo.equals("float")) {
+                        sb.append("l.s $f12, ").append(parametro).append("\n");
+                    } else {
+                        sb.append("lw $a0, ").append(parametro).append("\n");
+                    }
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // 2.7.12 CALL - Llamada a función
+            // ---------------------------------------------------------------
+            Matcher mCall = Pattern.compile("^(\\w*)\\s*=\\s*call\\s+(\\w+),\\s*(\\d+)$").matcher(linea);
+            if (mCall.matches()) {
+                String destino = mCall.group(1);
+                String funcion = mCall.group(2);
+                int numParams = Integer.parseInt(mCall.group(3));
+                
+                // Guardar $ra y $fp en el stack
+                sb.append("subu $sp, $sp, 8\n");
+                sb.append("sw $ra, 4($sp)\n");
+                sb.append("sw $fp, 0($sp)\n");
+                
+                // Llamar a la función
+                sb.append("jal ").append(funcion).append("\n");
+                
+                // Restaurar $ra y $fp
+                sb.append("lw $fp, 0($sp)\n");
+                sb.append("lw $ra, 4($sp)\n");
+                sb.append("addu $sp, $sp, 8\n");
+                
+                // Guardar el valor de retorno
+                if (!destino.isEmpty()) {
+                    String tipoDest = tipoDe(destino);
+                    if (tipoDest.equals("float")) {
+                        sb.append("s.s $f0, ").append(destino).append("\n");
+                    } else {
+                        sb.append("sw $v0, ").append(destino).append("\n");
+                    }
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // 2.7.13 RETURN - Retornar de función
+            // ---------------------------------------------------------------
+            Matcher mReturn = Pattern.compile("^return\\s*(\\S*)$").matcher(linea);
+            if (mReturn.matches()) {
+                String valor = mReturn.group(1);
+                
+                if (!valor.isEmpty()) {
+                    // Return con valor
+                    if (esFloat(valor)) {
+                        sb.append("l.s $f0, ").append(valor).append("\n");
+                    } else {
+                        sb.append("lw $v0, ").append(valor).append("\n");
+                    }
+                }
+                
+                // EPÍLOGO MEJORADO
+                if (dentroDeFuncion && funcionActual != null) {
+                    sb.append("lw $fp, 0($sp)\n");      // Restaurar $fp
+                    sb.append("lw $ra, 4($sp)\n");      // Restaurar $ra
+                    sb.append("addu $sp, $sp, 8\n");    // Liberar frame
+                    sb.append("jr $ra\n");              // Retornar
+                    dentroDeFuncion = false;
+                    funcionActual = null;
+                } else {
+                    // Return en main
+                    sb.append("li $v0, 10\n");
+                    sb.append("syscall\n");
+                }
+                continue;
+            }
+
+            // ---------------------------------------------------------------
+            // 2.7.14 IMPRESION POR PANTALLA: "write __t5"
             // ---------------------------------------------------------------
             Matcher mWrite = Pattern.compile("^write\\s+(\\S+)$").matcher(linea);
             if (mWrite.matches()) {
@@ -732,7 +894,7 @@ public class GeneradorMIPS {
             }
 
             // ---------------------------------------------------------------
-            // 2.7.12 LECTURA DE CONSOLA: "read x"
+            // 2.7.15 LECTURA DE CONSOLA: "read x"
             // ---------------------------------------------------------------
             Matcher mRead = Pattern.compile("^read\\s+(\\S+)$").matcher(linea);
             if (mRead.matches()) {
@@ -753,6 +915,16 @@ public class GeneradorMIPS {
             }
 
             sb.append("# PENDIENTE: ").append(linea).append("\n");
+        }
+
+        // Si estamos dentro de una función y no hay return, agregar epílogo
+        if (dentroDeFuncion && funcionActual != null) {
+            sb.append("lw $fp, 0($sp)\n");
+            sb.append("lw $ra, 4($sp)\n");
+            sb.append("addu $sp, $sp, 8\n");
+            sb.append("jr $ra\n");
+            dentroDeFuncion = false;
+            funcionActual = null;
         }
 
         sb.append("li $v0, 10\n");

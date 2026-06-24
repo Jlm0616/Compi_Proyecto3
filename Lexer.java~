@@ -959,7 +959,9 @@ class Lexer implements java_cup.runtime.Scanner {
           // fall through
           case 72: break;
           case 17:
-            { return symbol(sym.CADENA, yytext().substring(1, yytext().length()-1));
+            { String contenido = yytext().substring(1, yytext().length()-1);
+                        contenido = contenido.replace("\\n", "\n").replace("\\t", "\t");
+                        return symbol(sym.CADENA, contenido);
             }
           // fall through
           case 73: break;
