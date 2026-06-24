@@ -1,8 +1,8 @@
 int ~ factorial <| int ~ n |> |:
     int ~ resultado <- 1!
-    do |:
+    if <| less_te <| n, 1 |> |> |:
         return ~ resultado!
-    :| while <| less_te <| n, 1 |> |>!
+    :|
     int ~ prev <- factorial <| n - 1 |>!
     resultado <- n * prev!
     return ~ resultado!

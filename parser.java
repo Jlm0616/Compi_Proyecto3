@@ -2669,16 +2669,16 @@ class CUP$parser$actions {
             errorSemantico("Linea " + idleft + ": funcion '" + id + "' no fue declarada.");
             RESULT = "error|?";
         } else {
-            String tipoRetorno = tablaFunciones.get((String)id);  // NUEVO
+            String tipoRetorno = tablaFunciones.get((String)id);
             java.util.ArrayList<String> params = tablaParametros.get((String)id);
             if (params != null && params.size() != misArgumentos.size()) {
                 errorSemantico("Linea " + idleft + ": la funcion '" + id + "' espera " + params.size() + " argumento(s) pero se encontraron " + misArgumentos.size() + ".");
                 for (int i = 0; i < misArgumentos.size(); i++) {
-                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);  // NUEVO
+                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);
                     String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
-                    GeneradorCodigo.emitir("    param " + lugarArg + ", " + tipoArg);  // CAMBIO: agregado tipo
+                    GeneradorCodigo.emitir("    arg " + lugarArg + ", " + tipoArg);  // CAMBIO: param -> arg
                 }
-                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);  // CAMBIO: tipo de retorno
+                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);
                 GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + misArgumentos.size());
                 RESULT = tipoRetorno + "|" + t;
             } else if (params != null) {
@@ -2688,18 +2688,18 @@ class CUP$parser$actions {
                         errorSemantico("Linea " + idleft + ": argumento " + (i+1) + " de funcion '" + id + "' esperaba tipo '" + params.get(i) + "' pero se encontro '" + tipoArg + "'.");
                     }
                     String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
-                    GeneradorCodigo.emitir("    param " + lugarArg + ", " + params.get(i));  // CAMBIO: agregado tipo (del parametro esperado)
+                    GeneradorCodigo.emitir("    arg " + lugarArg + ", " + params.get(i));  // CAMBIO: param -> arg
                 }
-                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);  // CAMBIO: tipo de retorno
+                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);
                 GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + params.size());
                 RESULT = tipoRetorno + "|" + t;
             } else {
                 for (int i = 0; i < misArgumentos.size(); i++) {
-                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);  // NUEVO
+                    String tipoArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[0] : misArgumentos.get(i);
                     String lugarArg = misArgumentos.get(i).contains("|") ? misArgumentos.get(i).split("\\|")[1] : misArgumentos.get(i);
-                    GeneradorCodigo.emitir("    param " + lugarArg + ", " + tipoArg);  // CAMBIO: agregado tipo
+                    GeneradorCodigo.emitir("    arg " + lugarArg + ", " + tipoArg);  // CAMBIO: param -> arg
                 }
-                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);  // CAMBIO: tipo de retorno
+                String t = GeneradorCodigo.nuevoTemp(tipoRetorno);
                 GeneradorCodigo.emitir("    " + t + " = call " + id + ", " + misArgumentos.size());
                 RESULT = tipoRetorno + "|" + t;
             }

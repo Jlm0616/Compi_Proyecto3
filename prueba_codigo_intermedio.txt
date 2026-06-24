@@ -5,14 +5,13 @@ factorial:
     declare resultado, int
     __t0 = 1
     resultado = __t0
-_dowhile1_start:
-    __t1 = resultado
-    return __t1
-    __t2 = n
-    __t3 = 1
-    __t4 = __t2 <= __t3
-    if __t4 goto _dowhile1_start
-_dowhile1_end:
+    __t1 = n
+    __t2 = 1
+    __t3 = __t1 <= __t2
+    ifFalse __t3 goto L0
+    __t4 = resultado
+    return __t4
+L0:
     declare prev, int
     __t5 = n
     __t6 = 1

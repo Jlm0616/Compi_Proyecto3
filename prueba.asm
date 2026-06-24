@@ -1,8 +1,4 @@
 .data
-__t1: .word 0
-__t2: .word 0
-__t3: .word 0
-__t4: .word 0
 prev: .word 0
 __t5: .word 0
 __t6: .word 0
@@ -44,42 +40,33 @@ str5: .asciiz "factorial(5) = "
 .text
 .globl main
 factorial:
-subu $sp, $sp, 24
-sw $ra, 20($sp)
-sw $fp, 16($sp)
+subu $sp, $sp, 40
+sw $ra, 36($sp)
+sw $fp, 32($sp)
 move $fp, $sp
 sw $a0, -4($fp)
 li $t0, 1
 sw $t0, -12($fp)
 lw $t0, -12($fp)
 sw $t0, -8($fp)
-_dowhile1_start:
-lw $t0, -8($fp)
-la $t9, __t1
-sw $t0, 0($t9)
-la $t9, __t1
-lw $v0, 0($t9)
-lw $ra, 20($sp)
-lw $fp, 16($sp)
-addu $sp, $sp, 24
-jr $ra
 lw $t0, -4($fp)
-la $t9, __t2
-sw $t0, 0($t9)
+sw $t0, -16($fp)
 li $t0, 1
-la $t9, __t3
-sw $t0, 0($t9)
-la $t9, __t2
-lw $t1, 0($t9)
-la $t9, __t3
-lw $t2, 0($t9)
+sw $t0, -20($fp)
+lw $t1, -16($fp)
+lw $t2, -20($fp)
 sle $t0, $t1, $t2
-la $t9, __t4
-sw $t0, 0($t9)
-la $t9, __t4
-lw $t0, 0($t9)
-bne $t0, $zero, _dowhile1_start
-_dowhile1_end:
+sw $t0, -24($fp)
+lw $t0, -24($fp)
+beq $t0, $zero, L0
+lw $t0, -8($fp)
+sw $t0, -28($fp)
+lw $v0, -28($fp)
+lw $ra, 36($sp)
+lw $fp, 32($sp)
+addu $sp, $sp, 40
+jr $ra
+L0:
 lw $t0, -4($fp)
 la $t9, __t5
 sw $t0, 0($t9)
@@ -94,7 +81,7 @@ sub $t0, $t1, $t2
 la $t9, __t7
 sw $t0, 0($t9)
 la $t9, __t7
-sw $a1, 0($t9)
+sw $a0, 0($t9)
 jal factorial
 la $t9, __t8
 sw $v0, 0($t9)
@@ -124,9 +111,9 @@ la $t9, __t12
 sw $t0, 0($t9)
 la $t9, __t12
 lw $v0, 0($t9)
-lw $ra, 20($sp)
-lw $fp, 16($sp)
-addu $sp, $sp, 24
+lw $ra, 36($sp)
+lw $fp, 32($sp)
+addu $sp, $sp, 40
 jr $ra
 main:
 la $t0, str0
