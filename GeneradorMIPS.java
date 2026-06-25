@@ -258,7 +258,7 @@ public class GeneradorMIPS {
     }
 
     static void agregarLocal(String func, String nombre) {
-        if (func == null) return;
+        if (func == null || func.equals("main")) return;
         if (!localesPorFuncion.containsKey(func)) return;
         LinkedHashMap<String,Integer> loc = localesPorFuncion.get(func);
         if (loc.containsKey(nombre)) return;
@@ -322,7 +322,11 @@ public class GeneradorMIPS {
                 String nombre = mParam.group(1), tipo = mParam.group(2);
                 simbolosGlobales.put(nombre, tipo);
                 if (tipo.equals("float")) {
-                    String rf = (paramIdx==0) ? "$f12" : "$f14";
+                    String rf;
+                    if (paramIdx == 0) rf = "$f12";
+                    else if (paramIdx == 1) rf = "$f14";
+                    else if (paramIdx == 2) rf = "$f16";
+                    else rf = "$f18";
                     sb.append(storeF(rf, nombre));
                 } else if (paramIdx <= 3) {
                     sb.append(store("$a"+paramIdx, nombre));
@@ -338,7 +342,12 @@ public class GeneradorMIPS {
                 int idx = parametrosPendientes.size();
                 parametrosPendientes.add(arg);
                 if (tipo.equals("float")) {
-                    sb.append(loadF((idx==0)?"$f12":"$f14", arg));
+                    String reg;
+                    if (idx == 0) reg = "$f12";
+                    else if (idx == 1) reg = "$f14";
+                    else if (idx == 2) reg = "$f16";
+                    else reg = "$f18";  // para más parámetros
+                    sb.append(loadF(reg, arg));
                 } else if (idx <= 3) {
                     sb.append(load("$a"+idx, arg));
                 }
@@ -592,12 +601,20 @@ public class GeneradorMIPS {
         StringBuilder sb = new StringBuilder();
         sb.append(".data\n");
 
-        Set<String> locales = new HashSet<>();
-        for (LinkedHashMap<String,Integer> m : localesPorFuncion.values()) locales.addAll(m.keySet());
+        Set<String> excluir = new HashSet<>();
+        for (Map.Entry<String, LinkedHashMap<String,Integer>> entry : localesPorFuncion.entrySet()) {
+            if (!entry.getKey().equals("main")) {
+                for (String nombre : entry.getValue().keySet()) {
+                    if (nombre.startsWith("__")) {
+                        excluir.add(nombre);
+                    }
+                }
+            }
+        }
 
         for (Map.Entry<String,String> e : simbolosGlobales.entrySet()) {
             String nombre=e.getKey(), tipo=e.getValue();
-            if (tipo.endsWith("[]") || locales.contains(nombre)) continue;
+            if (tipo.endsWith("[]") || excluir.contains(nombre)) continue;
             switch(tipo) {
                 case "int": case "bool": case "char": case "string":
                     sb.append(nombre).append(": .word 0\n"); break;

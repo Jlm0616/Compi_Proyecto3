@@ -1,76 +1,200 @@
 ¡¡ ============================================================
-¡¡  EJEMPLO: DOS FACTORIALES (Recursivo vs Iterativo)
-¡¡  Gramática: <| |> para bloques, ~ para tipos, ! para punto y coma
+¡¡  SISTEMA DE GESTIÓN DE ESTUDIANTES
+¡¡  Prueba: múltiples funciones, cálculos de notas
+¡¡  SIN string (usa int para estados)
 ¡¡ ============================================================
 
-¡¡ ---------- FACTORIAL RECURSIVO ----------
-int ~ factorialRec <| int ~ n |> |:
-    int ~ resultado <- 1!
-    if <| less_te <| n, 1 |> |> |:
-        return ~ resultado!
+float ~ calcularPromedio <| float ~ nota1, float ~ nota2, float ~ nota3 |> |:
+    float ~ suma <- nota1 + nota2 + nota3!
+    float ~ promedio <- suma / 3.0!
+    return ~ promedio!
+:|
+
+int ~ obtenerEstado <| float ~ promedio |> |:
+    if <| less_te <| promedio, 3.0 |> |> |:
+        return ~ 0!   ¡¡ 0 = REPROBADO
     :|
-    int ~ prev <- factorialRec <| n - 1 |>!
-    resultado <- n * prev!
-    return ~ resultado!
+    if <| less_te <| promedio, 4.0 |> |> |:
+        return ~ 1!   ¡¡ 1 = RECUPERACION
+    :|
+    return ~ 2!       ¡¡ 2 = APROBADO
 :|
 
-¡¡ ---------- FACTORIAL ITERATIVO (con do-while) ----------
-int ~ factorialIter <| int ~ n |> |:
-    int ~ resultado <- 1!
-    int ~ i <- 1!
-    do |:
-        resultado <- resultado * i!
-        i <- i + 1!
-    :| while <| less_te <| i, n |> |>!
-    return ~ resultado!
+float ~ notaMaxima <| float ~ a, float ~ b, float ~ c |> |:
+    float ~ max <- a!
+    if <| less_te <| max, b |> |> |:
+        max <- b!
+    :|
+    if <| less_te <| max, c |> |> |:
+        max <- c!
+    :|
+    return ~ max!
 :|
 
-¡¡ ---------- MAIN: PRUEBA AMBOS ----------
+float ~ notaMinima <| float ~ a, float ~ b, float ~ c |> |:
+    float ~ min <- a!
+    if <| less_te <| b, min |> |> |:
+        min <- b!
+    :|
+    if <| less_te <| c, min |> |> |:
+        min <- c!
+    :|
+    return ~ min!
+:|
+
+int ~ mostrarMenu <| |> |:
+    cout ~ <| "========================================" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "   SISTEMA DE GESTION DE ESTUDIANTES  " |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "========================================" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "1. Ingresar notas" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "2. Ver promedio" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "3. Ver nota maxima" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "4. Ver nota minima" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "5. Ver estado" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "0. Salir" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "========================================" |>!
+    cout ~ <| "\n" |>!
+    return ~ 0!
+:|
+
+int ~ mostrarEstado <| int ~ estado |> |:
+    if <| equal <| estado, 0 |> |> |:
+        cout ~ <| "Estado: REPROBADO" |>!
+        cout ~ <| "\n" |>!
+        return ~ 0!
+    :|
+    else |:
+        if <| equal <| estado, 1 |> |> |:
+            cout ~ <| "Estado: RECUPERACION" |>!
+            cout ~ <| "\n" |>!
+            return ~ 0!
+        :|
+        else |:
+            cout ~ <| "Estado: APROBADO" |>!
+            cout ~ <| "\n" |>!
+            return ~ 0!
+        :|
+    :|
+:|
+
 empty ~ __main__ ~ <| |> |:
-    cout ~ <| "=== FACTORIAL RECURSIVO ===" |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ r0 <- factorialRec <| 0 |>!
-    cout ~ <| "factorialRec(0) = " |>! 
-    cout ~ <| r0 |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ r1 <- factorialRec <| 1 |>!
-    cout ~ <| "factorialRec(1) = " |>! 
-    cout ~ <| r1 |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ r3 <- factorialRec <| 3 |>!
-    cout ~ <| "factorialRec(3) = " |>! 
-    cout ~ <| r3 |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ r5 <- factorialRec <| 5 |>!
-    cout ~ <| "factorialRec(5) = " |>! 
-    cout ~ <| r5 |>! 
+    float ~ nota1 <- 0.0!
+    float ~ nota2 <- 0.0!
+    float ~ nota3 <- 0.0!
+    float ~ promedio <- 0.0!
+    float ~ max <- 0.0!
+    float ~ min <- 0.0!
+    int ~ estado <- 0!
+    int ~ opcion <- 0!
+    int ~ datosIngresados <- 0!
+
+    cout ~ <| "BIENVENIDO AL SISTEMA DE GESTION" |>!
     cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
 
-    cout ~ <| "=== FACTORIAL ITERATIVO ===" |>! 
+    do |:
+        mostrarMenu<||>!          ¡¡ CORREGIDO: antes era mostrarMenu<||>!
+
+        cout ~ <| "Elija una opcion: " |>!
+        cin ~ opcion!
+        cout ~ <| "\n" |>!
+
+        if <| equal <| opcion, 0 |> |> |:
+            cout ~ <| "Saliendo del sistema..." |>!
+            cout ~ <| "\n" |>!
+        :|
+        else |:
+            if <| equal <| opcion, 1 |> |> |:
+                cout ~ <| "Ingrese nota 1 (0-7): " |>!
+                cin ~ nota1!
+                cout ~ <| "\n" |>!
+
+                cout ~ <| "Ingrese nota 2 (0-7): " |>!
+                cin ~ nota2!
+                cout ~ <| "\n" |>!
+
+                cout ~ <| "Ingrese nota 3 (0-7): " |>!
+                cin ~ nota3!
+                cout ~ <| "\n" |>!
+
+                datosIngresados <- 1!
+                cout ~ <| "¡Notas ingresadas correctamente!" |>!
+                cout ~ <| "\n" |>!
+            :|
+            else |:
+                if <| equal <| opcion, 2 |> |> |:
+                    if <| equal <| datosIngresados, 0 |> |> |:
+                        cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
+                        cout ~ <| "\n" |>!
+                    :|
+                    else |:
+                        promedio <- calcularPromedio <| nota1, nota2, nota3 |>!
+                        cout ~ <| "El promedio es: " |>! cout ~ <| promedio |>! cout ~ <| "\n" |>!
+                    :|
+                :|
+                else |:
+                    if <| equal <| opcion, 3 |> |> |:
+                        if <| equal <| datosIngresados, 0 |> |> |:
+                            cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
+                            cout ~ <| "\n" |>!
+                        :|
+                        else |:
+                            max <- notaMaxima <| nota1, nota2, nota3 |>!
+                            cout ~ <| "La nota maxima es: " |>! cout ~ <| max |>! cout ~ <| "\n" |>!
+                        :|
+                    :|
+                    else |:
+                        if <| equal <| opcion, 4 |> |> |:
+                            if <| equal <| datosIngresados, 0 |> |> |:
+                                cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
+                                cout ~ <| "\n" |>!
+                            :|
+                            else |:
+                                min <- notaMinima <| nota1, nota2, nota3 |>!
+                                cout ~ <| "La nota minima es: " |>! cout ~ <| min |>! cout ~ <| "\n" |>!
+                            :|
+                        :|
+                        else |:
+                            if <| equal <| opcion, 5 |> |> |:
+                                if <| equal <| datosIngresados, 0 |> |> |:
+                                    cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
+                                    cout ~ <| "\n" |>!
+                                :|
+                                else |:
+                                    promedio <- calcularPromedio <| nota1, nota2, nota3 |>!
+                                    max <- notaMaxima <| nota1, nota2, nota3 |>!
+                                    min <- notaMinima <| nota1, nota2, nota3 |>!
+                                    estado <- obtenerEstado <| promedio |>!
+                                    cout ~ <| "--- RESULTADOS ---" |>!
+                                    cout ~ <| "\n" |>!
+                                    cout ~ <| "Promedio: " |>! cout ~ <| promedio |>! cout ~ <| "\n" |>!
+                                    cout ~ <| "Nota Maxima: " |>! cout ~ <| max |>! cout ~ <| "\n" |>!
+                                    cout ~ <| "Nota Minima: " |>! cout ~ <| min |>! cout ~ <| "\n" |>!
+                                    mostrarEstado <| estado |>!
+                                    cout ~ <| "\n" |>!
+                                :|
+                            :|
+                            else |:
+                                cout ~ <| "Opcion invalida!" |>!
+                                cout ~ <| "\n" |>!
+                            :|
+                        :|
+                    :|
+                :|
+            :|
+        :|
+    :| while <| n_equal <| opcion, 0 |> |>!
+
     cout ~ <| "\n" |>!
-    
-    int ~ s0 <- factorialIter <| 0 |>!
-    cout ~ <| "factorialIter(0) = " |>! 
-    cout ~ <| s0 |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ s1 <- factorialIter <| 1 |>!
-    cout ~ <| "factorialIter(1) = " |>! 
-    cout ~ <| s1 |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ s3 <- factorialIter <| 3 |>!
-    cout ~ <| "factorialIter(3) = " |>! 
-    cout ~ <| s3 |>! 
-    cout ~ <| "\n" |>!
-    
-    int ~ s5 <- factorialIter <| 5 |>!
-    cout ~ <| "factorialIter(5) = " |>! 
-    cout ~ <| s5 |>! 
+    cout ~ <| "¡Gracias por usar el sistema!" |>!
     cout ~ <| "\n" |>!
 :|

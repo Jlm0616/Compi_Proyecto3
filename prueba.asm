@@ -1,347 +1,621 @@
 .data
-__t25: .word 0
-__t26: .word 0
-r0: .word 0
-__t27: .word 0
-__t28: .word 0
-__t29: .word 0
-__t30: .word 0
-r1: .word 0
-__t31: .word 0
-__t32: .word 0
-__t33: .word 0
-__t34: .word 0
-r3: .word 0
-__t35: .word 0
-__t36: .word 0
-__t37: .word 0
-__t38: .word 0
-r5: .word 0
-__t39: .word 0
-__t40: .word 0
-__t41: .word 0
-__t42: .word 0
-__t43: .word 0
-__t44: .word 0
+nota1: .float 0.0
+nota2: .float 0.0
+nota3: .float 0.0
+suma: .float 0.0
+promedio: .float 0.0
+a: .float 0.0
+var_b: .float 0.0
+c: .float 0.0
+max: .float 0.0
+min: .float 0.0
+estado: .word 0
+__f29: .float 0.0
+__f30: .float 0.0
+__f31: .float 0.0
+__f32: .float 0.0
+__f33: .float 0.0
+__f34: .float 0.0
 __t45: .word 0
-s0: .word 0
+opcion: .word 0
 __t46: .word 0
+datosIngresados: .word 0
 __t47: .word 0
 __t48: .word 0
 __t49: .word 0
-s1: .word 0
 __t50: .word 0
 __t51: .word 0
 __t52: .word 0
 __t53: .word 0
-s3: .word 0
 __t54: .word 0
 __t55: .word 0
 __t56: .word 0
 __t57: .word 0
-s5: .word 0
 __t58: .word 0
 __t59: .word 0
 __t60: .word 0
 __t61: .word 0
-str0: .asciiz "=== FACTORIAL RECURSIVO ==="
+__t62: .word 0
+__t63: .word 0
+__t64: .word 0
+__t65: .word 0
+__t66: .word 0
+__t67: .word 0
+__t68: .word 0
+__t69: .word 0
+__t70: .word 0
+__t71: .word 0
+__t72: .word 0
+__t73: .word 0
+__t74: .word 0
+__t75: .word 0
+__t76: .word 0
+__t77: .word 0
+__t78: .word 0
+__f35: .float 0.0
+__f36: .float 0.0
+__f37: .float 0.0
+__f38: .float 0.0
+__t79: .word 0
+__t80: .word 0
+__t81: .word 0
+__t82: .word 0
+__t83: .word 0
+__t84: .word 0
+__t85: .word 0
+__t86: .word 0
+__t87: .word 0
+__t88: .word 0
+__f39: .float 0.0
+__f40: .float 0.0
+__f41: .float 0.0
+__f42: .float 0.0
+__t89: .word 0
+__t90: .word 0
+__t91: .word 0
+__t92: .word 0
+__t93: .word 0
+__t94: .word 0
+__t95: .word 0
+__t96: .word 0
+__t97: .word 0
+__t98: .word 0
+__f43: .float 0.0
+__f44: .float 0.0
+__f45: .float 0.0
+__f46: .float 0.0
+__t99: .word 0
+__t100: .word 0
+__t101: .word 0
+__t102: .word 0
+__t103: .word 0
+__t104: .word 0
+__t105: .word 0
+__t106: .word 0
+__t107: .word 0
+__t108: .word 0
+__f47: .float 0.0
+__f48: .float 0.0
+__f49: .float 0.0
+__f50: .float 0.0
+__f51: .float 0.0
+__f52: .float 0.0
+__f53: .float 0.0
+__f54: .float 0.0
+__f55: .float 0.0
+__f56: .float 0.0
+__f57: .float 0.0
+__f58: .float 0.0
+__f59: .float 0.0
+__t109: .word 0
+__t110: .word 0
+__t111: .word 0
+__t112: .word 0
+__t113: .word 0
+__t114: .word 0
+__t115: .word 0
+__t116: .word 0
+__t117: .word 0
+__t118: .word 0
+__t119: .word 0
+__t120: .word 0
+__t121: .word 0
+__t122: .word 0
+__t123: .word 0
+__t124: .word 0
+__t125: .word 0
+__t126: .word 0
+__t127: .word 0
+__t128: .word 0
+str0: .asciiz "========================================"
 str1: .asciiz "\n"
-str2: .asciiz "factorialRec(0) = "
-str3: .asciiz "factorialRec(1) = "
-str4: .asciiz "factorialRec(3) = "
-str5: .asciiz "factorialRec(5) = "
-str6: .asciiz "=== FACTORIAL ITERATIVO ==="
-str7: .asciiz "factorialIter(0) = "
-str8: .asciiz "factorialIter(1) = "
-str9: .asciiz "factorialIter(3) = "
-str10: .asciiz "factorialIter(5) = "
+str2: .asciiz "   SISTEMA DE GESTION DE ESTUDIANTES  "
+str3: .asciiz "1. Ingresar notas"
+str4: .asciiz "2. Ver promedio"
+str5: .asciiz "3. Ver nota maxima"
+str6: .asciiz "4. Ver nota minima"
+str7: .asciiz "5. Ver estado"
+str8: .asciiz "0. Salir"
+str9: .asciiz "Estado: REPROBADO"
+str10: .asciiz "Estado: RECUPERACION"
+str11: .asciiz "Estado: APROBADO"
+str12: .asciiz "BIENVENIDO AL SISTEMA DE GESTION"
+str13: .asciiz "Elija una opcion: "
+str14: .asciiz "Saliendo del sistema..."
+str15: .asciiz "Ingrese nota 1 (0-7): "
+str16: .asciiz "Ingrese nota 2 (0-7): "
+str17: .asciiz "Ingrese nota 3 (0-7): "
+str18: .asciiz "¡Notas ingresadas correctamente!"
+str19: .asciiz "Primero debe ingresar notas (opcion 1)"
+str20: .asciiz "El promedio es: "
+str21: .asciiz "La nota maxima es: "
+str22: .asciiz "La nota minima es: "
+str23: .asciiz "--- RESULTADOS ---"
+str24: .asciiz "Promedio: "
+str25: .asciiz "Nota Maxima: "
+str26: .asciiz "Nota Minima: "
+str27: .asciiz "Opcion invalida!"
+str28: .asciiz "¡Gracias por usar el sistema!"
 
 .text
 .globl main
-factorialRec:
+calcularPromedio:
+subu $sp, $sp, 88
+sw $ra, 84($sp)
+s.s $f12, 4($sp)
+s.s $f14, 8($sp)
+s.s $f16, 12($sp)
+l.s $f0, 4($sp)
+s.s $f0, 20($sp)
+l.s $f0, 8($sp)
+s.s $f0, 24($sp)
+l.s $f1, 20($sp)
+l.s $f2, 24($sp)
+add.s $f0, $f1, $f2
+s.s $f0, 28($sp)
+l.s $f0, 12($sp)
+s.s $f0, 32($sp)
+l.s $f1, 28($sp)
+l.s $f2, 32($sp)
+add.s $f0, $f1, $f2
+s.s $f0, 36($sp)
+l.s $f0, 36($sp)
+s.s $f0, 16($sp)
+l.s $f0, 16($sp)
+s.s $f0, 44($sp)
+li.s $f0, 3.0
+s.s $f0, 48($sp)
+l.s $f1, 44($sp)
+l.s $f2, 48($sp)
+div.s $f0, $f1, $f2
+s.s $f0, 52($sp)
+l.s $f0, 52($sp)
+s.s $f0, 40($sp)
+l.s $f0, 40($sp)
+s.s $f0, 56($sp)
+l.s $f0, 56($sp)
+lw $ra, 84($sp)
+addu $sp, $sp, 88
+jr $ra
+obtenerEstado:
+subu $sp, $sp, 72
+sw $ra, 68($sp)
+s.s $f12, 4($sp)
+l.s $f0, 4($sp)
+s.s $f0, 8($sp)
+li.s $f0, 3.0
+s.s $f0, 12($sp)
+l.s $f1, 8($sp)
+l.s $f2, 12($sp)
+c.le.s $f1, $f2
+li $t0, 0
+bc1f _cmp0
+li $t0, 1
+_cmp0:
+sw $t0, 16($sp)
+lw $t0, 16($sp)
+beq $t0, $zero, L0
+li $t0, 0
+sw $t0, 20($sp)
+lw $v0, 20($sp)
+lw $ra, 68($sp)
+addu $sp, $sp, 72
+jr $ra
+L0:
+l.s $f0, 4($sp)
+s.s $f0, 24($sp)
+li.s $f0, 4.0
+s.s $f0, 28($sp)
+l.s $f1, 24($sp)
+l.s $f2, 28($sp)
+c.le.s $f1, $f2
+li $t0, 0
+bc1f _cmp1
+li $t0, 1
+_cmp1:
+sw $t0, 32($sp)
+lw $t0, 32($sp)
+beq $t0, $zero, L1
+li $t0, 1
+sw $t0, 36($sp)
+lw $v0, 36($sp)
+lw $ra, 68($sp)
+addu $sp, $sp, 72
+jr $ra
+L1:
+li $t0, 2
+sw $t0, 40($sp)
+lw $v0, 40($sp)
+lw $ra, 68($sp)
+addu $sp, $sp, 72
+jr $ra
+notaMaxima:
+subu $sp, $sp, 88
+sw $ra, 84($sp)
+s.s $f12, 4($sp)
+s.s $f14, 8($sp)
+s.s $f16, 12($sp)
+l.s $f0, 4($sp)
+s.s $f0, 20($sp)
+l.s $f0, 20($sp)
+s.s $f0, 16($sp)
+l.s $f0, 16($sp)
+s.s $f0, 24($sp)
+l.s $f0, 8($sp)
+s.s $f0, 28($sp)
+l.s $f1, 24($sp)
+l.s $f2, 28($sp)
+c.le.s $f1, $f2
+li $t0, 0
+bc1f _cmp2
+li $t0, 1
+_cmp2:
+sw $t0, 32($sp)
+lw $t0, 32($sp)
+beq $t0, $zero, L2
+l.s $f0, 8($sp)
+s.s $f0, 36($sp)
+l.s $f0, 36($sp)
+s.s $f0, 16($sp)
+L2:
+l.s $f0, 16($sp)
+s.s $f0, 40($sp)
+l.s $f0, 12($sp)
+s.s $f0, 44($sp)
+l.s $f1, 40($sp)
+l.s $f2, 44($sp)
+c.le.s $f1, $f2
+li $t0, 0
+bc1f _cmp3
+li $t0, 1
+_cmp3:
+sw $t0, 48($sp)
+lw $t0, 48($sp)
+beq $t0, $zero, L3
+l.s $f0, 12($sp)
+s.s $f0, 52($sp)
+l.s $f0, 52($sp)
+s.s $f0, 16($sp)
+L3:
+l.s $f0, 16($sp)
+s.s $f0, 56($sp)
+l.s $f0, 56($sp)
+lw $ra, 84($sp)
+addu $sp, $sp, 88
+jr $ra
+notaMinima:
+subu $sp, $sp, 88
+sw $ra, 84($sp)
+s.s $f12, 4($sp)
+s.s $f14, 8($sp)
+s.s $f16, 12($sp)
+l.s $f0, 4($sp)
+s.s $f0, 20($sp)
+l.s $f0, 20($sp)
+s.s $f0, 16($sp)
+l.s $f0, 8($sp)
+s.s $f0, 24($sp)
+l.s $f0, 16($sp)
+s.s $f0, 28($sp)
+l.s $f1, 24($sp)
+l.s $f2, 28($sp)
+c.le.s $f1, $f2
+li $t0, 0
+bc1f _cmp4
+li $t0, 1
+_cmp4:
+sw $t0, 32($sp)
+lw $t0, 32($sp)
+beq $t0, $zero, L4
+l.s $f0, 8($sp)
+s.s $f0, 36($sp)
+l.s $f0, 36($sp)
+s.s $f0, 16($sp)
+L4:
+l.s $f0, 12($sp)
+s.s $f0, 40($sp)
+l.s $f0, 16($sp)
+s.s $f0, 44($sp)
+l.s $f1, 40($sp)
+l.s $f2, 44($sp)
+c.le.s $f1, $f2
+li $t0, 0
+bc1f _cmp5
+li $t0, 1
+_cmp5:
+sw $t0, 48($sp)
+lw $t0, 48($sp)
+beq $t0, $zero, L5
+l.s $f0, 12($sp)
+s.s $f0, 52($sp)
+l.s $f0, 52($sp)
+s.s $f0, 16($sp)
+L5:
+l.s $f0, 16($sp)
+s.s $f0, 56($sp)
+l.s $f0, 56($sp)
+lw $ra, 84($sp)
+addu $sp, $sp, 88
+jr $ra
+mostrarMenu:
+subu $sp, $sp, 120
+sw $ra, 116($sp)
+la $t0, str0
+sw $t0, 4($sp)
+lw $a0, 4($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 8($sp)
+lw $a0, 8($sp)
+li $v0, 4
+syscall
+la $t0, str2
+sw $t0, 12($sp)
+lw $a0, 12($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 16($sp)
+lw $a0, 16($sp)
+li $v0, 4
+syscall
+la $t0, str0
+sw $t0, 20($sp)
+lw $a0, 20($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 24($sp)
+lw $a0, 24($sp)
+li $v0, 4
+syscall
+la $t0, str3
+sw $t0, 28($sp)
+lw $a0, 28($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 32($sp)
+lw $a0, 32($sp)
+li $v0, 4
+syscall
+la $t0, str4
+sw $t0, 36($sp)
+lw $a0, 36($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 40($sp)
+lw $a0, 40($sp)
+li $v0, 4
+syscall
+la $t0, str5
+sw $t0, 44($sp)
+lw $a0, 44($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 48($sp)
+lw $a0, 48($sp)
+li $v0, 4
+syscall
+la $t0, str6
+sw $t0, 52($sp)
+lw $a0, 52($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 56($sp)
+lw $a0, 56($sp)
+li $v0, 4
+syscall
+la $t0, str7
+sw $t0, 60($sp)
+lw $a0, 60($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 64($sp)
+lw $a0, 64($sp)
+li $v0, 4
+syscall
+la $t0, str8
+sw $t0, 68($sp)
+lw $a0, 68($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 72($sp)
+lw $a0, 72($sp)
+li $v0, 4
+syscall
+la $t0, str0
+sw $t0, 76($sp)
+lw $a0, 76($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 80($sp)
+lw $a0, 80($sp)
+li $v0, 4
+syscall
+li $t0, 0
+sw $t0, 84($sp)
+lw $v0, 84($sp)
+lw $ra, 116($sp)
+addu $sp, $sp, 120
+jr $ra
+mostrarEstado:
 subu $sp, $sp, 96
 sw $ra, 92($sp)
 sw $a0, 4($sp)
-li $t0, 1
-sw $t0, 12($sp)
-lw $t0, 12($sp)
-sw $t0, 8($sp)
 lw $t0, 4($sp)
+sw $t0, 8($sp)
+li $t0, 0
+sw $t0, 12($sp)
+lw $t1, 8($sp)
+lw $t2, 12($sp)
+seq $t0, $t1, $t2
 sw $t0, 16($sp)
-li $t0, 1
+lw $t0, 16($sp)
+beq $t0, $zero, L6
+la $t0, str9
 sw $t0, 20($sp)
-lw $t1, 16($sp)
-lw $t2, 20($sp)
-sle $t0, $t1, $t2
+lw $a0, 20($sp)
+li $v0, 4
+syscall
+la $t0, str1
 sw $t0, 24($sp)
-lw $t0, 24($sp)
-beq $t0, $zero, L0
-lw $t0, 8($sp)
+lw $a0, 24($sp)
+li $v0, 4
+syscall
+li $t0, 0
 sw $t0, 28($sp)
 lw $v0, 28($sp)
 lw $ra, 92($sp)
 addu $sp, $sp, 96
 jr $ra
-L0:
+j L7
+L6:
 lw $t0, 4($sp)
-sw $t0, 36($sp)
+sw $t0, 32($sp)
 li $t0, 1
+sw $t0, 36($sp)
+lw $t1, 32($sp)
+lw $t2, 36($sp)
+seq $t0, $t1, $t2
 sw $t0, 40($sp)
-lw $t1, 36($sp)
-lw $t2, 40($sp)
-sub $t0, $t1, $t2
+lw $t0, 40($sp)
+beq $t0, $zero, L8
+la $t0, str10
 sw $t0, 44($sp)
 lw $a0, 44($sp)
-jal factorialRec
-sw $v0, 48($sp)
-lw $t0, 48($sp)
-sw $t0, 32($sp)
-lw $t0, 4($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 48($sp)
+lw $a0, 48($sp)
+li $v0, 4
+syscall
+li $t0, 0
 sw $t0, 52($sp)
-lw $t0, 32($sp)
+lw $v0, 52($sp)
+lw $ra, 92($sp)
+addu $sp, $sp, 96
+jr $ra
+j L9
+L8:
+la $t0, str11
 sw $t0, 56($sp)
-lw $t1, 52($sp)
-lw $t2, 56($sp)
-mul $t0, $t1, $t2
+lw $a0, 56($sp)
+li $v0, 4
+syscall
+la $t0, str1
 sw $t0, 60($sp)
-lw $t0, 60($sp)
-sw $t0, 8($sp)
-lw $t0, 8($sp)
+lw $a0, 60($sp)
+li $v0, 4
+syscall
+li $t0, 0
 sw $t0, 64($sp)
 lw $v0, 64($sp)
 lw $ra, 92($sp)
 addu $sp, $sp, 96
 jr $ra
-factorialIter:
-subu $sp, $sp, 96
-sw $ra, 92($sp)
-sw $a0, 4($sp)
-li $t0, 1
-sw $t0, 12($sp)
-lw $t0, 12($sp)
-sw $t0, 8($sp)
-li $t0, 1
-sw $t0, 20($sp)
-lw $t0, 20($sp)
-sw $t0, 16($sp)
-_dowhile1_start:
-lw $t0, 8($sp)
-sw $t0, 24($sp)
-lw $t0, 16($sp)
-sw $t0, 28($sp)
-lw $t1, 24($sp)
-lw $t2, 28($sp)
-mul $t0, $t1, $t2
-sw $t0, 32($sp)
-lw $t0, 32($sp)
-sw $t0, 8($sp)
-lw $t0, 16($sp)
-sw $t0, 36($sp)
-li $t0, 1
-sw $t0, 40($sp)
-lw $t1, 36($sp)
-lw $t2, 40($sp)
-add $t0, $t1, $t2
-sw $t0, 44($sp)
-lw $t0, 44($sp)
-sw $t0, 16($sp)
-lw $t0, 16($sp)
-sw $t0, 48($sp)
-lw $t0, 4($sp)
-sw $t0, 52($sp)
-lw $t1, 48($sp)
-lw $t2, 52($sp)
-sle $t0, $t1, $t2
-sw $t0, 56($sp)
-lw $t0, 56($sp)
-bne $t0, $zero, _dowhile1_start
-_dowhile1_end:
-lw $t0, 8($sp)
-sw $t0, 60($sp)
-lw $v0, 60($sp)
-lw $ra, 92($sp)
-addu $sp, $sp, 96
-jr $ra
+L9:
+L7:
 main:
 subu $sp, $sp, 32
 sw $ra, 28($sp)
-la $t0, str0
-la $t9, __t25
-sw $t0, 0($t9)
-la $t9, __t25
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str1
-la $t9, __t26
-sw $t0, 0($t9)
-la $t9, __t26
-lw $a0, 0($t9)
-li $v0, 4
-syscall
+li.s $f0, 0.0
+la $t9, __f29
+s.s $f0, 0($t9)
+la $t9, __f29
+l.s $f0, 0($t9)
+la $t9, nota1
+s.s $f0, 0($t9)
+li.s $f0, 0.0
+la $t9, __f30
+s.s $f0, 0($t9)
+la $t9, __f30
+l.s $f0, 0($t9)
+la $t9, nota2
+s.s $f0, 0($t9)
+li.s $f0, 0.0
+la $t9, __f31
+s.s $f0, 0($t9)
+la $t9, __f31
+l.s $f0, 0($t9)
+la $t9, nota3
+s.s $f0, 0($t9)
+li.s $f0, 0.0
+la $t9, __f32
+s.s $f0, 0($t9)
+la $t9, __f32
+l.s $f0, 0($t9)
+la $t9, promedio
+s.s $f0, 0($t9)
+li.s $f0, 0.0
+la $t9, __f33
+s.s $f0, 0($t9)
+la $t9, __f33
+l.s $f0, 0($t9)
+la $t9, max
+s.s $f0, 0($t9)
+li.s $f0, 0.0
+la $t9, __f34
+s.s $f0, 0($t9)
+la $t9, __f34
+l.s $f0, 0($t9)
+la $t9, min
+s.s $f0, 0($t9)
 li $t0, 0
-la $t9, __t27
-sw $t0, 0($t9)
-la $t9, __t27
-lw $a0, 0($t9)
-jal factorialRec
-la $t9, __t28
-sw $v0, 0($t9)
-la $t9, __t28
-lw $t0, 0($t9)
-la $t9, r0
-sw $t0, 0($t9)
-la $t0, str2
-la $t9, __t29
-sw $t0, 0($t9)
-la $t9, __t29
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, r0
-lw $a0, 0($t9)
-li $v0, 1
-syscall
-la $t0, str1
-la $t9, __t30
-sw $t0, 0($t9)
-la $t9, __t30
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-li $t0, 1
-la $t9, __t31
-sw $t0, 0($t9)
-la $t9, __t31
-lw $a0, 0($t9)
-jal factorialRec
-la $t9, __t32
-sw $v0, 0($t9)
-la $t9, __t32
-lw $t0, 0($t9)
-la $t9, r1
-sw $t0, 0($t9)
-la $t0, str3
-la $t9, __t33
-sw $t0, 0($t9)
-la $t9, __t33
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, r1
-lw $a0, 0($t9)
-li $v0, 1
-syscall
-la $t0, str1
-la $t9, __t34
-sw $t0, 0($t9)
-la $t9, __t34
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-li $t0, 3
-la $t9, __t35
-sw $t0, 0($t9)
-la $t9, __t35
-lw $a0, 0($t9)
-jal factorialRec
-la $t9, __t36
-sw $v0, 0($t9)
-la $t9, __t36
-lw $t0, 0($t9)
-la $t9, r3
-sw $t0, 0($t9)
-la $t0, str4
-la $t9, __t37
-sw $t0, 0($t9)
-la $t9, __t37
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, r3
-lw $a0, 0($t9)
-li $v0, 1
-syscall
-la $t0, str1
-la $t9, __t38
-sw $t0, 0($t9)
-la $t9, __t38
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-li $t0, 5
-la $t9, __t39
-sw $t0, 0($t9)
-la $t9, __t39
-lw $a0, 0($t9)
-jal factorialRec
-la $t9, __t40
-sw $v0, 0($t9)
-la $t9, __t40
-lw $t0, 0($t9)
-la $t9, r5
-sw $t0, 0($t9)
-la $t0, str5
-la $t9, __t41
-sw $t0, 0($t9)
-la $t9, __t41
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, r5
-lw $a0, 0($t9)
-li $v0, 1
-syscall
-la $t0, str1
-la $t9, __t42
-sw $t0, 0($t9)
-la $t9, __t42
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str1
-la $t9, __t43
-sw $t0, 0($t9)
-la $t9, __t43
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str6
-la $t9, __t44
-sw $t0, 0($t9)
-la $t9, __t44
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str1
 la $t9, __t45
 sw $t0, 0($t9)
 la $t9, __t45
-lw $a0, 0($t9)
-li $v0, 4
-syscall
+lw $t0, 0($t9)
+la $t9, estado
+sw $t0, 0($t9)
 li $t0, 0
 la $t9, __t46
 sw $t0, 0($t9)
 la $t9, __t46
-lw $a0, 0($t9)
-jal factorialIter
+lw $t0, 0($t9)
+la $t9, opcion
+sw $t0, 0($t9)
+li $t0, 0
 la $t9, __t47
-sw $v0, 0($t9)
+sw $t0, 0($t9)
 la $t9, __t47
 lw $t0, 0($t9)
-la $t9, s0
+la $t9, datosIngresados
 sw $t0, 0($t9)
-la $t0, str7
+la $t0, str12
 la $t9, __t48
 sw $t0, 0($t9)
 la $t9, __t48
 lw $a0, 0($t9)
 li $v0, 4
-syscall
-la $t9, s0
-lw $a0, 0($t9)
-li $v0, 1
 syscall
 la $t0, str1
 la $t9, __t49
@@ -350,93 +624,731 @@ la $t9, __t49
 lw $a0, 0($t9)
 li $v0, 4
 syscall
+la $t0, str1
+la $t9, __t50
+sw $t0, 0($t9)
+la $t9, __t50
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+_dowhile1_start:
+jal mostrarMenu
+la $t9, __t51
+sw $v0, 0($t9)
+la $t0, str13
+la $t9, __t52
+sw $t0, 0($t9)
+la $t9, __t52
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+li $v0, 5
+syscall
+la $t9, opcion
+sw $v0, 0($t9)
+la $t0, str1
+la $t9, __t53
+sw $t0, 0($t9)
+la $t9, __t53
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t54
+sw $t0, 0($t9)
+li $t0, 0
+la $t9, __t55
+sw $t0, 0($t9)
+la $t9, __t54
+lw $t1, 0($t9)
+la $t9, __t55
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t56
+sw $t0, 0($t9)
+la $t9, __t56
+lw $t0, 0($t9)
+beq $t0, $zero, L10
+la $t0, str14
+la $t9, __t57
+sw $t0, 0($t9)
+la $t9, __t57
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t58
+sw $t0, 0($t9)
+la $t9, __t58
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+j L11
+L10:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t59
+sw $t0, 0($t9)
 li $t0, 1
-la $t9, __t50
+la $t9, __t60
 sw $t0, 0($t9)
-la $t9, __t50
-lw $a0, 0($t9)
-jal factorialIter
-la $t9, __t51
-sw $v0, 0($t9)
-la $t9, __t51
+la $t9, __t59
+lw $t1, 0($t9)
+la $t9, __t60
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t61
+sw $t0, 0($t9)
+la $t9, __t61
 lw $t0, 0($t9)
-la $t9, s1
+beq $t0, $zero, L12
+la $t0, str15
+la $t9, __t62
 sw $t0, 0($t9)
-la $t0, str8
-la $t9, __t52
-sw $t0, 0($t9)
-la $t9, __t52
+la $t9, __t62
 lw $a0, 0($t9)
 li $v0, 4
 syscall
-la $t9, s1
+li $v0, 6
+syscall
+la $t9, nota1
+s.s $f0, 0($t9)
+la $t0, str1
+la $t9, __t63
+sw $t0, 0($t9)
+la $t9, __t63
 lw $a0, 0($t9)
-li $v0, 1
+li $v0, 4
+syscall
+la $t0, str16
+la $t9, __t64
+sw $t0, 0($t9)
+la $t9, __t64
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+li $v0, 6
+syscall
+la $t9, nota2
+s.s $f0, 0($t9)
+la $t0, str1
+la $t9, __t65
+sw $t0, 0($t9)
+la $t9, __t65
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str17
+la $t9, __t66
+sw $t0, 0($t9)
+la $t9, __t66
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+li $v0, 6
+syscall
+la $t9, nota3
+s.s $f0, 0($t9)
+la $t0, str1
+la $t9, __t67
+sw $t0, 0($t9)
+la $t9, __t67
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+li $t0, 1
+la $t9, __t68
+sw $t0, 0($t9)
+la $t9, __t68
+lw $t0, 0($t9)
+la $t9, datosIngresados
+sw $t0, 0($t9)
+la $t0, str18
+la $t9, __t69
+sw $t0, 0($t9)
+la $t9, __t69
+lw $a0, 0($t9)
+li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t53
+la $t9, __t70
 sw $t0, 0($t9)
-la $t9, __t53
+la $t9, __t70
 lw $a0, 0($t9)
 li $v0, 4
 syscall
+j L13
+L12:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t71
+sw $t0, 0($t9)
+li $t0, 2
+la $t9, __t72
+sw $t0, 0($t9)
+la $t9, __t71
+lw $t1, 0($t9)
+la $t9, __t72
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t73
+sw $t0, 0($t9)
+la $t9, __t73
+lw $t0, 0($t9)
+beq $t0, $zero, L14
+la $t9, datosIngresados
+lw $t0, 0($t9)
+la $t9, __t74
+sw $t0, 0($t9)
+li $t0, 0
+la $t9, __t75
+sw $t0, 0($t9)
+la $t9, __t74
+lw $t1, 0($t9)
+la $t9, __t75
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t76
+sw $t0, 0($t9)
+la $t9, __t76
+lw $t0, 0($t9)
+beq $t0, $zero, L15
+la $t0, str19
+la $t9, __t77
+sw $t0, 0($t9)
+la $t9, __t77
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t78
+sw $t0, 0($t9)
+la $t9, __t78
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+j L16
+L15:
+la $t9, nota1
+l.s $f0, 0($t9)
+la $t9, __f35
+s.s $f0, 0($t9)
+la $t9, nota2
+l.s $f0, 0($t9)
+la $t9, __f36
+s.s $f0, 0($t9)
+la $t9, nota3
+l.s $f0, 0($t9)
+la $t9, __f37
+s.s $f0, 0($t9)
+la $t9, __f35
+l.s $f12, 0($t9)
+la $t9, __f36
+l.s $f14, 0($t9)
+la $t9, __f37
+l.s $f16, 0($t9)
+jal calcularPromedio
+la $t9, __f38
+s.s $f0, 0($t9)
+la $t9, __f38
+l.s $f0, 0($t9)
+la $t9, promedio
+s.s $f0, 0($t9)
+la $t0, str20
+la $t9, __t79
+sw $t0, 0($t9)
+la $t9, __t79
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, promedio
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t80
+sw $t0, 0($t9)
+la $t9, __t80
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L16:
+j L17
+L14:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t81
+sw $t0, 0($t9)
 li $t0, 3
-la $t9, __t54
+la $t9, __t82
 sw $t0, 0($t9)
-la $t9, __t54
-lw $a0, 0($t9)
-jal factorialIter
-la $t9, __t55
-sw $v0, 0($t9)
-la $t9, __t55
+la $t9, __t81
+lw $t1, 0($t9)
+la $t9, __t82
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t83
+sw $t0, 0($t9)
+la $t9, __t83
 lw $t0, 0($t9)
-la $t9, s3
+beq $t0, $zero, L18
+la $t9, datosIngresados
+lw $t0, 0($t9)
+la $t9, __t84
 sw $t0, 0($t9)
-la $t0, str9
-la $t9, __t56
+li $t0, 0
+la $t9, __t85
 sw $t0, 0($t9)
-la $t9, __t56
+la $t9, __t84
+lw $t1, 0($t9)
+la $t9, __t85
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t86
+sw $t0, 0($t9)
+la $t9, __t86
+lw $t0, 0($t9)
+beq $t0, $zero, L19
+la $t0, str19
+la $t9, __t87
+sw $t0, 0($t9)
+la $t9, __t87
 lw $a0, 0($t9)
 li $v0, 4
-syscall
-la $t9, s3
-lw $a0, 0($t9)
-li $v0, 1
 syscall
 la $t0, str1
-la $t9, __t57
+la $t9, __t88
 sw $t0, 0($t9)
-la $t9, __t57
+la $t9, __t88
 lw $a0, 0($t9)
 li $v0, 4
 syscall
+j L20
+L19:
+la $t9, nota1
+l.s $f0, 0($t9)
+la $t9, __f39
+s.s $f0, 0($t9)
+la $t9, nota2
+l.s $f0, 0($t9)
+la $t9, __f40
+s.s $f0, 0($t9)
+la $t9, nota3
+l.s $f0, 0($t9)
+la $t9, __f41
+s.s $f0, 0($t9)
+la $t9, __f39
+l.s $f12, 0($t9)
+la $t9, __f40
+l.s $f14, 0($t9)
+la $t9, __f41
+l.s $f16, 0($t9)
+jal notaMaxima
+la $t9, __f42
+s.s $f0, 0($t9)
+la $t9, __f42
+l.s $f0, 0($t9)
+la $t9, max
+s.s $f0, 0($t9)
+la $t0, str21
+la $t9, __t89
+sw $t0, 0($t9)
+la $t9, __t89
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, max
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t90
+sw $t0, 0($t9)
+la $t9, __t90
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L20:
+j L21
+L18:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t91
+sw $t0, 0($t9)
+li $t0, 4
+la $t9, __t92
+sw $t0, 0($t9)
+la $t9, __t91
+lw $t1, 0($t9)
+la $t9, __t92
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t93
+sw $t0, 0($t9)
+la $t9, __t93
+lw $t0, 0($t9)
+beq $t0, $zero, L22
+la $t9, datosIngresados
+lw $t0, 0($t9)
+la $t9, __t94
+sw $t0, 0($t9)
+li $t0, 0
+la $t9, __t95
+sw $t0, 0($t9)
+la $t9, __t94
+lw $t1, 0($t9)
+la $t9, __t95
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t96
+sw $t0, 0($t9)
+la $t9, __t96
+lw $t0, 0($t9)
+beq $t0, $zero, L23
+la $t0, str19
+la $t9, __t97
+sw $t0, 0($t9)
+la $t9, __t97
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t98
+sw $t0, 0($t9)
+la $t9, __t98
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+j L24
+L23:
+la $t9, nota1
+l.s $f0, 0($t9)
+la $t9, __f43
+s.s $f0, 0($t9)
+la $t9, nota2
+l.s $f0, 0($t9)
+la $t9, __f44
+s.s $f0, 0($t9)
+la $t9, nota3
+l.s $f0, 0($t9)
+la $t9, __f45
+s.s $f0, 0($t9)
+la $t9, __f43
+l.s $f12, 0($t9)
+la $t9, __f44
+l.s $f14, 0($t9)
+la $t9, __f45
+l.s $f16, 0($t9)
+jal notaMinima
+la $t9, __f46
+s.s $f0, 0($t9)
+la $t9, __f46
+l.s $f0, 0($t9)
+la $t9, min
+s.s $f0, 0($t9)
+la $t0, str22
+la $t9, __t99
+sw $t0, 0($t9)
+la $t9, __t99
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, min
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t100
+sw $t0, 0($t9)
+la $t9, __t100
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L24:
+j L25
+L22:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t101
+sw $t0, 0($t9)
 li $t0, 5
-la $t9, __t58
+la $t9, __t102
 sw $t0, 0($t9)
-la $t9, __t58
-lw $a0, 0($t9)
-jal factorialIter
-la $t9, __t59
-sw $v0, 0($t9)
-la $t9, __t59
+la $t9, __t101
+lw $t1, 0($t9)
+la $t9, __t102
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t103
+sw $t0, 0($t9)
+la $t9, __t103
 lw $t0, 0($t9)
-la $t9, s5
+beq $t0, $zero, L26
+la $t9, datosIngresados
+lw $t0, 0($t9)
+la $t9, __t104
 sw $t0, 0($t9)
-la $t0, str10
-la $t9, __t60
+li $t0, 0
+la $t9, __t105
 sw $t0, 0($t9)
-la $t9, __t60
+la $t9, __t104
+lw $t1, 0($t9)
+la $t9, __t105
+lw $t2, 0($t9)
+seq $t0, $t1, $t2
+la $t9, __t106
+sw $t0, 0($t9)
+la $t9, __t106
+lw $t0, 0($t9)
+beq $t0, $zero, L27
+la $t0, str19
+la $t9, __t107
+sw $t0, 0($t9)
+la $t9, __t107
 lw $a0, 0($t9)
 li $v0, 4
 syscall
-la $t9, s5
+la $t0, str1
+la $t9, __t108
+sw $t0, 0($t9)
+la $t9, __t108
 lw $a0, 0($t9)
-li $v0, 1
+li $v0, 4
+syscall
+j L28
+L27:
+la $t9, nota1
+l.s $f0, 0($t9)
+la $t9, __f47
+s.s $f0, 0($t9)
+la $t9, nota2
+l.s $f0, 0($t9)
+la $t9, __f48
+s.s $f0, 0($t9)
+la $t9, nota3
+l.s $f0, 0($t9)
+la $t9, __f49
+s.s $f0, 0($t9)
+la $t9, __f47
+l.s $f12, 0($t9)
+la $t9, __f48
+l.s $f14, 0($t9)
+la $t9, __f49
+l.s $f16, 0($t9)
+jal calcularPromedio
+la $t9, __f50
+s.s $f0, 0($t9)
+la $t9, __f50
+l.s $f0, 0($t9)
+la $t9, promedio
+s.s $f0, 0($t9)
+la $t9, nota1
+l.s $f0, 0($t9)
+la $t9, __f51
+s.s $f0, 0($t9)
+la $t9, nota2
+l.s $f0, 0($t9)
+la $t9, __f52
+s.s $f0, 0($t9)
+la $t9, nota3
+l.s $f0, 0($t9)
+la $t9, __f53
+s.s $f0, 0($t9)
+la $t9, __f51
+l.s $f12, 0($t9)
+la $t9, __f52
+l.s $f14, 0($t9)
+la $t9, __f53
+l.s $f16, 0($t9)
+jal notaMaxima
+la $t9, __f54
+s.s $f0, 0($t9)
+la $t9, __f54
+l.s $f0, 0($t9)
+la $t9, max
+s.s $f0, 0($t9)
+la $t9, nota1
+l.s $f0, 0($t9)
+la $t9, __f55
+s.s $f0, 0($t9)
+la $t9, nota2
+l.s $f0, 0($t9)
+la $t9, __f56
+s.s $f0, 0($t9)
+la $t9, nota3
+l.s $f0, 0($t9)
+la $t9, __f57
+s.s $f0, 0($t9)
+la $t9, __f55
+l.s $f12, 0($t9)
+la $t9, __f56
+l.s $f14, 0($t9)
+la $t9, __f57
+l.s $f16, 0($t9)
+jal notaMinima
+la $t9, __f58
+s.s $f0, 0($t9)
+la $t9, __f58
+l.s $f0, 0($t9)
+la $t9, min
+s.s $f0, 0($t9)
+la $t9, promedio
+l.s $f0, 0($t9)
+la $t9, __f59
+s.s $f0, 0($t9)
+la $t9, __f59
+l.s $f12, 0($t9)
+jal obtenerEstado
+la $t9, __t109
+sw $v0, 0($t9)
+la $t9, __t109
+lw $t0, 0($t9)
+la $t9, estado
+sw $t0, 0($t9)
+la $t0, str23
+la $t9, __t110
+sw $t0, 0($t9)
+la $t9, __t110
+lw $a0, 0($t9)
+li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t61
+la $t9, __t111
 sw $t0, 0($t9)
-la $t9, __t61
+la $t9, __t111
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str24
+la $t9, __t112
+sw $t0, 0($t9)
+la $t9, __t112
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, promedio
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t113
+sw $t0, 0($t9)
+la $t9, __t113
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str25
+la $t9, __t114
+sw $t0, 0($t9)
+la $t9, __t114
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, max
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t115
+sw $t0, 0($t9)
+la $t9, __t115
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str26
+la $t9, __t116
+sw $t0, 0($t9)
+la $t9, __t116
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, min
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t117
+sw $t0, 0($t9)
+la $t9, __t117
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, estado
+lw $t0, 0($t9)
+la $t9, __t118
+sw $t0, 0($t9)
+la $t9, __t118
+lw $a0, 0($t9)
+jal mostrarEstado
+la $t9, __t119
+sw $v0, 0($t9)
+la $t0, str1
+la $t9, __t120
+sw $t0, 0($t9)
+la $t9, __t120
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L28:
+j L29
+L26:
+la $t0, str27
+la $t9, __t121
+sw $t0, 0($t9)
+la $t9, __t121
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t122
+sw $t0, 0($t9)
+la $t9, __t122
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L29:
+L25:
+L21:
+L17:
+L13:
+L11:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t123
+sw $t0, 0($t9)
+li $t0, 0
+la $t9, __t124
+sw $t0, 0($t9)
+la $t9, __t123
+lw $t1, 0($t9)
+la $t9, __t124
+lw $t2, 0($t9)
+sne $t0, $t1, $t2
+la $t9, __t125
+sw $t0, 0($t9)
+la $t9, __t125
+lw $t0, 0($t9)
+bne $t0, $zero, _dowhile1_start
+_dowhile1_end:
+la $t0, str1
+la $t9, __t126
+sw $t0, 0($t9)
+la $t9, __t126
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str28
+la $t9, __t127
+sw $t0, 0($t9)
+la $t9, __t127
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t128
+sw $t0, 0($t9)
+la $t9, __t128
 lw $a0, 0($t9)
 li $v0, 4
 syscall
