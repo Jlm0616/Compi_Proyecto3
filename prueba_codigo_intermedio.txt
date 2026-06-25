@@ -1,36 +1,162 @@
 # ===== CODIGO INTERMEDIO =====
 
+probarDecremento:
+    param inicio, int
+    param veces, int
+    declare contador, int
+    __t0 = inicio
+    contador = __t0
+    declare i, int
+    __t1 = 0
+    i = __t1
+_dowhile1_start:
+    __t2 = contador
+    __t3 = __t2 - 1
+    contador = __t3
+    __t4 = i
+    __t5 = 1
+    __t6 = __t4 + __t5
+    i = __t6
+    __t7 = i
+    __t8 = veces
+    __t9 = __t7 < __t8
+    if __t9 goto _dowhile1_start
+_dowhile1_end:
+    __t10 = contador
+    return __t10
+
 main:
-    declare valorExp, int
-    __t0 = 1000
-    valorExp = __t0
-    declare otroExp, int
-    __t1 = 200
-    otroExp = __t1
-    declare suma, int
-    __t2 = 0
-    suma = __t2
-    __t3 = "=== PRUEBA NOTACION EXPONENCIAL ==="
-    write __t3
-    __t4 = "\n"
-    write __t4
-    __t5 = "valorExp (1e3) = "
-    write __t5
-    write valorExp
-    __t6 = "\n"
-    write __t6
-    __t7 = "otroExp (2e2) = "
-    write __t7
-    write otroExp
-    __t8 = "\n"
-    write __t8
-    __t9 = valorExp
-    __t10 = otroExp
-    __t11 = __t9 + __t10
-    suma = __t11
-    __t12 = "suma = "
+    declare letra, char
+    __t11 = 'A'
+    letra = __t11
+    __t12 = "=== PRUEBA CHAR ==="
     write __t12
-    write suma
     __t13 = "\n"
     write __t13
+    __t14 = "letra = "
+    write __t14
+    write letra
+    __t15 = "\n"
+    write __t15
+    __t16 = "\n"
+    write __t16
+    declare saludo, string
+    __t17 = "Hola desde variable string"
+    saludo = __t17
+    __t18 = "=== PRUEBA STRING VARIABLE ==="
+    write __t18
+    __t19 = "\n"
+    write __t19
+    write saludo
+    __t20 = "\n"
+    write __t20
+    __t21 = "\n"
+    write __t21
+    declare numeros, int[2][2]
+    __t22 = 1
+    __t23 = 2
+    __t24 = 3
+    __t25 = 4
+    numeros[0][0] = __t22
+    numeros[0][1] = __t23
+    numeros[1][0] = __t24
+    numeros[1][1] = __t25
+    declare valorLeido, int
+    __t26 = 0
+    valorLeido = __t26
+    __t27 = "=== PRUEBA ARREGLO ENTERO ==="
+    write __t27
+    __t28 = "\n"
+    write __t28
+    __t29 = 0
+    __t30 = 0
+    __t31 = numeros[__t29][__t30]
+    valorLeido = __t31
+    __t32 = "numeros[0][0] = "
+    write __t32
+    write valorLeido
+    __t33 = "\n"
+    write __t33
+    __t34 = 1
+    __t35 = 1
+    __t36 = numeros[__t34][__t35]
+    valorLeido = __t36
+    __t37 = "numeros[1][1] = "
+    write __t37
+    write valorLeido
+    __t38 = "\n"
+    write __t38
+    __t39 = 0
+    __t40 = 1
+    __t41 = numeros[__t39][__t40]
+    __t42 = 99
+    numeros[__t39][__t40] = __t42
+    __t43 = 0
+    __t44 = 1
+    __t45 = numeros[__t43][__t44]
+    valorLeido = __t45
+    __t46 = "numeros[0][1] tras escribir 99 = "
+    write __t46
+    write valorLeido
+    __t47 = "\n"
+    write __t47
+    __t48 = "\n"
+    write __t48
+    declare fraccion, float
+    __f0 = 0.8333333333333334
+    fraccion = __f0
+    __t49 = "=== PRUEBA FRACCIONARIO ==="
+    write __t49
+    __t50 = "\n"
+    write __t50
+    __t51 = "fraccion (5/6) = "
+    write __t51
+    write fraccion
+    __t52 = "\n"
+    write __t52
+    __t53 = "\n"
+    write __t53
+    declare edad, int
+    __t54 = 0
+    edad = __t54
+    __t55 = "=== PRUEBA CIN ENTERO ==="
+    write __t55
+    __t56 = "\n"
+    write __t56
+    __t57 = "Ingrese un numero entero: "
+    write __t57
+    read edad
+    __t58 = "\n"
+    write __t58
+    __t59 = "edad leida = "
+    write __t59
+    write edad
+    __t60 = "\n"
+    write __t60
+    __t61 = "\n"
+    write __t61
+    declare resultadoDecremento, int
+    __t62 = 0
+    resultadoDecremento = __t62
+    __t63 = "=== PRUEBA DECREMENTO (--) ==="
+    write __t63
+    __t64 = "\n"
+    write __t64
+    __t65 = 10
+    __t66 = 3
+    arg __t65, int
+    arg __t66, int
+    __t67 = call probarDecremento, 2
+    resultadoDecremento = __t67
+    __t68 = "probarDecremento(10, 3) = "
+    write __t68
+    write resultadoDecremento
+    __t69 = "\n"
+    write __t69
+    __t70 = "\n"
+    write __t70
+    __t71 = "=== FIN DE PRUEBA DE COBERTURA ==="
+    write __t71
+    __t72 = "\n"
+    write __t72
 # ===== FIN DEL CODIGO INTERMEDIO =====

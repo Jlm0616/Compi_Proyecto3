@@ -1,18 +1,73 @@
 ¡¡ ============================================================
-¡¡  PRUEBA: NOTACION EXPONENCIAL ENTERA (100e10 -> usamos 1e3 y 2e2)
-¡¡  Valores pequenos para no chocar con el limite de 32 bits de MIPS
+¡¡  PRUEBA DE COBERTURA: char, string, arreglo entero, fraccionario,
+¡¡  cin entero, comentario multilinea, decremento (--)
 ¡¡ ============================================================
 
+{- 
+   Este es un comentario multilinea de prueba.
+   Deberia ser ignorado por completo por el analizador lexico,
+   sin importar cuantas lineas ocupe ni que simbolos contenga: !@#$%^&*()
+-}
+
+int ~ probarDecremento <| int ~ inicio, int ~ veces |> |:
+    int ~ contador <- inicio!
+    int ~ i <- 0!
+
+    do |:
+        --contador!
+        i <- i + 1!
+    :| while <| less_t <| i, veces |> |>!
+
+    return ~ contador!
+:|
+
 empty ~ __main__ ~ <| |> |:
-    int ~ valorExp <- 1e3!
-    int ~ otroExp <- 2e2!
-    int ~ suma <- 0!
+    ¡¡ ---------- 1. CHAR ----------
+    char ~ letra <- 'A'!
+    cout ~ <| "=== PRUEBA CHAR ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "letra = " |>! cout ~ <| letra |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
 
-    cout ~ <| "=== PRUEBA NOTACION EXPONENCIAL ===" |>! cout ~ <| "\n" |>!
+    ¡¡ ---------- 2. STRING COMO VARIABLE ----------
+    string ~ saludo <- "Hola desde variable string"!
+    cout ~ <| "=== PRUEBA STRING VARIABLE ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| saludo |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
 
-    cout ~ <| "valorExp (1e3) = " |>! cout ~ <| valorExp |>! cout ~ <| "\n" |>!
-    cout ~ <| "otroExp (2e2) = " |>! cout ~ <| otroExp |>! cout ~ <| "\n" |>!
+    ¡¡ ---------- 3. ARREGLO DE ENTEROS ----------
+    int ~ numeros<<2>><<2>> <- |:1, 2, 3, 4:|!
+    int ~ valorLeido <- 0!
+    cout ~ <| "=== PRUEBA ARREGLO ENTERO ===" |>! cout ~ <| "\n" |>!
+    valorLeido <- numeros<<0>><<0>>!
+    cout ~ <| "numeros[0][0] = " |>! cout ~ <| valorLeido |>! cout ~ <| "\n" |>!
+    valorLeido <- numeros<<1>><<1>>!
+    cout ~ <| "numeros[1][1] = " |>! cout ~ <| valorLeido |>! cout ~ <| "\n" |>!
+    numeros<<0>><<1>> <- 99!
+    valorLeido <- numeros<<0>><<1>>!
+    cout ~ <| "numeros[0][1] tras escribir 99 = " |>! cout ~ <| valorLeido |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
 
-    suma <- valorExp + otroExp!
-    cout ~ <| "suma = " |>! cout ~ <| suma |>! cout ~ <| "\n" |>!
+    ¡¡ ---------- 4. FRACCIONARIO SIMPLE ----------
+    float ~ fraccion <- 5//6!
+    cout ~ <| "=== PRUEBA FRACCIONARIO ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "fraccion (5/6) = " |>! cout ~ <| fraccion |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    ¡¡ ---------- 5. CIN CON ENTERO ----------
+    int ~ edad <- 0!
+    cout ~ <| "=== PRUEBA CIN ENTERO ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese un numero entero: " |>!
+    cin ~ edad!
+    cout ~ <| "\n" |>!
+    cout ~ <| "edad leida = " |>! cout ~ <| edad |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    ¡¡ ---------- 6. DECREMENTO (--) ----------
+    int ~ resultadoDecremento <- 0!
+    cout ~ <| "=== PRUEBA DECREMENTO (--) ===" |>! cout ~ <| "\n" |>!
+    resultadoDecremento <- probarDecremento <| 10, 3 |>!
+    cout ~ <| "probarDecremento(10, 3) = " |>! cout ~ <| resultadoDecremento |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== FIN DE PRUEBA DE COBERTURA ===" |>! cout ~ <| "\n" |>!
 :|

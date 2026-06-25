@@ -1539,7 +1539,13 @@ class CUP$parser$actions {
 		int nright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-                String nStr = String.valueOf(n);
+                String texto = String.valueOf(n);          // ej. "5//6"
+                String[] partes = texto.split("//");
+                double numerador = Double.parseDouble(partes[0]);
+                double denominador = Double.parseDouble(partes[1]);
+                double valorDouble = numerador / denominador;
+
+                String nStr = String.valueOf(valorDouble);  // ej. "0.8333333333333334"
                 String t = GeneradorCodigo.nuevoTemp("float");
                 GeneradorCodigo.emitir("    " + t + " = " + nStr);
                 RESULT = "float|" + t + "|" + nStr;
