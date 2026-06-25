@@ -1,205 +1,291 @@
 ¡¡ ============================================================
-¡¡  SISTEMA DE GESTIÓN DE ESTUDIANTES CON ++ Y --
-¡¡  Prueba: incremento y decremento en contadores
+¡¡  PRUEBA EXTREMA CORREGIDA - TIPADO FUERTE ESTRICTO
+¡¡  int con int, float con float, NUNCA MEZCLAR
 ¡¡ ============================================================
 
-float ~ calcularPromedio <| float ~ nota1, float ~ nota2, float ~ nota3 |> |:
-    float ~ suma <- nota1 + nota2 + nota3!
-    float ~ promedio <- suma / 3.0!
+¡¡ ---------- FUNCIÓN CON PARÁMETROS MÚLTIPLES ----------
+float ~ operacionCompleja <| int ~ a, float ~ b, int ~ c, float ~ d |> |:
+    float ~ resultado <- 0.0!
+    float ~ temp <- 0.0!
+    float ~ tempInt <- 0.0!
+    float ~ i <- 1.0!
+
+    temp <- b + d!
+    temp <- temp * d!
+    temp <- temp / d!
+    tempInt <- temp + b!
+    resultado <- tempInt!
+
+    do |:
+        temp <- temp + i!
+        resultado <- resultado + i!
+        i <- i + 1.0!
+    :| while <| less_te <| i, 5.0 |> |>!
+
+    if <| equal <| a, c |> |> |:
+        resultado <- resultado * 2.0!
+    :|
+    else |:
+        resultado <- resultado * 3.0!
+    :|
+
+    return ~ resultado!
+:|
+
+¡¡ ---------- FUNCIÓN CON ARREGLOS BIDIMENSIONALES ----------
+float ~ procesarMatriz <| float ~ matriz<<3>><<3>>, int ~ filas, int ~ columnas |> |:
+    float ~ suma <- 0.0!
+    float ~ promedio <- 0.0!
+    int ~ i <- 0!
+    int ~ j <- 0!
+    float ~ maximo <- matriz<<0>><<0>>!
+    float ~ minimo <- matriz<<0>><<0>>!
+    int ~ filasF <- 0!
+    int ~ columnasF <- 0!
+
+    do |:
+        j <- 0!
+        do |:
+            float ~ valor <- matriz<<i>><<j>>!
+            suma <- suma + valor!
+            if <| greather_t <| valor, maximo |> |> |:
+                maximo <- valor!
+            :|
+            if <| less_t <| valor, minimo |> |> |:
+                minimo <- valor!
+            :|
+            j <- j + 1!
+        :| while <| less_t <| j, columnas |> |>!
+        i <- i + 1!
+    :| while <| less_t <| i, filas |> |>!
+
+    filasF <- filas!
+    columnasF <- columnas!
+    promedio <- suma / 9.0!
+
+    cout ~ <| "Suma: " |>! cout ~ <| suma |>! cout ~ <| "\n" |>!
+    cout ~ <| "Promedio: " |>! cout ~ <| promedio |>! cout ~ <| "\n" |>!
+    cout ~ <| "Maximo: " |>! cout ~ <| maximo |>! cout ~ <| "\n" |>!
+    cout ~ <| "Minimo: " |>! cout ~ <| minimo |>! cout ~ <| "\n" |>!
+
     return ~ promedio!
 :|
 
-int ~ obtenerEstado <| float ~ promedio |> |:
-    if <| less_te <| promedio, 3.0 |> |> |:
-        return ~ 0!   ¡¡ 0 = REPROBADO
+¡¡ ---------- FUNCIÓN CON SWITCH Y BREAK ----------
+int ~ evaluarOpcion <| int ~ opcion, int ~ valor |> |:
+    int ~ resultado <- 0!
+
+    switch ~ <| opcion |> |:
+        case ~ 1:
+            resultado <- valor + 10!
+            cout ~ <| "Caso 1: suma 10" |>! cout ~ <| "\n" |>!
+            break!
+        case ~ 2:
+            resultado <- valor * 2!
+            cout ~ <| "Caso 2: multiplica por 2" |>! cout ~ <| "\n" |>!
+            break!
+        case ~ 3 :
+            resultado <- valor / 2!
+            cout ~ <| "Caso 3: divide entre 2" |>! cout ~ <| "\n" |>!
+            break!
+        case ~ 4 :
+            resultado <- valor * valor!
+            cout ~ <| "Caso 4: al cuadrado" |>! cout ~ <| "\n" |>!
+            break!
+
+        default:
+            resultado <- -1!
+            cout ~ <| "Caso default: opcion invalida" |>! cout ~ <| "\n" |>!
     :|
-    if <| less_te <| promedio, 4.0 |> |> |:
-        return ~ 1!   ¡¡ 1 = RECUPERACION
-    :|
-    return ~ 2!       ¡¡ 2 = APROBADO
+
+    return ~ resultado!
 :|
 
-float ~ notaMaxima <| float ~ a, float ~ b, float ~ c |> |:
-    float ~ max <- a!
-    if <| less_te <| max, b |> |> |:
-        max <- b!
-    :|
-    if <| less_te <| max, c |> |> |:
-        max <- c!
-    :|
-    return ~ max!
-:|
+¡¡ ---------- FUNCIÓN CON EXPRESIONES LÓGICAS ----------
+bool ~ validarDatos <| int ~ a, float ~ b, bool ~ flag, int ~ c |> |:
+    bool ~ cond1 <- equal <| a, c |>!
+    bool ~ cond2 <- less_te <| b, 10.0 |>!
+    bool ~ cond3 <- flag!
+    bool ~ cond4 <- greather_t <| a, 0 |>!
+    bool ~ resultado <- false!
 
-float ~ notaMinima <| float ~ a, float ~ b, float ~ c |> |:
-    float ~ min <- a!
-    if <| less_te <| b, min |> |> |:
-        min <- b!
-    :|
-    if <| less_te <| c, min |> |> |:
-        min <- c!
-    :|
-    return ~ min!
-:|
+    resultado <- cond1 @ cond2!
+    resultado <- resultado # cond3!
+    resultado <- resultado @ cond4!
 
-int ~ mostrarMenu <| int ~ contador |> |:
-    cout ~ <| "========================================" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "   SISTEMA DE GESTION DE ESTUDIANTES  " |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "========================================" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "Visitas al menu: " |>! cout ~ <| contador |>! cout ~ <| "\n" |>!
-    cout ~ <| "1. Ingresar notas" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "2. Ver promedio" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "3. Ver nota maxima" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "4. Ver nota minima" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "5. Ver estado" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "0. Salir" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "========================================" |>!
-    cout ~ <| "\n" |>!
-    return ~ 0!
-:|
-
-int ~ mostrarEstado <| int ~ estado |> |:
-    if <| equal <| estado, 0 |> |> |:
-        cout ~ <| "Estado: REPROBADO" |>!
-        cout ~ <| "\n" |>!
-        return ~ 0!
+    if <| resultado |> |:
+        cout ~ <| "Todas las condiciones cumplidas" |>! cout ~ <| "\n" |>!
+        return ~ true!
     :|
     else |:
-        if <| equal <| estado, 1 |> |> |:
-            cout ~ <| "Estado: RECUPERACION" |>!
-            cout ~ <| "\n" |>!
-            return ~ 0!
-        :|
-        else |:
-            cout ~ <| "Estado: APROBADO" |>!
-            cout ~ <| "\n" |>!
-            return ~ 0!
-        :|
+        cout ~ <| "No se cumplen todas las condiciones" |>! cout ~ <| "\n" |>!
+        return ~ false!
     :|
 :|
 
-empty ~ __main__ ~ <| |> |:
-    float ~ nota1 <- 0.0!
-    float ~ nota2 <- 0.0!
-    float ~ nota3 <- 0.0!
-    float ~ promedio <- 0.0!
-    float ~ max <- 0.0!
-    float ~ min <- 0.0!
-    int ~ estado <- 0!
-    int ~ opcion <- 0!
-    int ~ datosIngresados <- 0!
-    int ~ contadorMenu <- 0!    ¡¡ Contador de veces que se muestra el menu
-
-    cout ~ <| "BIENVENIDO AL SISTEMA DE GESTION" |>!
-    cout ~ <| "\n" |>!
-    cout ~ <| "\n" |>!
+¡¡ ---------- FUNCIÓN CON INCREMENTO Y DECREMENTO ----------
+int ~ contar <| int ~ limite, int ~ paso |> |:
+    int ~ contador <- 0!
+    int ~ i <- 0!
 
     do |:
-        contadorMenu <- contadorMenu + 1!    ¡¡ INCREMENTO (++)
-        mostrarMenu <| contadorMenu |>!
+        ++contador!
+        cout ~ <| "Contador: " |>! cout ~ <| contador |>! cout ~ <| "\n" |>!
+        i <- i + paso!
+    :| while <| less_te <| i, limite |> |>!
 
-        cout ~ <| "Elija una opcion: " |>!
-        cin ~ opcion!
-        cout ~ <| "\n" |>!
+    return ~ contador!
+:|
 
-        if <| equal <| opcion, 0 |> |> |:
-            cout ~ <| "Saliendo del sistema..." |>!
-            cout ~ <| "\n" |>!
-            contadorMenu <- contadorMenu - 1!    ¡¡ DECREMENTO (--)
-            cout ~ <| "El menu se mostro " |>! cout ~ <| contadorMenu |>! cout ~ <| " veces" |>!
-            cout ~ <| "\n" |>!
-        :|
-        else |:
-            if <| equal <| opcion, 1 |> |> |:
-                cout ~ <| "Ingrese nota 1 (0-7): " |>!
-                cin ~ nota1!
-                cout ~ <| "\n" |>!
+¡¡ ---------- FUNCIÓN CON POTENCIA Y MÓDULO ----------
+int ~ calculosMatematicos <| int ~ base, int ~ exponente, int ~ divisor |> |:
+    int ~ potencia <- base ^ exponente!
+    int ~ modulo <- potencia % divisor!
+    int ~ division <- potencia / divisor!
 
-                cout ~ <| "Ingrese nota 2 (0-7): " |>!
-                cin ~ nota2!
-                cout ~ <| "\n" |>!
+    cout ~ <| base |>! cout ~ <| " ^ " |>! cout ~ <| exponente |>! cout ~ <| " = " |>! cout ~ <| potencia |>! cout ~ <| "\n" |>!
+    cout ~ <| potencia |>! cout ~ <| " % " |>! cout ~ <| divisor |>! cout ~ <| " = " |>! cout ~ <| modulo |>! cout ~ <| "\n" |>!
+    cout ~ <| potencia |>! cout ~ <| " / " |>! cout ~ <| divisor |>! cout ~ <| " = " |>! cout ~ <| division |>! cout ~ <| "\n" |>!
 
-                cout ~ <| "Ingrese nota 3 (0-7): " |>!
-                cin ~ nota3!
-                cout ~ <| "\n" |>!
+    return ~ modulo!
+:|
 
-                datosIngresados <- 1!
-                cout ~ <| "¡Notas ingresadas correctamente!" |>!
-                cout ~ <| "\n" |>!
-            :|
-            else |:
-                if <| equal <| opcion, 2 |> |> |:
-                    if <| equal <| datosIngresados, 0 |> |> |:
-                        cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
-                        cout ~ <| "\n" |>!
-                    :|
-                    else |:
-                        promedio <- calcularPromedio <| nota1, nota2, nota3 |>!
-                        cout ~ <| "El promedio es: " |>! cout ~ <| promedio |>! cout ~ <| "\n" |>!
-                    :|
-                :|
-                else |:
-                    if <| equal <| opcion, 3 |> |> |:
-                        if <| equal <| datosIngresados, 0 |> |> |:
-                            cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
-                            cout ~ <| "\n" |>!
-                        :|
-                        else |:
-                            max <- notaMaxima <| nota1, nota2, nota3 |>!
-                            cout ~ <| "La nota maxima es: " |>! cout ~ <| max |>! cout ~ <| "\n" |>!
-                        :|
-                    :|
-                    else |:
-                        if <| equal <| opcion, 4 |> |> |:
-                            if <| equal <| datosIngresados, 0 |> |> |:
-                                cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
-                                cout ~ <| "\n" |>!
-                            :|
-                            else |:
-                                min <- notaMinima <| nota1, nota2, nota3 |>!
-                                cout ~ <| "La nota minima es: " |>! cout ~ <| min |>! cout ~ <| "\n" |>!
-                            :|
-                        :|
-                        else |:
-                            if <| equal <| opcion, 5 |> |> |:
-                                if <| equal <| datosIngresados, 0 |> |> |:
-                                    cout ~ <| "Primero debe ingresar notas (opcion 1)" |>!
-                                    cout ~ <| "\n" |>!
-                                :|
-                                else |:
-                                    promedio <- calcularPromedio <| nota1, nota2, nota3 |>!
-                                    max <- notaMaxima <| nota1, nota2, nota3 |>!
-                                    min <- notaMinima <| nota1, nota2, nota3 |>!
-                                    estado <- obtenerEstado <| promedio |>!
-                                    cout ~ <| "--- RESULTADOS ---" |>!
-                                    cout ~ <| "\n" |>!
-                                    cout ~ <| "Promedio: " |>! cout ~ <| promedio |>! cout ~ <| "\n" |>!
-                                    cout ~ <| "Nota Maxima: " |>! cout ~ <| max |>! cout ~ <| "\n" |>!
-                                    cout ~ <| "Nota Minima: " |>! cout ~ <| min |>! cout ~ <| "\n" |>!
-                                    mostrarEstado <| estado |>!
-                                    cout ~ <| "\n" |>!
-                                :|
-                            :|
-                            else |:
-                                cout ~ <| "Opcion invalida!" |>!
-                                cout ~ <| "\n" |>!
-                            :|
-                        :|
-                    :|
-                :|
-            :|
-        :|
-    :| while <| n_equal <| opcion, 0 |> |>!
+¡¡ ---------- MAIN CON CIN, COUT Y TODAS LAS FUNCIONES ----------
+empty ~ __main__ ~ <| |> |:
+    int ~ a <- 0!
+    int ~ c <- 0!
+    float ~ b <- 0.0!
+    float ~ d <- 0.0!
+    bool ~ flag <- false!
+    float ~ matriz<<3>><<3>> <- |:0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0:|! 
 
+    float ~ resultado <- 0.0!
+    int ~ resultadoInt <- 0!
+    int ~ i <- 0!
+    int ~ j <- 0!
+    float ~ m00 <- 0.0!
+    float ~ m01 <- 0.0!
+    float ~ m02 <- 0.0!
+    float ~ m10 <- 0.0!
+    float ~ m11 <- 0.0!
+    float ~ m12 <- 0.0!
+    float ~ m20 <- 0.0!
+    float ~ m21 <- 0.0!
+    float ~ m22 <- 0.0!
+
+    cout ~ <| "========================================" |>!
     cout ~ <| "\n" |>!
-    cout ~ <| "¡Gracias por usar el sistema!" |>!
+    cout ~ <| "     PRUEBA EXTREMA DEL COMPILADOR     " |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "========================================" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== PRUEBA DE FUNCION CON PARAMETROS ===" |>!
+    cout ~ <| "\n" |>!
+
+    a <- 10!
+    b <- 5.5!
+    c <- 3!
+    d <- 2.0!
+
+    cout ~ <| "a = " |>! cout ~ <| a |>! cout ~ <| "\n" |>!
+    cout ~ <| "b = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
+    cout ~ <| "c = " |>! cout ~ <| c |>! cout ~ <| "\n" |>!
+    cout ~ <| "d = " |>! cout ~ <| d |>! cout ~ <| "\n" |>!
+
+    resultado <- operacionCompleja <| a, b, c, d |>!
+
+    cout ~ <| "Resultado funcion compleja: " |>! cout ~ <| resultado |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== PRUEBA DE ARREGLOS BIDIMENSIONALES ===" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "Ingrese matriz[0][0]: " |>!
+    cin ~ m00!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[0][1]: " |>!
+    cin ~ m01!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[0][2]: " |>!
+    cin ~ m02!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[1][0]: " |>!
+    cin ~ m10!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[1][1]: " |>!
+    cin ~ m11!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[1][2]: " |>!
+    cin ~ m12!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[2][0]: " |>!
+    cin ~ m20!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[2][1]: " |>!
+    cin ~ m21!
+    cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese matriz[2][2]: " |>!
+    cin ~ m22!
+    cout ~ <| "\n" |>!
+
+    matriz<<0>><<0>> <- m00!
+    matriz<<0>><<1>> <- m01!
+    matriz<<0>><<2>> <- m02!
+    matriz<<1>><<0>> <- m10!
+    matriz<<1>><<1>> <- m11!
+    matriz<<1>><<2>> <- m12!
+    matriz<<2>><<0>> <- m20!
+    matriz<<2>><<1>> <- m21!
+    matriz<<2>><<2>> <- m22!
+
+    resultado <- procesarMatriz <| matriz, 3, 3 |>!
+    cout ~ <| "Resultado procesarMatriz: " |>! cout ~ <| resultado |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== PRUEBA DE SWITCH ===" |>!
+    cout ~ <| "\n" |>!
+
+    resultadoInt <- evaluarOpcion <| 2, 8 |>!
+    cout ~ <| "Resultado switch (opcion 2): " |>! cout ~ <| resultadoInt |>! cout ~ <| "\n" |>!
+
+    resultadoInt <- evaluarOpcion <| 3, 10 |>!
+    cout ~ <| "Resultado switch (opcion 3): " |>! cout ~ <| resultadoInt |>! cout ~ <| "\n" |>!
+
+    resultadoInt <- evaluarOpcion <| 5, 7 |>!
+    cout ~ <| "Resultado switch (opcion 5): " |>! cout ~ <| resultadoInt |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== PRUEBA DE EXPRESIONES LOGICAS ===" |>!
+    cout ~ <| "\n" |>!
+
+    flag <- true!
+    bool ~ resultadoBool <- validarDatos <| 5, 7.5, flag, 5 |>!
+    cout ~ <| "Resultado logico: " |>! cout ~ <| resultadoBool |>! cout ~ <| "\n" |>!
+
+    flag <- false!
+    resultadoBool <- validarDatos <| 10, 12.0, flag, 20 |>!
+    cout ~ <| "Resultado logico: " |>! cout ~ <| resultadoBool |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== PRUEBA DE INCREMENTO/DECREMENTO ===" |>!
+    cout ~ <| "\n" |>!
+
+    resultadoInt <- contar <| 10, 2 |>!
+    cout ~ <| "Total contador: " |>! cout ~ <| resultadoInt |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "=== PRUEBA DE POTENCIA Y MODULO ===" |>!
+    cout ~ <| "\n" |>!
+
+    resultadoInt <- calculosMatematicos <| 2, 8, 5 |>!
+    cout ~ <| "Resultado matematico: " |>! cout ~ <| resultadoInt |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "========================================" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "     ¡PRUEBA EXTREMA COMPLETADA!        " |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "========================================" |>!
     cout ~ <| "\n" |>!
 :|

@@ -1,452 +1,786 @@
 # ===== CODIGO INTERMEDIO =====
 
-calcularPromedio:
-    param nota1, float
-    param nota2, float
-    param nota3, float
-    declare suma, float
-    __f0 = nota1
-    __f1 = nota2
-    __f2 = __f0 + __f1
-    __f3 = nota3
-    __f4 = __f2 + __f3
-    suma = __f4
-    declare promedio, float
-    __f5 = suma
-    __f6 = 3.0
-    __f7 = __f5 / __f6
-    promedio = __f7
-    __f8 = promedio
-    return __f8
-
-obtenerEstado:
-    param promedio, float
-    __f9 = promedio
-    __f10 = 3.0
-    __t0 = __f9 <= __f10
-    ifFalse __t0 goto L0
-    __t1 = 0
-    return __t1
-L0:
-    __f11 = promedio
-    __f12 = 4.0
-    __t2 = __f11 <= __f12
-    ifFalse __t2 goto L1
-    __t3 = 1
-    return __t3
-L1:
-    __t4 = 2
-    return __t4
-
-notaMaxima:
-    param a, float
+operacionCompleja:
+    param a, int
     param b, float
-    param c, float
-    declare max, float
-    __f13 = a
-    max = __f13
-    __f14 = max
-    __f15 = b
-    __t5 = __f14 <= __f15
-    ifFalse __t5 goto L2
-    __f16 = b
-    max = __f16
-L2:
-    __f17 = max
-    __f18 = c
-    __t6 = __f17 <= __f18
-    ifFalse __t6 goto L3
-    __f19 = c
-    max = __f19
-L3:
-    __f20 = max
-    return __f20
-
-notaMinima:
-    param a, float
-    param b, float
-    param c, float
-    declare min, float
-    __f21 = a
-    min = __f21
-    __f22 = b
-    __f23 = min
-    __t7 = __f22 <= __f23
-    ifFalse __t7 goto L4
-    __f24 = b
-    min = __f24
-L4:
-    __f25 = c
-    __f26 = min
-    __t8 = __f25 <= __f26
-    ifFalse __t8 goto L5
-    __f27 = c
-    min = __f27
-L5:
-    __f28 = min
-    return __f28
-
-mostrarMenu:
-    param contador, int
-    __t9 = "========================================"
-    write __t9
-    __t10 = "\n"
-    write __t10
-    __t11 = "   SISTEMA DE GESTION DE ESTUDIANTES  "
-    write __t11
-    __t12 = "\n"
-    write __t12
-    __t13 = "========================================"
-    write __t13
-    __t14 = "\n"
-    write __t14
-    __t15 = "Visitas al menu: "
-    write __t15
-    write contador
-    __t16 = "\n"
-    write __t16
-    __t17 = "1. Ingresar notas"
-    write __t17
-    __t18 = "\n"
-    write __t18
-    __t19 = "2. Ver promedio"
-    write __t19
-    __t20 = "\n"
-    write __t20
-    __t21 = "3. Ver nota maxima"
-    write __t21
-    __t22 = "\n"
-    write __t22
-    __t23 = "4. Ver nota minima"
-    write __t23
-    __t24 = "\n"
-    write __t24
-    __t25 = "5. Ver estado"
-    write __t25
-    __t26 = "\n"
-    write __t26
-    __t27 = "0. Salir"
-    write __t27
-    __t28 = "\n"
-    write __t28
-    __t29 = "========================================"
-    write __t29
-    __t30 = "\n"
-    write __t30
-    __t31 = 0
-    return __t31
-
-mostrarEstado:
-    param estado, int
-    __t32 = estado
-    __t33 = 0
-    __t34 = __t32 == __t33
-    ifFalse __t34 goto L6
-    __t35 = "Estado: REPROBADO"
-    write __t35
-    __t36 = "\n"
-    write __t36
-    __t37 = 0
-    return __t37
-    goto L7
-L6:
-    __t38 = estado
-    __t39 = 1
-    __t40 = __t38 == __t39
-    ifFalse __t40 goto L8
-    __t41 = "Estado: RECUPERACION"
-    write __t41
-    __t42 = "\n"
-    write __t42
-    __t43 = 0
-    return __t43
-    goto L9
-L8:
-    __t44 = "Estado: APROBADO"
-    write __t44
-    __t45 = "\n"
-    write __t45
-    __t46 = 0
-    return __t46
-L9:
-L7:
-
-main:
-    declare nota1, float
-    __f29 = 0.0
-    nota1 = __f29
-    declare nota2, float
-    __f30 = 0.0
-    nota2 = __f30
-    declare nota3, float
-    __f31 = 0.0
-    nota3 = __f31
-    declare promedio, float
-    __f32 = 0.0
-    promedio = __f32
-    declare max, float
-    __f33 = 0.0
-    max = __f33
-    declare min, float
-    __f34 = 0.0
-    min = __f34
-    declare estado, int
-    __t47 = 0
-    estado = __t47
-    declare opcion, int
-    __t48 = 0
-    opcion = __t48
-    declare datosIngresados, int
-    __t49 = 0
-    datosIngresados = __t49
-    declare contadorMenu, int
-    __t50 = 0
-    contadorMenu = __t50
-    __t51 = "BIENVENIDO AL SISTEMA DE GESTION"
-    write __t51
-    __t52 = "\n"
-    write __t52
-    __t53 = "\n"
-    write __t53
+    param c, int
+    param d, float
+    declare resultado, float
+    __f0 = 0.0
+    resultado = __f0
+    declare temp, float
+    __f1 = 0.0
+    temp = __f1
+    declare tempInt, float
+    __f2 = 0.0
+    tempInt = __f2
+    declare i, float
+    __f3 = 1.0
+    i = __f3
+    __f4 = b
+    __f5 = d
+    __f6 = __f4 + __f5
+    temp = __f6
+    __f7 = temp
+    __f8 = d
+    __f9 = __f7 * __f8
+    temp = __f9
+    __f10 = temp
+    __f11 = d
+    __f12 = __f10 / __f11
+    temp = __f12
+    __f13 = temp
+    __f14 = b
+    __f15 = __f13 + __f14
+    tempInt = __f15
+    __f16 = tempInt
+    resultado = __f16
 _dowhile1_start:
-    __t54 = contadorMenu
-    __t55 = 1
-    __t56 = __t54 + __t55
-    contadorMenu = __t56
-    __t57 = contadorMenu
-    arg __t57, int
-    __t58 = call mostrarMenu, 1
-    __t59 = "Elija una opcion: "
+    __f17 = temp
+    __f18 = i
+    __f19 = __f17 + __f18
+    temp = __f19
+    __f20 = resultado
+    __f21 = i
+    __f22 = __f20 + __f21
+    resultado = __f22
+    __f23 = i
+    __f24 = 1.0
+    __f25 = __f23 + __f24
+    i = __f25
+    __f26 = i
+    __f27 = 5.0
+    __t0 = __f26 <= __f27
+    if __t0 goto _dowhile1_start
+_dowhile1_end:
+    __t1 = a
+    __t2 = c
+    __t3 = __t1 == __t2
+    ifFalse __t3 goto L0
+    __f28 = resultado
+    __f29 = 2.0
+    __f30 = __f28 * __f29
+    resultado = __f30
+    goto L1
+L0:
+    __f31 = resultado
+    __f32 = 3.0
+    __f33 = __f31 * __f32
+    resultado = __f33
+L1:
+    __f34 = resultado
+    return __f34
+
+procesarMatriz:
+    param matriz, float[][]
+    param filas, int
+    param columnas, int
+    declare suma, float
+    __f35 = 0.0
+    suma = __f35
+    declare promedio, float
+    __f36 = 0.0
+    promedio = __f36
+    declare i, int
+    __t4 = 0
+    i = __t4
+    declare j, int
+    __t5 = 0
+    j = __t5
+    declare maximo, float
+    __t6 = 0
+    __t7 = 0
+    __t8 = matriz[__t6][__t7]
+    maximo = __t8
+    declare minimo, float
+    __t9 = 0
+    __t10 = 0
+    __t11 = matriz[__t9][__t10]
+    minimo = __t11
+    declare filasF, int
+    __t12 = 0
+    filasF = __t12
+    declare columnasF, int
+    __t13 = 0
+    columnasF = __t13
+_dowhile2_start:
+    __t14 = 0
+    j = __t14
+_dowhile3_start:
+    declare valor, float
+    __t15 = i
+    __t16 = j
+    __t17 = matriz[__t15][__t16]
+    valor = __t17
+    __f37 = suma
+    __f38 = valor
+    __f39 = __f37 + __f38
+    suma = __f39
+    __f40 = valor
+    __f41 = maximo
+    __t18 = __f40 > __f41
+    ifFalse __t18 goto L2
+    __f42 = valor
+    maximo = __f42
+L2:
+    __f43 = valor
+    __f44 = minimo
+    __t19 = __f43 < __f44
+    ifFalse __t19 goto L3
+    __f45 = valor
+    minimo = __f45
+L3:
+    __t20 = j
+    __t21 = 1
+    __t22 = __t20 + __t21
+    j = __t22
+    __t23 = j
+    __t24 = columnas
+    __t25 = __t23 < __t24
+    if __t25 goto _dowhile3_start
+_dowhile3_end:
+    __t26 = i
+    __t27 = 1
+    __t28 = __t26 + __t27
+    i = __t28
+    __t29 = i
+    __t30 = filas
+    __t31 = __t29 < __t30
+    if __t31 goto _dowhile2_start
+_dowhile2_end:
+    __t32 = filas
+    filasF = __t32
+    __t33 = columnas
+    columnasF = __t33
+    __f46 = suma
+    __f47 = 9.0
+    __f48 = __f46 / __f47
+    promedio = __f48
+    __t34 = "Suma: "
+    write __t34
+    write suma
+    __t35 = "\n"
+    write __t35
+    __t36 = "Promedio: "
+    write __t36
+    write promedio
+    __t37 = "\n"
+    write __t37
+    __t38 = "Maximo: "
+    write __t38
+    write maximo
+    __t39 = "\n"
+    write __t39
+    __t40 = "Minimo: "
+    write __t40
+    write minimo
+    __t41 = "\n"
+    write __t41
+    __f49 = promedio
+    return __f49
+
+evaluarOpcion:
+    param opcion, int
+    param valor, int
+    declare resultado, int
+    __t42 = 0
+    resultado = __t42
+    __t43 = opcion
+_switch1:
+    declare tsw1, int
+    tsw1 = 1
+    __t44 = 1
+_case1_1:
+    __t45 = tsw1 == 0
+    if __t45 goto _case1_1_b
+    __t46 = __t43 == __t44
+    if __t46 goto _case1_1_b
+    goto _case1_1_e
+_case1_1_b:
+    tsw1 = 0
+    __t47 = valor
+    __t48 = 10
+    __t49 = __t47 + __t48
+    resultado = __t49
+    __t50 = "Caso 1: suma 10"
+    write __t50
+    __t51 = "\n"
+    write __t51
+    goto _sw1_end
+_case1_1_e:
+    __t52 = 2
+_case1_2:
+    __t53 = tsw1 == 0
+    if __t53 goto _case1_2_b
+    __t54 = __t43 == __t52
+    if __t54 goto _case1_2_b
+    goto _case1_2_e
+_case1_2_b:
+    tsw1 = 0
+    __t55 = valor
+    __t56 = 2
+    __t57 = __t55 * __t56
+    resultado = __t57
+    __t58 = "Caso 2: multiplica por 2"
+    write __t58
+    __t59 = "\n"
     write __t59
-    read opcion
-    __t60 = "\n"
-    write __t60
-    __t61 = opcion
-    __t62 = 0
-    __t63 = __t61 == __t62
-    ifFalse __t63 goto L10
-    __t64 = "Saliendo del sistema..."
-    write __t64
-    __t65 = "\n"
-    write __t65
-    __t66 = contadorMenu
-    __t67 = 1
-    __t68 = __t66 - __t67
-    contadorMenu = __t68
-    __t69 = "El menu se mostro "
-    write __t69
-    write contadorMenu
-    __t70 = " veces"
-    write __t70
-    __t71 = "\n"
-    write __t71
-    goto L11
-L10:
-    __t72 = opcion
-    __t73 = 1
-    __t74 = __t72 == __t73
-    ifFalse __t74 goto L12
-    __t75 = "Ingrese nota 1 (0-7): "
+    goto _sw1_end
+_case1_2_e:
+    __t60 = 3
+_case1_3:
+    __t61 = tsw1 == 0
+    if __t61 goto _case1_3_b
+    __t62 = __t43 == __t60
+    if __t62 goto _case1_3_b
+    goto _case1_3_e
+_case1_3_b:
+    tsw1 = 0
+    __t63 = valor
+    __t64 = 2
+    __t65 = __t63 / __t64
+    resultado = __t65
+    __t66 = "Caso 3: divide entre 2"
+    write __t66
+    __t67 = "\n"
+    write __t67
+    goto _sw1_end
+_case1_3_e:
+    __t68 = 4
+_case1_4:
+    __t69 = tsw1 == 0
+    if __t69 goto _case1_4_b
+    __t70 = __t43 == __t68
+    if __t70 goto _case1_4_b
+    goto _case1_4_e
+_case1_4_b:
+    tsw1 = 0
+    __t71 = valor
+    __t72 = valor
+    __t73 = __t71 * __t72
+    resultado = __t73
+    __t74 = "Caso 4: al cuadrado"
+    write __t74
+    __t75 = "\n"
     write __t75
-    read nota1
-    __t76 = "\n"
-    write __t76
-    __t77 = "Ingrese nota 2 (0-7): "
+    goto _sw1_end
+_case1_4_e:
+_default1:
+    __t76 = -1
+    resultado = __t76
+    __t77 = "Caso default: opcion invalida"
     write __t77
-    read nota2
     __t78 = "\n"
     write __t78
-    __t79 = "Ingrese nota 3 (0-7): "
-    write __t79
-    read nota3
-    __t80 = "\n"
-    write __t80
-    __t81 = 1
-    datosIngresados = __t81
-    __t82 = "¡Notas ingresadas correctamente!"
-    write __t82
-    __t83 = "\n"
-    write __t83
-    goto L13
-L12:
-    __t84 = opcion
-    __t85 = 2
-    __t86 = __t84 == __t85
-    ifFalse __t86 goto L14
-    __t87 = datosIngresados
-    __t88 = 0
-    __t89 = __t87 == __t88
-    ifFalse __t89 goto L15
-    __t90 = "Primero debe ingresar notas (opcion 1)"
-    write __t90
-    __t91 = "\n"
-    write __t91
-    goto L16
-L15:
-    __f35 = nota1
-    __f36 = nota2
-    __f37 = nota3
-    arg __f35, float
-    arg __f36, float
-    arg __f37, float
-    __f38 = call calcularPromedio, 3
-    promedio = __f38
-    __t92 = "El promedio es: "
-    write __t92
-    write promedio
-    __t93 = "\n"
-    write __t93
-L16:
-    goto L17
-L14:
-    __t94 = opcion
-    __t95 = 3
-    __t96 = __t94 == __t95
-    ifFalse __t96 goto L18
-    __t97 = datosIngresados
-    __t98 = 0
-    __t99 = __t97 == __t98
-    ifFalse __t99 goto L19
-    __t100 = "Primero debe ingresar notas (opcion 1)"
+_sw1_end:
+    __t79 = resultado
+    return __t79
+
+validarDatos:
+    param a, int
+    param b, float
+    param flag, bool
+    param c, int
+    declare cond1, bool
+    __t80 = a
+    __t81 = c
+    __t82 = __t80 == __t81
+    cond1 = __t82
+    declare cond2, bool
+    __f50 = b
+    __f51 = 10.0
+    __t83 = __f50 <= __f51
+    cond2 = __t83
+    declare cond3, bool
+    __t84 = flag
+    cond3 = __t84
+    declare cond4, bool
+    __t85 = a
+    __t86 = 0
+    __t87 = __t85 > __t86
+    cond4 = __t87
+    declare resultado, bool
+    __t88 = false
+    resultado = __t88
+    __t89 = cond1
+    __t90 = cond2
+    __t91 = __t89 @ __t90
+    resultado = __t91
+    __t92 = resultado
+    __t93 = cond3
+    __t94 = __t92 # __t93
+    resultado = __t94
+    __t95 = resultado
+    __t96 = cond4
+    __t97 = __t95 @ __t96
+    resultado = __t97
+    __t98 = resultado
+    ifFalse __t98 goto L4
+    __t99 = "Todas las condiciones cumplidas"
+    write __t99
+    __t100 = "\n"
     write __t100
-    __t101 = "\n"
-    write __t101
-    goto L20
-L19:
-    __f39 = nota1
-    __f40 = nota2
-    __f41 = nota3
-    arg __f39, float
-    arg __f40, float
-    arg __f41, float
-    __f42 = call notaMaxima, 3
-    max = __f42
-    __t102 = "La nota maxima es: "
+    __t101 = true
+    return __t101
+    goto L5
+L4:
+    __t102 = "No se cumplen todas las condiciones"
     write __t102
-    write max
     __t103 = "\n"
     write __t103
-L20:
-    goto L21
-L18:
-    __t104 = opcion
-    __t105 = 4
-    __t106 = __t104 == __t105
-    ifFalse __t106 goto L22
-    __t107 = datosIngresados
-    __t108 = 0
-    __t109 = __t107 == __t108
-    ifFalse __t109 goto L23
-    __t110 = "Primero debe ingresar notas (opcion 1)"
+    __t104 = false
+    return __t104
+L5:
+
+contar:
+    param limite, int
+    param paso, int
+    declare contador, int
+    __t105 = 0
+    contador = __t105
+    declare i, int
+    __t106 = 0
+    i = __t106
+_dowhile4_start:
+    __t107 = contador
+    __t108 = __t107 + 1
+    contador = __t108
+    __t109 = "Contador: "
+    write __t109
+    write contador
+    __t110 = "\n"
     write __t110
-    __t111 = "\n"
-    write __t111
-    goto L24
-L23:
-    __f43 = nota1
-    __f44 = nota2
-    __f45 = nota3
-    arg __f43, float
-    arg __f44, float
-    arg __f45, float
-    __f46 = call notaMinima, 3
-    min = __f46
-    __t112 = "La nota minima es: "
-    write __t112
-    write min
-    __t113 = "\n"
-    write __t113
-L24:
-    goto L25
-L22:
-    __t114 = opcion
-    __t115 = 5
-    __t116 = __t114 == __t115
-    ifFalse __t116 goto L26
-    __t117 = datosIngresados
-    __t118 = 0
-    __t119 = __t117 == __t118
-    ifFalse __t119 goto L27
-    __t120 = "Primero debe ingresar notas (opcion 1)"
-    write __t120
-    __t121 = "\n"
-    write __t121
-    goto L28
-L27:
-    __f47 = nota1
-    __f48 = nota2
-    __f49 = nota3
-    arg __f47, float
-    arg __f48, float
-    arg __f49, float
-    __f50 = call calcularPromedio, 3
-    promedio = __f50
-    __f51 = nota1
-    __f52 = nota2
-    __f53 = nota3
-    arg __f51, float
-    arg __f52, float
-    arg __f53, float
-    __f54 = call notaMaxima, 3
-    max = __f54
-    __f55 = nota1
-    __f56 = nota2
-    __f57 = nota3
-    arg __f55, float
-    arg __f56, float
-    arg __f57, float
-    __f58 = call notaMinima, 3
-    min = __f58
-    __f59 = promedio
-    arg __f59, float
-    __t122 = call obtenerEstado, 1
-    estado = __t122
-    __t123 = "--- RESULTADOS ---"
-    write __t123
-    __t124 = "\n"
-    write __t124
-    __t125 = "Promedio: "
-    write __t125
-    write promedio
-    __t126 = "\n"
-    write __t126
-    __t127 = "Nota Maxima: "
+    __t111 = i
+    __t112 = paso
+    __t113 = __t111 + __t112
+    i = __t113
+    __t114 = i
+    __t115 = limite
+    __t116 = __t114 <= __t115
+    if __t116 goto _dowhile4_start
+_dowhile4_end:
+    __t117 = contador
+    return __t117
+
+calculosMatematicos:
+    param base, int
+    param exponente, int
+    param divisor, int
+    declare potencia, int
+    __t118 = base
+    __t119 = exponente
+    __t120 = __t118 ^ __t119
+    potencia = __t120
+    declare modulo, int
+    __t121 = potencia
+    __t122 = divisor
+    __t123 = __t121 % __t122
+    modulo = __t123
+    declare division, int
+    __t124 = potencia
+    __t125 = divisor
+    __t126 = __t124 / __t125
+    division = __t126
+    write base
+    __t127 = " ^ "
     write __t127
-    write max
-    __t128 = "\n"
+    write exponente
+    __t128 = " = "
     write __t128
-    __t129 = "Nota Minima: "
+    write potencia
+    __t129 = "\n"
     write __t129
-    write min
-    __t130 = "\n"
+    write potencia
+    __t130 = " % "
     write __t130
-    __t131 = estado
-    arg __t131, int
-    __t132 = call mostrarEstado, 1
-    __t133 = "\n"
+    write divisor
+    __t131 = " = "
+    write __t131
+    write modulo
+    __t132 = "\n"
+    write __t132
+    write potencia
+    __t133 = " / "
     write __t133
-L28:
-    goto L29
-L26:
-    __t134 = "Opcion invalida!"
+    write divisor
+    __t134 = " = "
     write __t134
+    write division
     __t135 = "\n"
     write __t135
-L29:
-L25:
-L21:
-L17:
-L13:
-L11:
-    __t136 = opcion
+    __t136 = modulo
+    return __t136
+
+main:
+    declare a, int
     __t137 = 0
-    __t138 = __t136 != __t137
-    if __t138 goto _dowhile1_start
-_dowhile1_end:
-    __t139 = "\n"
-    write __t139
-    __t140 = "¡Gracias por usar el sistema!"
-    write __t140
-    __t141 = "\n"
-    write __t141
+    a = __t137
+    declare c, int
+    __t138 = 0
+    c = __t138
+    declare b, float
+    __f52 = 0.0
+    b = __f52
+    declare d, float
+    __f53 = 0.0
+    d = __f53
+    declare flag, bool
+    __t139 = false
+    flag = __t139
+    declare matriz, float[3][3]
+    __f54 = 0.0
+    __f55 = 0.0
+    __f56 = 0.0
+    __f57 = 0.0
+    __f58 = 0.0
+    __f59 = 0.0
+    __f60 = 0.0
+    __f61 = 0.0
+    __f62 = 0.0
+    matriz[0][0] = __f54
+    matriz[0][1] = __f55
+    matriz[0][2] = __f56
+    matriz[1][0] = __f57
+    matriz[1][1] = __f58
+    matriz[1][2] = __f59
+    matriz[2][0] = __f60
+    matriz[2][1] = __f61
+    matriz[2][2] = __f62
+    declare resultado, float
+    __f63 = 0.0
+    resultado = __f63
+    declare resultadoInt, int
+    __t140 = 0
+    resultadoInt = __t140
+    declare i, int
+    __t141 = 0
+    i = __t141
+    declare j, int
+    __t142 = 0
+    j = __t142
+    declare m00, float
+    __f64 = 0.0
+    m00 = __f64
+    declare m01, float
+    __f65 = 0.0
+    m01 = __f65
+    declare m02, float
+    __f66 = 0.0
+    m02 = __f66
+    declare m10, float
+    __f67 = 0.0
+    m10 = __f67
+    declare m11, float
+    __f68 = 0.0
+    m11 = __f68
+    declare m12, float
+    __f69 = 0.0
+    m12 = __f69
+    declare m20, float
+    __f70 = 0.0
+    m20 = __f70
+    declare m21, float
+    __f71 = 0.0
+    m21 = __f71
+    declare m22, float
+    __f72 = 0.0
+    m22 = __f72
+    __t143 = "========================================"
+    write __t143
+    __t144 = "\n"
+    write __t144
+    __t145 = "     PRUEBA EXTREMA DEL COMPILADOR     "
+    write __t145
+    __t146 = "\n"
+    write __t146
+    __t147 = "========================================"
+    write __t147
+    __t148 = "\n"
+    write __t148
+    __t149 = "=== PRUEBA DE FUNCION CON PARAMETROS ==="
+    write __t149
+    __t150 = "\n"
+    write __t150
+    __t151 = 10
+    a = __t151
+    __f73 = 5.5
+    b = __f73
+    __t152 = 3
+    c = __t152
+    __f74 = 2.0
+    d = __f74
+    __t153 = "a = "
+    write __t153
+    write a
+    __t154 = "\n"
+    write __t154
+    __t155 = "b = "
+    write __t155
+    write b
+    __t156 = "\n"
+    write __t156
+    __t157 = "c = "
+    write __t157
+    write c
+    __t158 = "\n"
+    write __t158
+    __t159 = "d = "
+    write __t159
+    write d
+    __t160 = "\n"
+    write __t160
+    __t161 = a
+    __f75 = b
+    __t162 = c
+    __f76 = d
+    arg __t161, int
+    arg __f75, float
+    arg __t162, int
+    arg __f76, float
+    __f77 = call operacionCompleja, 4
+    resultado = __f77
+    __t163 = "Resultado funcion compleja: "
+    write __t163
+    write resultado
+    __t164 = "\n"
+    write __t164
+    __t165 = "\n"
+    write __t165
+    __t166 = "=== PRUEBA DE ARREGLOS BIDIMENSIONALES ==="
+    write __t166
+    __t167 = "\n"
+    write __t167
+    __t168 = "Ingrese matriz[0][0]: "
+    write __t168
+    read m00
+    __t169 = "\n"
+    write __t169
+    __t170 = "Ingrese matriz[0][1]: "
+    write __t170
+    read m01
+    __t171 = "\n"
+    write __t171
+    __t172 = "Ingrese matriz[0][2]: "
+    write __t172
+    read m02
+    __t173 = "\n"
+    write __t173
+    __t174 = "Ingrese matriz[1][0]: "
+    write __t174
+    read m10
+    __t175 = "\n"
+    write __t175
+    __t176 = "Ingrese matriz[1][1]: "
+    write __t176
+    read m11
+    __t177 = "\n"
+    write __t177
+    __t178 = "Ingrese matriz[1][2]: "
+    write __t178
+    read m12
+    __t179 = "\n"
+    write __t179
+    __t180 = "Ingrese matriz[2][0]: "
+    write __t180
+    read m20
+    __t181 = "\n"
+    write __t181
+    __t182 = "Ingrese matriz[2][1]: "
+    write __t182
+    read m21
+    __t183 = "\n"
+    write __t183
+    __t184 = "Ingrese matriz[2][2]: "
+    write __t184
+    read m22
+    __t185 = "\n"
+    write __t185
+    __t186 = 0
+    __t187 = 0
+    __t188 = matriz[__t186][__t187]
+    __f78 = m00
+    matriz[__t186][__t187] = __f78
+    __t189 = 0
+    __t190 = 1
+    __t191 = matriz[__t189][__t190]
+    __f79 = m01
+    matriz[__t189][__t190] = __f79
+    __t192 = 0
+    __t193 = 2
+    __t194 = matriz[__t192][__t193]
+    __f80 = m02
+    matriz[__t192][__t193] = __f80
+    __t195 = 1
+    __t196 = 0
+    __t197 = matriz[__t195][__t196]
+    __f81 = m10
+    matriz[__t195][__t196] = __f81
+    __t198 = 1
+    __t199 = 1
+    __t200 = matriz[__t198][__t199]
+    __f82 = m11
+    matriz[__t198][__t199] = __f82
+    __t201 = 1
+    __t202 = 2
+    __t203 = matriz[__t201][__t202]
+    __f83 = m12
+    matriz[__t201][__t202] = __f83
+    __t204 = 2
+    __t205 = 0
+    __t206 = matriz[__t204][__t205]
+    __f84 = m20
+    matriz[__t204][__t205] = __f84
+    __t207 = 2
+    __t208 = 1
+    __t209 = matriz[__t207][__t208]
+    __f85 = m21
+    matriz[__t207][__t208] = __f85
+    __t210 = 2
+    __t211 = 2
+    __t212 = matriz[__t210][__t211]
+    __f86 = m22
+    matriz[__t210][__t211] = __f86
+    __t213 = matriz
+    __t214 = 3
+    __t215 = 3
+    arg __t213, float[][]
+    arg __t214, int
+    arg __t215, int
+    __f87 = call procesarMatriz, 3
+    resultado = __f87
+    __t216 = "Resultado procesarMatriz: "
+    write __t216
+    write resultado
+    __t217 = "\n"
+    write __t217
+    __t218 = "\n"
+    write __t218
+    __t219 = "=== PRUEBA DE SWITCH ==="
+    write __t219
+    __t220 = "\n"
+    write __t220
+    __t221 = 2
+    __t222 = 8
+    arg __t221, int
+    arg __t222, int
+    __t223 = call evaluarOpcion, 2
+    resultadoInt = __t223
+    __t224 = "Resultado switch (opcion 2): "
+    write __t224
+    write resultadoInt
+    __t225 = "\n"
+    write __t225
+    __t226 = 3
+    __t227 = 10
+    arg __t226, int
+    arg __t227, int
+    __t228 = call evaluarOpcion, 2
+    resultadoInt = __t228
+    __t229 = "Resultado switch (opcion 3): "
+    write __t229
+    write resultadoInt
+    __t230 = "\n"
+    write __t230
+    __t231 = 5
+    __t232 = 7
+    arg __t231, int
+    arg __t232, int
+    __t233 = call evaluarOpcion, 2
+    resultadoInt = __t233
+    __t234 = "Resultado switch (opcion 5): "
+    write __t234
+    write resultadoInt
+    __t235 = "\n"
+    write __t235
+    __t236 = "\n"
+    write __t236
+    __t237 = "=== PRUEBA DE EXPRESIONES LOGICAS ==="
+    write __t237
+    __t238 = "\n"
+    write __t238
+    __t239 = true
+    flag = __t239
+    declare resultadoBool, bool
+    __t240 = 5
+    __f88 = 7.5
+    __t241 = flag
+    __t242 = 5
+    arg __t240, int
+    arg __f88, float
+    arg __t241, bool
+    arg __t242, int
+    __t243 = call validarDatos, 4
+    resultadoBool = __t243
+    __t244 = "Resultado logico: "
+    write __t244
+    write resultadoBool
+    __t245 = "\n"
+    write __t245
+    __t246 = false
+    flag = __t246
+    __t247 = 10
+    __f89 = 12.0
+    __t248 = flag
+    __t249 = 20
+    arg __t247, int
+    arg __f89, float
+    arg __t248, bool
+    arg __t249, int
+    __t250 = call validarDatos, 4
+    resultadoBool = __t250
+    __t251 = "Resultado logico: "
+    write __t251
+    write resultadoBool
+    __t252 = "\n"
+    write __t252
+    __t253 = "\n"
+    write __t253
+    __t254 = "=== PRUEBA DE INCREMENTO/DECREMENTO ==="
+    write __t254
+    __t255 = "\n"
+    write __t255
+    __t256 = 10
+    __t257 = 2
+    arg __t256, int
+    arg __t257, int
+    __t258 = call contar, 2
+    resultadoInt = __t258
+    __t259 = "Total contador: "
+    write __t259
+    write resultadoInt
+    __t260 = "\n"
+    write __t260
+    __t261 = "\n"
+    write __t261
+    __t262 = "=== PRUEBA DE POTENCIA Y MODULO ==="
+    write __t262
+    __t263 = "\n"
+    write __t263
+    __t264 = 2
+    __t265 = 8
+    __t266 = 5
+    arg __t264, int
+    arg __t265, int
+    arg __t266, int
+    __t267 = call calculosMatematicos, 3
+    resultadoInt = __t267
+    __t268 = "Resultado matematico: "
+    write __t268
+    write resultadoInt
+    __t269 = "\n"
+    write __t269
+    __t270 = "\n"
+    write __t270
+    __t271 = "========================================"
+    write __t271
+    __t272 = "\n"
+    write __t272
+    __t273 = "     ¡PRUEBA EXTREMA COMPLETADA!        "
+    write __t273
+    __t274 = "\n"
+    write __t274
+    __t275 = "========================================"
+    write __t275
+    __t276 = "\n"
+    write __t276
 # ===== FIN DEL CODIGO INTERMEDIO =====

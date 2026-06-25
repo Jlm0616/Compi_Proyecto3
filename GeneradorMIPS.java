@@ -347,6 +347,8 @@ public class GeneradorMIPS {
                     else if (idx == 2) reg = "$f16";
                     else reg = "$f18";
                     sb.append(loadF(reg, arg));
+                } else if (simbolosGlobales.getOrDefault(arg,"").contains("[]")) {
+                    if (idx <= 3) sb.append("la $a"+idx+", "+arg+"\n");
                 } else if (idx <= 3) {
                     sb.append(load("$a"+idx, arg));
                 }
@@ -361,9 +363,14 @@ public class GeneradorMIPS {
                 sb.append(esLitInt(i1)?"li $t8, "+i1+"\n":load("$t8",i1));
                 sb.append("li $t9, ").append(cols).append("\nmul $t8, $t8, $t9\n");
                 sb.append(esLitInt(i2)?"li $t9, "+i2+"\n":load("$t9",i2));
-                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t9, $t9, $t8\n");
-                if (esFloat(arr)||esFloat(val)) { sb.append(loadF("$f0",val)); sb.append("s.s $f0, 0($t9)\n"); }
-                else { sb.append(esLitInt(val)?"li $t0, "+val+"\n":load("$t0",val)); sb.append("sw $t0, 0($t9)\n"); }
+                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t8, $t9, $t8\n");
+                if (simbolosGlobales.getOrDefault(arr,"").startsWith("float") || esFloat(val)) {
+                    sb.append(loadF("$f0",val));
+                    sb.append("s.s $f0, 0($t8)\n");  // ← usa $t8 en vez de $t9
+                } else {
+                    sb.append(esLitInt(val)?"li $t0, "+val+"\n":load("$t0",val));
+                    sb.append("sw $t0, 0($t8)\n");   // ← usa $t8 en vez de $t9
+                }
                 continue;
             }
 
@@ -375,12 +382,16 @@ public class GeneradorMIPS {
                 sb.append(esLitInt(i1)?"li $t8, "+i1+"\n":load("$t8",i1));
                 sb.append("li $t9, ").append(cols).append("\nmul $t8, $t8, $t9\n");
                 sb.append(esLitInt(i2)?"li $t9, "+i2+"\n":load("$t9",i2));
-                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t9, $t9, $t8\n");
-                if (esFloat(arr)||esFloat(dest)) { sb.append("l.s $f0, 0($t9)\n"); sb.append(storeF("$f0",dest)); }
-                else { sb.append("lw $t0, 0($t9)\n"); sb.append(store("$t0",dest)); }
+                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t8, $t9, $t8\n");
+                if (simbolosGlobales.getOrDefault(arr,"").startsWith("float") || esFloat(dest)) {
+                    sb.append("l.s $f0, 0($t8)\n");  // ← usa $t8
+                    sb.append(storeF("$f0",dest));
+                } else {
+                    sb.append("lw $t0, 0($t8)\n");   // ← usa $t8
+                    sb.append(store("$t0",dest));
+                }
                 continue;
             }
-
             // LITERAL NUMERICO
             Matcher mLit = Pattern.compile("^([\\w_]+)\\s*=\\s*(-?\\d+(\\.\\d+)?)$").matcher(linea);
             if (mLit.matches()) {
