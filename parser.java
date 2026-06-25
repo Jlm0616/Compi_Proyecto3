@@ -1513,10 +1513,19 @@ class CUP$parser$actions {
 		int nright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-                String nStr = String.valueOf(n);
-                String t = GeneradorCodigo.nuevoTemp("int"); 
-                GeneradorCodigo.emitir("    " + t + " = " + nStr);
-                RESULT = "int|" + t + "|" + nStr;
+                double valorDouble = Double.parseDouble(String.valueOf(n));
+                long valorEntero = (long) valorDouble;
+
+                if (valorEntero > Integer.MAX_VALUE || valorEntero < Integer.MIN_VALUE) {
+                    errorSemantico("Linea " + ((Symbol)CUP$parser$stack.peek()).left
+                        + ": el literal entero excede el rango de 32 bits (" + valorEntero + ")");
+                    RESULT = "error|?";
+                } else {
+                    String nStr = String.valueOf(valorEntero);
+                    String t = GeneradorCodigo.nuevoTemp("int");
+                    GeneradorCodigo.emitir("    " + t + " = " + nStr);
+                    RESULT = "int|" + t + "|" + nStr;
+                }
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("numero",34, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -4154,7 +4163,7 @@ class CUP$parser$actions {
                     }
                     if (!tipo.equals("error")) {
                         String temp = GeneradorCodigo.nuevoTemp("bool");
-                        GeneradorCodigo.emitir("    " + temp + " = !" + lugar);
+                        GeneradorCodigo.emitir("    " + temp + " = $" + lugar);
                         RESULT = "bool|" + temp;
                     } else {
                         RESULT = "error|?";

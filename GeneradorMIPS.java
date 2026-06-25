@@ -528,7 +528,7 @@ public class GeneradorMIPS {
             }
 
             // NOT
-            Matcher mN = Pattern.compile("^(\\w+)\\s*=\\s*!(\\S+)$").matcher(linea);
+            Matcher mN = Pattern.compile("^(\\w+)\\s*=\\s*\\$(\\S+)$").matcher(linea);
             if (mN.matches()) {
                 sb.append(load("$t1",mN.group(2))); sb.append("xori $t0, $t1, 1\n");
                 sb.append(store("$t0",mN.group(1))); continue;
