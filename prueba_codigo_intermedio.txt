@@ -87,6 +87,7 @@ L5:
     return __f28
 
 mostrarMenu:
+    param contador, int
     __t9 = "========================================"
     write __t9
     __t10 = "\n"
@@ -99,69 +100,74 @@ mostrarMenu:
     write __t13
     __t14 = "\n"
     write __t14
-    __t15 = "1. Ingresar notas"
+    __t15 = "Visitas al menu: "
     write __t15
+    write contador
     __t16 = "\n"
     write __t16
-    __t17 = "2. Ver promedio"
+    __t17 = "1. Ingresar notas"
     write __t17
     __t18 = "\n"
     write __t18
-    __t19 = "3. Ver nota maxima"
+    __t19 = "2. Ver promedio"
     write __t19
     __t20 = "\n"
     write __t20
-    __t21 = "4. Ver nota minima"
+    __t21 = "3. Ver nota maxima"
     write __t21
     __t22 = "\n"
     write __t22
-    __t23 = "5. Ver estado"
+    __t23 = "4. Ver nota minima"
     write __t23
     __t24 = "\n"
     write __t24
-    __t25 = "0. Salir"
+    __t25 = "5. Ver estado"
     write __t25
     __t26 = "\n"
     write __t26
-    __t27 = "========================================"
+    __t27 = "0. Salir"
     write __t27
     __t28 = "\n"
     write __t28
-    __t29 = 0
-    return __t29
+    __t29 = "========================================"
+    write __t29
+    __t30 = "\n"
+    write __t30
+    __t31 = 0
+    return __t31
 
 mostrarEstado:
     param estado, int
-    __t30 = estado
-    __t31 = 0
-    __t32 = __t30 == __t31
-    ifFalse __t32 goto L6
-    __t33 = "Estado: REPROBADO"
-    write __t33
-    __t34 = "\n"
-    write __t34
-    __t35 = 0
-    return __t35
+    __t32 = estado
+    __t33 = 0
+    __t34 = __t32 == __t33
+    ifFalse __t34 goto L6
+    __t35 = "Estado: REPROBADO"
+    write __t35
+    __t36 = "\n"
+    write __t36
+    __t37 = 0
+    return __t37
     goto L7
 L6:
-    __t36 = estado
-    __t37 = 1
-    __t38 = __t36 == __t37
-    ifFalse __t38 goto L8
-    __t39 = "Estado: RECUPERACION"
-    write __t39
-    __t40 = "\n"
-    write __t40
-    __t41 = 0
-    return __t41
+    __t38 = estado
+    __t39 = 1
+    __t40 = __t38 == __t39
+    ifFalse __t40 goto L8
+    __t41 = "Estado: RECUPERACION"
+    write __t41
+    __t42 = "\n"
+    write __t42
+    __t43 = 0
+    return __t43
     goto L9
 L8:
-    __t42 = "Estado: APROBADO"
-    write __t42
-    __t43 = "\n"
-    write __t43
-    __t44 = 0
-    return __t44
+    __t44 = "Estado: APROBADO"
+    write __t44
+    __t45 = "\n"
+    write __t45
+    __t46 = 0
+    return __t46
 L9:
 L7:
 
@@ -185,76 +191,96 @@ main:
     __f34 = 0.0
     min = __f34
     declare estado, int
-    __t45 = 0
-    estado = __t45
-    declare opcion, int
-    __t46 = 0
-    opcion = __t46
-    declare datosIngresados, int
     __t47 = 0
-    datosIngresados = __t47
-    __t48 = "BIENVENIDO AL SISTEMA DE GESTION"
-    write __t48
-    __t49 = "\n"
-    write __t49
-    __t50 = "\n"
-    write __t50
-_dowhile1_start:
-    __t51 = call mostrarMenu, 0
-    __t52 = "Elija una opcion: "
+    estado = __t47
+    declare opcion, int
+    __t48 = 0
+    opcion = __t48
+    declare datosIngresados, int
+    __t49 = 0
+    datosIngresados = __t49
+    declare contadorMenu, int
+    __t50 = 0
+    contadorMenu = __t50
+    __t51 = "BIENVENIDO AL SISTEMA DE GESTION"
+    write __t51
+    __t52 = "\n"
     write __t52
-    read opcion
     __t53 = "\n"
     write __t53
-    __t54 = opcion
-    __t55 = 0
-    __t56 = __t54 == __t55
-    ifFalse __t56 goto L10
-    __t57 = "Saliendo del sistema..."
-    write __t57
-    __t58 = "\n"
-    write __t58
-    goto L11
-L10:
-    __t59 = opcion
-    __t60 = 1
-    __t61 = __t59 == __t60
-    ifFalse __t61 goto L12
-    __t62 = "Ingrese nota 1 (0-7): "
-    write __t62
-    read nota1
-    __t63 = "\n"
-    write __t63
-    __t64 = "Ingrese nota 2 (0-7): "
+_dowhile1_start:
+    __t54 = contadorMenu
+    __t55 = 1
+    __t56 = __t54 + __t55
+    contadorMenu = __t56
+    __t57 = contadorMenu
+    arg __t57, int
+    __t58 = call mostrarMenu, 1
+    __t59 = "Elija una opcion: "
+    write __t59
+    read opcion
+    __t60 = "\n"
+    write __t60
+    __t61 = opcion
+    __t62 = 0
+    __t63 = __t61 == __t62
+    ifFalse __t63 goto L10
+    __t64 = "Saliendo del sistema..."
     write __t64
-    read nota2
     __t65 = "\n"
     write __t65
-    __t66 = "Ingrese nota 3 (0-7): "
-    write __t66
-    read nota3
-    __t67 = "\n"
-    write __t67
-    __t68 = 1
-    datosIngresados = __t68
-    __t69 = "¡Notas ingresadas correctamente!"
+    __t66 = contadorMenu
+    __t67 = 1
+    __t68 = __t66 - __t67
+    contadorMenu = __t68
+    __t69 = "El menu se mostro "
     write __t69
-    __t70 = "\n"
+    write contadorMenu
+    __t70 = " veces"
     write __t70
-    goto L13
-L12:
-    __t71 = opcion
-    __t72 = 2
-    __t73 = __t71 == __t72
-    ifFalse __t73 goto L14
-    __t74 = datosIngresados
-    __t75 = 0
-    __t76 = __t74 == __t75
-    ifFalse __t76 goto L15
-    __t77 = "Primero debe ingresar notas (opcion 1)"
+    __t71 = "\n"
+    write __t71
+    goto L11
+L10:
+    __t72 = opcion
+    __t73 = 1
+    __t74 = __t72 == __t73
+    ifFalse __t74 goto L12
+    __t75 = "Ingrese nota 1 (0-7): "
+    write __t75
+    read nota1
+    __t76 = "\n"
+    write __t76
+    __t77 = "Ingrese nota 2 (0-7): "
     write __t77
+    read nota2
     __t78 = "\n"
     write __t78
+    __t79 = "Ingrese nota 3 (0-7): "
+    write __t79
+    read nota3
+    __t80 = "\n"
+    write __t80
+    __t81 = 1
+    datosIngresados = __t81
+    __t82 = "¡Notas ingresadas correctamente!"
+    write __t82
+    __t83 = "\n"
+    write __t83
+    goto L13
+L12:
+    __t84 = opcion
+    __t85 = 2
+    __t86 = __t84 == __t85
+    ifFalse __t86 goto L14
+    __t87 = datosIngresados
+    __t88 = 0
+    __t89 = __t87 == __t88
+    ifFalse __t89 goto L15
+    __t90 = "Primero debe ingresar notas (opcion 1)"
+    write __t90
+    __t91 = "\n"
+    write __t91
     goto L16
 L15:
     __f35 = nota1
@@ -265,26 +291,26 @@ L15:
     arg __f37, float
     __f38 = call calcularPromedio, 3
     promedio = __f38
-    __t79 = "El promedio es: "
-    write __t79
+    __t92 = "El promedio es: "
+    write __t92
     write promedio
-    __t80 = "\n"
-    write __t80
+    __t93 = "\n"
+    write __t93
 L16:
     goto L17
 L14:
-    __t81 = opcion
-    __t82 = 3
-    __t83 = __t81 == __t82
-    ifFalse __t83 goto L18
-    __t84 = datosIngresados
-    __t85 = 0
-    __t86 = __t84 == __t85
-    ifFalse __t86 goto L19
-    __t87 = "Primero debe ingresar notas (opcion 1)"
-    write __t87
-    __t88 = "\n"
-    write __t88
+    __t94 = opcion
+    __t95 = 3
+    __t96 = __t94 == __t95
+    ifFalse __t96 goto L18
+    __t97 = datosIngresados
+    __t98 = 0
+    __t99 = __t97 == __t98
+    ifFalse __t99 goto L19
+    __t100 = "Primero debe ingresar notas (opcion 1)"
+    write __t100
+    __t101 = "\n"
+    write __t101
     goto L20
 L19:
     __f39 = nota1
@@ -295,26 +321,26 @@ L19:
     arg __f41, float
     __f42 = call notaMaxima, 3
     max = __f42
-    __t89 = "La nota maxima es: "
-    write __t89
+    __t102 = "La nota maxima es: "
+    write __t102
     write max
-    __t90 = "\n"
-    write __t90
+    __t103 = "\n"
+    write __t103
 L20:
     goto L21
 L18:
-    __t91 = opcion
-    __t92 = 4
-    __t93 = __t91 == __t92
-    ifFalse __t93 goto L22
-    __t94 = datosIngresados
-    __t95 = 0
-    __t96 = __t94 == __t95
-    ifFalse __t96 goto L23
-    __t97 = "Primero debe ingresar notas (opcion 1)"
-    write __t97
-    __t98 = "\n"
-    write __t98
+    __t104 = opcion
+    __t105 = 4
+    __t106 = __t104 == __t105
+    ifFalse __t106 goto L22
+    __t107 = datosIngresados
+    __t108 = 0
+    __t109 = __t107 == __t108
+    ifFalse __t109 goto L23
+    __t110 = "Primero debe ingresar notas (opcion 1)"
+    write __t110
+    __t111 = "\n"
+    write __t111
     goto L24
 L23:
     __f43 = nota1
@@ -325,26 +351,26 @@ L23:
     arg __f45, float
     __f46 = call notaMinima, 3
     min = __f46
-    __t99 = "La nota minima es: "
-    write __t99
+    __t112 = "La nota minima es: "
+    write __t112
     write min
-    __t100 = "\n"
-    write __t100
+    __t113 = "\n"
+    write __t113
 L24:
     goto L25
 L22:
-    __t101 = opcion
-    __t102 = 5
-    __t103 = __t101 == __t102
-    ifFalse __t103 goto L26
-    __t104 = datosIngresados
-    __t105 = 0
-    __t106 = __t104 == __t105
-    ifFalse __t106 goto L27
-    __t107 = "Primero debe ingresar notas (opcion 1)"
-    write __t107
-    __t108 = "\n"
-    write __t108
+    __t114 = opcion
+    __t115 = 5
+    __t116 = __t114 == __t115
+    ifFalse __t116 goto L26
+    __t117 = datosIngresados
+    __t118 = 0
+    __t119 = __t117 == __t118
+    ifFalse __t119 goto L27
+    __t120 = "Primero debe ingresar notas (opcion 1)"
+    write __t120
+    __t121 = "\n"
+    write __t121
     goto L28
 L27:
     __f47 = nota1
@@ -373,54 +399,54 @@ L27:
     min = __f58
     __f59 = promedio
     arg __f59, float
-    __t109 = call obtenerEstado, 1
-    estado = __t109
-    __t110 = "--- RESULTADOS ---"
-    write __t110
-    __t111 = "\n"
-    write __t111
-    __t112 = "Promedio: "
-    write __t112
+    __t122 = call obtenerEstado, 1
+    estado = __t122
+    __t123 = "--- RESULTADOS ---"
+    write __t123
+    __t124 = "\n"
+    write __t124
+    __t125 = "Promedio: "
+    write __t125
     write promedio
-    __t113 = "\n"
-    write __t113
-    __t114 = "Nota Maxima: "
-    write __t114
+    __t126 = "\n"
+    write __t126
+    __t127 = "Nota Maxima: "
+    write __t127
     write max
-    __t115 = "\n"
-    write __t115
-    __t116 = "Nota Minima: "
-    write __t116
+    __t128 = "\n"
+    write __t128
+    __t129 = "Nota Minima: "
+    write __t129
     write min
-    __t117 = "\n"
-    write __t117
-    __t118 = estado
-    arg __t118, int
-    __t119 = call mostrarEstado, 1
-    __t120 = "\n"
-    write __t120
+    __t130 = "\n"
+    write __t130
+    __t131 = estado
+    arg __t131, int
+    __t132 = call mostrarEstado, 1
+    __t133 = "\n"
+    write __t133
 L28:
     goto L29
 L26:
-    __t121 = "Opcion invalida!"
-    write __t121
-    __t122 = "\n"
-    write __t122
+    __t134 = "Opcion invalida!"
+    write __t134
+    __t135 = "\n"
+    write __t135
 L29:
 L25:
 L21:
 L17:
 L13:
 L11:
-    __t123 = opcion
-    __t124 = 0
-    __t125 = __t123 != __t124
-    if __t125 goto _dowhile1_start
+    __t136 = opcion
+    __t137 = 0
+    __t138 = __t136 != __t137
+    if __t138 goto _dowhile1_start
 _dowhile1_end:
-    __t126 = "\n"
-    write __t126
-    __t127 = "¡Gracias por usar el sistema!"
-    write __t127
-    __t128 = "\n"
-    write __t128
+    __t139 = "\n"
+    write __t139
+    __t140 = "¡Gracias por usar el sistema!"
+    write __t140
+    __t141 = "\n"
+    write __t141
 # ===== FIN DEL CODIGO INTERMEDIO =====

@@ -309,7 +309,6 @@ public class GeneradorMIPS {
                     sb.append(etq).append(":\n");
                     sb.append("subu $sp, $sp, ").append(total).append("\n");
                     sb.append("sw $ra, ").append(total-4).append("($sp)\n");
-                    // NO guardar $fp, NO hacer move $fp, $sp
                 } else {
                     sb.append(linea).append("\n");
                 }
@@ -346,7 +345,7 @@ public class GeneradorMIPS {
                     if (idx == 0) reg = "$f12";
                     else if (idx == 1) reg = "$f14";
                     else if (idx == 2) reg = "$f16";
-                    else reg = "$f18";  // para más parámetros
+                    else reg = "$f18";
                     sb.append(loadF(reg, arg));
                 } else if (idx <= 3) {
                     sb.append(load("$a"+idx, arg));
@@ -419,6 +418,46 @@ public class GeneradorMIPS {
                 String dest=mCop.group(1), src=mCop.group(2);
                 if (esFloat(dest)||esFloat(src)) { sb.append(loadF("$f0",src)); sb.append(storeF("$f0",dest)); }
                 else { sb.append(load("$t0",src)); sb.append(store("$t0",dest)); }
+                continue;
+            }
+
+            // ===========================================================
+            // INCREMENTO (++)
+            // ===========================================================
+            Matcher mInc = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\s*\\+\\s*1$").matcher(linea);
+            if (mInc.matches()) {
+                String dest = mInc.group(1);
+                String src = mInc.group(2);
+                if (esFloat(dest) || esFloat(src)) {
+                    sb.append(loadF("$f0", src));
+                    sb.append("li.s $f1, 1.0\n");
+                    sb.append("add.s $f0, $f0, $f1\n");
+                    sb.append(storeF("$f0", dest));
+                } else {
+                    sb.append(load("$t0", src));
+                    sb.append("addi $t0, $t0, 1\n");
+                    sb.append(store("$t0", dest));
+                }
+                continue;
+            }
+
+            // ===========================================================
+            // DECREMENTO (--)
+            // ===========================================================
+            Matcher mDec = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\s*-\\s*1$").matcher(linea);
+            if (mDec.matches()) {
+                String dest = mDec.group(1);
+                String src = mDec.group(2);
+                if (esFloat(dest) || esFloat(src)) {
+                    sb.append(loadF("$f0", src));
+                    sb.append("li.s $f1, 1.0\n");
+                    sb.append("sub.s $f0, $f0, $f1\n");
+                    sb.append(storeF("$f0", dest));
+                } else {
+                    sb.append(load("$t0", src));
+                    sb.append("addi $t0, $t0, -1\n");
+                    sb.append(store("$t0", dest));
+                }
                 continue;
             }
 

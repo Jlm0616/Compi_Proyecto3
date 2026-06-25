@@ -9,6 +9,7 @@ var_b: .float 0.0
 c: .float 0.0
 max: .float 0.0
 min: .float 0.0
+contador: .word 0
 estado: .word 0
 __f29: .float 0.0
 __f30: .float 0.0
@@ -16,13 +17,12 @@ __f31: .float 0.0
 __f32: .float 0.0
 __f33: .float 0.0
 __f34: .float 0.0
-__t45: .word 0
-opcion: .word 0
-__t46: .word 0
-datosIngresados: .word 0
 __t47: .word 0
+opcion: .word 0
 __t48: .word 0
+datosIngresados: .word 0
 __t49: .word 0
+contadorMenu: .word 0
 __t50: .word 0
 __t51: .word 0
 __t52: .word 0
@@ -52,10 +52,6 @@ __t75: .word 0
 __t76: .word 0
 __t77: .word 0
 __t78: .word 0
-__f35: .float 0.0
-__f36: .float 0.0
-__f37: .float 0.0
-__f38: .float 0.0
 __t79: .word 0
 __t80: .word 0
 __t81: .word 0
@@ -66,13 +62,13 @@ __t85: .word 0
 __t86: .word 0
 __t87: .word 0
 __t88: .word 0
-__f39: .float 0.0
-__f40: .float 0.0
-__f41: .float 0.0
-__f42: .float 0.0
 __t89: .word 0
 __t90: .word 0
 __t91: .word 0
+__f35: .float 0.0
+__f36: .float 0.0
+__f37: .float 0.0
+__f38: .float 0.0
 __t92: .word 0
 __t93: .word 0
 __t94: .word 0
@@ -80,13 +76,13 @@ __t95: .word 0
 __t96: .word 0
 __t97: .word 0
 __t98: .word 0
-__f43: .float 0.0
-__f44: .float 0.0
-__f45: .float 0.0
-__f46: .float 0.0
 __t99: .word 0
 __t100: .word 0
 __t101: .word 0
+__f39: .float 0.0
+__f40: .float 0.0
+__f41: .float 0.0
+__f42: .float 0.0
 __t102: .word 0
 __t103: .word 0
 __t104: .word 0
@@ -94,6 +90,23 @@ __t105: .word 0
 __t106: .word 0
 __t107: .word 0
 __t108: .word 0
+__t109: .word 0
+__t110: .word 0
+__t111: .word 0
+__f43: .float 0.0
+__f44: .float 0.0
+__f45: .float 0.0
+__f46: .float 0.0
+__t112: .word 0
+__t113: .word 0
+__t114: .word 0
+__t115: .word 0
+__t116: .word 0
+__t117: .word 0
+__t118: .word 0
+__t119: .word 0
+__t120: .word 0
+__t121: .word 0
 __f47: .float 0.0
 __f48: .float 0.0
 __f49: .float 0.0
@@ -107,19 +120,6 @@ __f56: .float 0.0
 __f57: .float 0.0
 __f58: .float 0.0
 __f59: .float 0.0
-__t109: .word 0
-__t110: .word 0
-__t111: .word 0
-__t112: .word 0
-__t113: .word 0
-__t114: .word 0
-__t115: .word 0
-__t116: .word 0
-__t117: .word 0
-__t118: .word 0
-__t119: .word 0
-__t120: .word 0
-__t121: .word 0
 __t122: .word 0
 __t123: .word 0
 __t124: .word 0
@@ -127,35 +127,51 @@ __t125: .word 0
 __t126: .word 0
 __t127: .word 0
 __t128: .word 0
+__t129: .word 0
+__t130: .word 0
+__t131: .word 0
+__t132: .word 0
+__t133: .word 0
+__t134: .word 0
+__t135: .word 0
+__t136: .word 0
+__t137: .word 0
+__t138: .word 0
+__t139: .word 0
+__t140: .word 0
+__t141: .word 0
 str0: .asciiz "========================================"
 str1: .asciiz "\n"
 str2: .asciiz "   SISTEMA DE GESTION DE ESTUDIANTES  "
-str3: .asciiz "1. Ingresar notas"
-str4: .asciiz "2. Ver promedio"
-str5: .asciiz "3. Ver nota maxima"
-str6: .asciiz "4. Ver nota minima"
-str7: .asciiz "5. Ver estado"
-str8: .asciiz "0. Salir"
-str9: .asciiz "Estado: REPROBADO"
-str10: .asciiz "Estado: RECUPERACION"
-str11: .asciiz "Estado: APROBADO"
-str12: .asciiz "BIENVENIDO AL SISTEMA DE GESTION"
-str13: .asciiz "Elija una opcion: "
-str14: .asciiz "Saliendo del sistema..."
-str15: .asciiz "Ingrese nota 1 (0-7): "
-str16: .asciiz "Ingrese nota 2 (0-7): "
-str17: .asciiz "Ingrese nota 3 (0-7): "
-str18: .asciiz "¡Notas ingresadas correctamente!"
-str19: .asciiz "Primero debe ingresar notas (opcion 1)"
-str20: .asciiz "El promedio es: "
-str21: .asciiz "La nota maxima es: "
-str22: .asciiz "La nota minima es: "
-str23: .asciiz "--- RESULTADOS ---"
-str24: .asciiz "Promedio: "
-str25: .asciiz "Nota Maxima: "
-str26: .asciiz "Nota Minima: "
-str27: .asciiz "Opcion invalida!"
-str28: .asciiz "¡Gracias por usar el sistema!"
+str3: .asciiz "Visitas al menu: "
+str4: .asciiz "1. Ingresar notas"
+str5: .asciiz "2. Ver promedio"
+str6: .asciiz "3. Ver nota maxima"
+str7: .asciiz "4. Ver nota minima"
+str8: .asciiz "5. Ver estado"
+str9: .asciiz "0. Salir"
+str10: .asciiz "Estado: REPROBADO"
+str11: .asciiz "Estado: RECUPERACION"
+str12: .asciiz "Estado: APROBADO"
+str13: .asciiz "BIENVENIDO AL SISTEMA DE GESTION"
+str14: .asciiz "Elija una opcion: "
+str15: .asciiz "Saliendo del sistema..."
+str16: .asciiz "El menu se mostro "
+str17: .asciiz " veces"
+str18: .asciiz "Ingrese nota 1 (0-7): "
+str19: .asciiz "Ingrese nota 2 (0-7): "
+str20: .asciiz "Ingrese nota 3 (0-7): "
+str21: .asciiz "¡Notas ingresadas correctamente!"
+str22: .asciiz "Primero debe ingresar notas (opcion 1)"
+str23: .asciiz "El promedio es: "
+str24: .asciiz "La nota maxima es: "
+str25: .asciiz "La nota minima es: "
+str26: .asciiz "--- RESULTADOS ---"
+str27: .asciiz "Promedio: "
+str28: .asciiz "Nota Maxima: "
+str29: .asciiz "Nota Minima: "
+str30: .asciiz "Opcion invalida!"
+str31: .asciiz "¡Gracias por usar el sistema!"
 
 .text
 .globl main
@@ -358,113 +374,127 @@ lw $ra, 84($sp)
 addu $sp, $sp, 88
 jr $ra
 mostrarMenu:
-subu $sp, $sp, 120
-sw $ra, 116($sp)
+subu $sp, $sp, 128
+sw $ra, 124($sp)
+sw $a0, 4($sp)
 la $t0, str0
-sw $t0, 4($sp)
-lw $a0, 4($sp)
-li $v0, 4
-syscall
-la $t0, str1
 sw $t0, 8($sp)
 lw $a0, 8($sp)
 li $v0, 4
 syscall
-la $t0, str2
+la $t0, str1
 sw $t0, 12($sp)
 lw $a0, 12($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str2
 sw $t0, 16($sp)
 lw $a0, 16($sp)
 li $v0, 4
 syscall
-la $t0, str0
+la $t0, str1
 sw $t0, 20($sp)
 lw $a0, 20($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str0
 sw $t0, 24($sp)
 lw $a0, 24($sp)
 li $v0, 4
 syscall
-la $t0, str3
+la $t0, str1
 sw $t0, 28($sp)
 lw $a0, 28($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str3
 sw $t0, 32($sp)
 lw $a0, 32($sp)
 li $v0, 4
 syscall
-la $t0, str4
+lw $a0, 4($sp)
+li $v0, 1
+syscall
+la $t0, str1
 sw $t0, 36($sp)
 lw $a0, 36($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str4
 sw $t0, 40($sp)
 lw $a0, 40($sp)
 li $v0, 4
 syscall
-la $t0, str5
+la $t0, str1
 sw $t0, 44($sp)
 lw $a0, 44($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str5
 sw $t0, 48($sp)
 lw $a0, 48($sp)
 li $v0, 4
 syscall
-la $t0, str6
+la $t0, str1
 sw $t0, 52($sp)
 lw $a0, 52($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str6
 sw $t0, 56($sp)
 lw $a0, 56($sp)
 li $v0, 4
 syscall
-la $t0, str7
+la $t0, str1
 sw $t0, 60($sp)
 lw $a0, 60($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str7
 sw $t0, 64($sp)
 lw $a0, 64($sp)
 li $v0, 4
 syscall
-la $t0, str8
+la $t0, str1
 sw $t0, 68($sp)
 lw $a0, 68($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str8
 sw $t0, 72($sp)
 lw $a0, 72($sp)
 li $v0, 4
 syscall
-la $t0, str0
+la $t0, str1
 sw $t0, 76($sp)
 lw $a0, 76($sp)
 li $v0, 4
 syscall
-la $t0, str1
+la $t0, str9
 sw $t0, 80($sp)
 lw $a0, 80($sp)
 li $v0, 4
 syscall
-li $t0, 0
+la $t0, str1
 sw $t0, 84($sp)
-lw $v0, 84($sp)
-lw $ra, 116($sp)
-addu $sp, $sp, 120
+lw $a0, 84($sp)
+li $v0, 4
+syscall
+la $t0, str0
+sw $t0, 88($sp)
+lw $a0, 88($sp)
+li $v0, 4
+syscall
+la $t0, str1
+sw $t0, 92($sp)
+lw $a0, 92($sp)
+li $v0, 4
+syscall
+li $t0, 0
+sw $t0, 96($sp)
+lw $v0, 96($sp)
+lw $ra, 124($sp)
+addu $sp, $sp, 128
 jr $ra
 mostrarEstado:
 subu $sp, $sp, 96
@@ -480,7 +510,7 @@ seq $t0, $t1, $t2
 sw $t0, 16($sp)
 lw $t0, 16($sp)
 beq $t0, $zero, L6
-la $t0, str9
+la $t0, str10
 sw $t0, 20($sp)
 lw $a0, 20($sp)
 li $v0, 4
@@ -508,7 +538,7 @@ seq $t0, $t1, $t2
 sw $t0, 40($sp)
 lw $t0, 40($sp)
 beq $t0, $zero, L8
-la $t0, str10
+la $t0, str11
 sw $t0, 44($sp)
 lw $a0, 44($sp)
 li $v0, 4
@@ -526,7 +556,7 @@ addu $sp, $sp, 96
 jr $ra
 j L9
 L8:
-la $t0, str11
+la $t0, str12
 sw $t0, 56($sp)
 lw $a0, 56($sp)
 li $v0, 4
@@ -590,55 +620,86 @@ l.s $f0, 0($t9)
 la $t9, min
 s.s $f0, 0($t9)
 li $t0, 0
-la $t9, __t45
+la $t9, __t47
 sw $t0, 0($t9)
-la $t9, __t45
+la $t9, __t47
 lw $t0, 0($t9)
 la $t9, estado
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t46
+la $t9, __t48
 sw $t0, 0($t9)
-la $t9, __t46
+la $t9, __t48
 lw $t0, 0($t9)
 la $t9, opcion
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t47
+la $t9, __t49
 sw $t0, 0($t9)
-la $t9, __t47
+la $t9, __t49
 lw $t0, 0($t9)
 la $t9, datosIngresados
 sw $t0, 0($t9)
-la $t0, str12
-la $t9, __t48
+li $t0, 0
+la $t9, __t50
 sw $t0, 0($t9)
-la $t9, __t48
+la $t9, __t50
+lw $t0, 0($t9)
+la $t9, contadorMenu
+sw $t0, 0($t9)
+la $t0, str13
+la $t9, __t51
+sw $t0, 0($t9)
+la $t9, __t51
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t49
+la $t9, __t52
 sw $t0, 0($t9)
-la $t9, __t49
+la $t9, __t52
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t50
+la $t9, __t53
 sw $t0, 0($t9)
-la $t9, __t50
+la $t9, __t53
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 _dowhile1_start:
-jal mostrarMenu
-la $t9, __t51
-sw $v0, 0($t9)
-la $t0, str13
-la $t9, __t52
+la $t9, contadorMenu
+lw $t0, 0($t9)
+la $t9, __t54
 sw $t0, 0($t9)
-la $t9, __t52
+li $t0, 1
+la $t9, __t55
+sw $t0, 0($t9)
+la $t9, __t54
+lw $t1, 0($t9)
+la $t9, __t55
+lw $t2, 0($t9)
+add $t0, $t1, $t2
+la $t9, __t56
+sw $t0, 0($t9)
+la $t9, __t56
+lw $t0, 0($t9)
+la $t9, contadorMenu
+sw $t0, 0($t9)
+la $t9, contadorMenu
+lw $t0, 0($t9)
+la $t9, __t57
+sw $t0, 0($t9)
+la $t9, __t57
+lw $a0, 0($t9)
+jal mostrarMenu
+la $t9, __t58
+sw $v0, 0($t9)
+la $t0, str14
+la $t9, __t59
+sw $t0, 0($t9)
+la $t9, __t59
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -647,40 +708,83 @@ syscall
 la $t9, opcion
 sw $v0, 0($t9)
 la $t0, str1
-la $t9, __t53
+la $t9, __t60
 sw $t0, 0($t9)
-la $t9, __t53
+la $t9, __t60
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t9, opcion
 lw $t0, 0($t9)
-la $t9, __t54
+la $t9, __t61
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t55
+la $t9, __t62
 sw $t0, 0($t9)
-la $t9, __t54
+la $t9, __t61
 lw $t1, 0($t9)
-la $t9, __t55
+la $t9, __t62
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t56
+la $t9, __t63
 sw $t0, 0($t9)
-la $t9, __t56
+la $t9, __t63
 lw $t0, 0($t9)
 beq $t0, $zero, L10
-la $t0, str14
-la $t9, __t57
+la $t0, str15
+la $t9, __t64
 sw $t0, 0($t9)
-la $t9, __t57
+la $t9, __t64
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t58
+la $t9, __t65
 sw $t0, 0($t9)
-la $t9, __t58
+la $t9, __t65
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, contadorMenu
+lw $t0, 0($t9)
+la $t9, __t66
+sw $t0, 0($t9)
+li $t0, 1
+la $t9, __t67
+sw $t0, 0($t9)
+la $t9, __t66
+lw $t1, 0($t9)
+la $t9, __t67
+lw $t2, 0($t9)
+sub $t0, $t1, $t2
+la $t9, __t68
+sw $t0, 0($t9)
+la $t9, __t68
+lw $t0, 0($t9)
+la $t9, contadorMenu
+sw $t0, 0($t9)
+la $t0, str16
+la $t9, __t69
+sw $t0, 0($t9)
+la $t9, __t69
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, contadorMenu
+lw $a0, 0($t9)
+li $v0, 1
+syscall
+la $t0, str17
+la $t9, __t70
+sw $t0, 0($t9)
+la $t9, __t70
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t71
+sw $t0, 0($t9)
+la $t9, __t71
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -688,25 +792,25 @@ j L11
 L10:
 la $t9, opcion
 lw $t0, 0($t9)
-la $t9, __t59
+la $t9, __t72
 sw $t0, 0($t9)
 li $t0, 1
-la $t9, __t60
+la $t9, __t73
 sw $t0, 0($t9)
-la $t9, __t59
+la $t9, __t72
 lw $t1, 0($t9)
-la $t9, __t60
+la $t9, __t73
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t61
+la $t9, __t74
 sw $t0, 0($t9)
-la $t9, __t61
+la $t9, __t74
 lw $t0, 0($t9)
 beq $t0, $zero, L12
-la $t0, str15
-la $t9, __t62
+la $t0, str18
+la $t9, __t75
 sw $t0, 0($t9)
-la $t9, __t62
+la $t9, __t75
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -715,16 +819,16 @@ syscall
 la $t9, nota1
 s.s $f0, 0($t9)
 la $t0, str1
-la $t9, __t63
+la $t9, __t76
 sw $t0, 0($t9)
-la $t9, __t63
+la $t9, __t76
 lw $a0, 0($t9)
 li $v0, 4
 syscall
-la $t0, str16
-la $t9, __t64
+la $t0, str19
+la $t9, __t77
 sw $t0, 0($t9)
-la $t9, __t64
+la $t9, __t77
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -733,16 +837,16 @@ syscall
 la $t9, nota2
 s.s $f0, 0($t9)
 la $t0, str1
-la $t9, __t65
+la $t9, __t78
 sw $t0, 0($t9)
-la $t9, __t65
+la $t9, __t78
 lw $a0, 0($t9)
 li $v0, 4
 syscall
-la $t0, str17
-la $t9, __t66
+la $t0, str20
+la $t9, __t79
 sw $t0, 0($t9)
-la $t9, __t66
+la $t9, __t79
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -751,30 +855,30 @@ syscall
 la $t9, nota3
 s.s $f0, 0($t9)
 la $t0, str1
-la $t9, __t67
+la $t9, __t80
 sw $t0, 0($t9)
-la $t9, __t67
+la $t9, __t80
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 li $t0, 1
-la $t9, __t68
+la $t9, __t81
 sw $t0, 0($t9)
-la $t9, __t68
+la $t9, __t81
 lw $t0, 0($t9)
 la $t9, datosIngresados
 sw $t0, 0($t9)
-la $t0, str18
-la $t9, __t69
+la $t0, str21
+la $t9, __t82
 sw $t0, 0($t9)
-la $t9, __t69
+la $t9, __t82
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t70
+la $t9, __t83
 sw $t0, 0($t9)
-la $t9, __t70
+la $t9, __t83
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -782,49 +886,49 @@ j L13
 L12:
 la $t9, opcion
 lw $t0, 0($t9)
-la $t9, __t71
+la $t9, __t84
 sw $t0, 0($t9)
 li $t0, 2
-la $t9, __t72
+la $t9, __t85
 sw $t0, 0($t9)
-la $t9, __t71
+la $t9, __t84
 lw $t1, 0($t9)
-la $t9, __t72
+la $t9, __t85
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t73
+la $t9, __t86
 sw $t0, 0($t9)
-la $t9, __t73
+la $t9, __t86
 lw $t0, 0($t9)
 beq $t0, $zero, L14
 la $t9, datosIngresados
 lw $t0, 0($t9)
-la $t9, __t74
+la $t9, __t87
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t75
+la $t9, __t88
 sw $t0, 0($t9)
-la $t9, __t74
+la $t9, __t87
 lw $t1, 0($t9)
-la $t9, __t75
+la $t9, __t88
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t76
+la $t9, __t89
 sw $t0, 0($t9)
-la $t9, __t76
+la $t9, __t89
 lw $t0, 0($t9)
 beq $t0, $zero, L15
-la $t0, str19
-la $t9, __t77
+la $t0, str22
+la $t9, __t90
 sw $t0, 0($t9)
-la $t9, __t77
+la $t9, __t90
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t78
+la $t9, __t91
 sw $t0, 0($t9)
-la $t9, __t78
+la $t9, __t91
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -855,10 +959,10 @@ la $t9, __f38
 l.s $f0, 0($t9)
 la $t9, promedio
 s.s $f0, 0($t9)
-la $t0, str20
-la $t9, __t79
+la $t0, str23
+la $t9, __t92
 sw $t0, 0($t9)
-la $t9, __t79
+la $t9, __t92
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -867,9 +971,9 @@ l.s $f12, 0($t9)
 li $v0, 2
 syscall
 la $t0, str1
-la $t9, __t80
+la $t9, __t93
 sw $t0, 0($t9)
-la $t9, __t80
+la $t9, __t93
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -878,49 +982,49 @@ j L17
 L14:
 la $t9, opcion
 lw $t0, 0($t9)
-la $t9, __t81
+la $t9, __t94
 sw $t0, 0($t9)
 li $t0, 3
-la $t9, __t82
+la $t9, __t95
 sw $t0, 0($t9)
-la $t9, __t81
+la $t9, __t94
 lw $t1, 0($t9)
-la $t9, __t82
+la $t9, __t95
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t83
+la $t9, __t96
 sw $t0, 0($t9)
-la $t9, __t83
+la $t9, __t96
 lw $t0, 0($t9)
 beq $t0, $zero, L18
 la $t9, datosIngresados
 lw $t0, 0($t9)
-la $t9, __t84
+la $t9, __t97
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t85
+la $t9, __t98
 sw $t0, 0($t9)
-la $t9, __t84
+la $t9, __t97
 lw $t1, 0($t9)
-la $t9, __t85
+la $t9, __t98
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t86
+la $t9, __t99
 sw $t0, 0($t9)
-la $t9, __t86
+la $t9, __t99
 lw $t0, 0($t9)
 beq $t0, $zero, L19
-la $t0, str19
-la $t9, __t87
+la $t0, str22
+la $t9, __t100
 sw $t0, 0($t9)
-la $t9, __t87
+la $t9, __t100
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t88
+la $t9, __t101
 sw $t0, 0($t9)
-la $t9, __t88
+la $t9, __t101
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -951,10 +1055,10 @@ la $t9, __f42
 l.s $f0, 0($t9)
 la $t9, max
 s.s $f0, 0($t9)
-la $t0, str21
-la $t9, __t89
+la $t0, str24
+la $t9, __t102
 sw $t0, 0($t9)
-la $t9, __t89
+la $t9, __t102
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -963,9 +1067,9 @@ l.s $f12, 0($t9)
 li $v0, 2
 syscall
 la $t0, str1
-la $t9, __t90
+la $t9, __t103
 sw $t0, 0($t9)
-la $t9, __t90
+la $t9, __t103
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -974,49 +1078,49 @@ j L21
 L18:
 la $t9, opcion
 lw $t0, 0($t9)
-la $t9, __t91
+la $t9, __t104
 sw $t0, 0($t9)
 li $t0, 4
-la $t9, __t92
+la $t9, __t105
 sw $t0, 0($t9)
-la $t9, __t91
+la $t9, __t104
 lw $t1, 0($t9)
-la $t9, __t92
+la $t9, __t105
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t93
+la $t9, __t106
 sw $t0, 0($t9)
-la $t9, __t93
+la $t9, __t106
 lw $t0, 0($t9)
 beq $t0, $zero, L22
 la $t9, datosIngresados
 lw $t0, 0($t9)
-la $t9, __t94
+la $t9, __t107
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t95
+la $t9, __t108
 sw $t0, 0($t9)
-la $t9, __t94
+la $t9, __t107
 lw $t1, 0($t9)
-la $t9, __t95
+la $t9, __t108
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t96
+la $t9, __t109
 sw $t0, 0($t9)
-la $t9, __t96
+la $t9, __t109
 lw $t0, 0($t9)
 beq $t0, $zero, L23
-la $t0, str19
-la $t9, __t97
+la $t0, str22
+la $t9, __t110
 sw $t0, 0($t9)
-la $t9, __t97
+la $t9, __t110
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t98
+la $t9, __t111
 sw $t0, 0($t9)
-la $t9, __t98
+la $t9, __t111
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -1047,10 +1151,10 @@ la $t9, __f46
 l.s $f0, 0($t9)
 la $t9, min
 s.s $f0, 0($t9)
-la $t0, str22
-la $t9, __t99
+la $t0, str25
+la $t9, __t112
 sw $t0, 0($t9)
-la $t9, __t99
+la $t9, __t112
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -1059,9 +1163,9 @@ l.s $f12, 0($t9)
 li $v0, 2
 syscall
 la $t0, str1
-la $t9, __t100
+la $t9, __t113
 sw $t0, 0($t9)
-la $t9, __t100
+la $t9, __t113
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -1070,49 +1174,49 @@ j L25
 L22:
 la $t9, opcion
 lw $t0, 0($t9)
-la $t9, __t101
+la $t9, __t114
 sw $t0, 0($t9)
 li $t0, 5
-la $t9, __t102
+la $t9, __t115
 sw $t0, 0($t9)
-la $t9, __t101
+la $t9, __t114
 lw $t1, 0($t9)
-la $t9, __t102
+la $t9, __t115
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t103
+la $t9, __t116
 sw $t0, 0($t9)
-la $t9, __t103
+la $t9, __t116
 lw $t0, 0($t9)
 beq $t0, $zero, L26
 la $t9, datosIngresados
 lw $t0, 0($t9)
-la $t9, __t104
+la $t9, __t117
 sw $t0, 0($t9)
 li $t0, 0
-la $t9, __t105
+la $t9, __t118
 sw $t0, 0($t9)
-la $t9, __t104
+la $t9, __t117
 lw $t1, 0($t9)
-la $t9, __t105
+la $t9, __t118
 lw $t2, 0($t9)
 seq $t0, $t1, $t2
-la $t9, __t106
+la $t9, __t119
 sw $t0, 0($t9)
-la $t9, __t106
+la $t9, __t119
 lw $t0, 0($t9)
 beq $t0, $zero, L27
-la $t0, str19
-la $t9, __t107
+la $t0, str22
+la $t9, __t120
 sw $t0, 0($t9)
-la $t9, __t107
+la $t9, __t120
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t108
+la $t9, __t121
 sw $t0, 0($t9)
-la $t9, __t108
+la $t9, __t121
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -1200,30 +1304,30 @@ s.s $f0, 0($t9)
 la $t9, __f59
 l.s $f12, 0($t9)
 jal obtenerEstado
-la $t9, __t109
+la $t9, __t122
 sw $v0, 0($t9)
-la $t9, __t109
+la $t9, __t122
 lw $t0, 0($t9)
 la $t9, estado
 sw $t0, 0($t9)
-la $t0, str23
-la $t9, __t110
+la $t0, str26
+la $t9, __t123
 sw $t0, 0($t9)
-la $t9, __t110
+la $t9, __t123
 lw $a0, 0($t9)
 li $v0, 4
 syscall
 la $t0, str1
-la $t9, __t111
+la $t9, __t124
 sw $t0, 0($t9)
-la $t9, __t111
+la $t9, __t124
 lw $a0, 0($t9)
 li $v0, 4
 syscall
-la $t0, str24
-la $t9, __t112
+la $t0, str27
+la $t9, __t125
 sw $t0, 0($t9)
-la $t9, __t112
+la $t9, __t125
 lw $a0, 0($t9)
 li $v0, 4
 syscall
@@ -1231,106 +1335,6 @@ la $t9, promedio
 l.s $f12, 0($t9)
 li $v0, 2
 syscall
-la $t0, str1
-la $t9, __t113
-sw $t0, 0($t9)
-la $t9, __t113
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str25
-la $t9, __t114
-sw $t0, 0($t9)
-la $t9, __t114
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, max
-l.s $f12, 0($t9)
-li $v0, 2
-syscall
-la $t0, str1
-la $t9, __t115
-sw $t0, 0($t9)
-la $t9, __t115
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str26
-la $t9, __t116
-sw $t0, 0($t9)
-la $t9, __t116
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, min
-l.s $f12, 0($t9)
-li $v0, 2
-syscall
-la $t0, str1
-la $t9, __t117
-sw $t0, 0($t9)
-la $t9, __t117
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t9, estado
-lw $t0, 0($t9)
-la $t9, __t118
-sw $t0, 0($t9)
-la $t9, __t118
-lw $a0, 0($t9)
-jal mostrarEstado
-la $t9, __t119
-sw $v0, 0($t9)
-la $t0, str1
-la $t9, __t120
-sw $t0, 0($t9)
-la $t9, __t120
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-L28:
-j L29
-L26:
-la $t0, str27
-la $t9, __t121
-sw $t0, 0($t9)
-la $t9, __t121
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-la $t0, str1
-la $t9, __t122
-sw $t0, 0($t9)
-la $t9, __t122
-lw $a0, 0($t9)
-li $v0, 4
-syscall
-L29:
-L25:
-L21:
-L17:
-L13:
-L11:
-la $t9, opcion
-lw $t0, 0($t9)
-la $t9, __t123
-sw $t0, 0($t9)
-li $t0, 0
-la $t9, __t124
-sw $t0, 0($t9)
-la $t9, __t123
-lw $t1, 0($t9)
-la $t9, __t124
-lw $t2, 0($t9)
-sne $t0, $t1, $t2
-la $t9, __t125
-sw $t0, 0($t9)
-la $t9, __t125
-lw $t0, 0($t9)
-bne $t0, $zero, _dowhile1_start
-_dowhile1_end:
 la $t0, str1
 la $t9, __t126
 sw $t0, 0($t9)
@@ -1345,10 +1349,110 @@ la $t9, __t127
 lw $a0, 0($t9)
 li $v0, 4
 syscall
+la $t9, max
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
 la $t0, str1
 la $t9, __t128
 sw $t0, 0($t9)
 la $t9, __t128
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str29
+la $t9, __t129
+sw $t0, 0($t9)
+la $t9, __t129
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, min
+l.s $f12, 0($t9)
+li $v0, 2
+syscall
+la $t0, str1
+la $t9, __t130
+sw $t0, 0($t9)
+la $t9, __t130
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t9, estado
+lw $t0, 0($t9)
+la $t9, __t131
+sw $t0, 0($t9)
+la $t9, __t131
+lw $a0, 0($t9)
+jal mostrarEstado
+la $t9, __t132
+sw $v0, 0($t9)
+la $t0, str1
+la $t9, __t133
+sw $t0, 0($t9)
+la $t9, __t133
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L28:
+j L29
+L26:
+la $t0, str30
+la $t9, __t134
+sw $t0, 0($t9)
+la $t9, __t134
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t135
+sw $t0, 0($t9)
+la $t9, __t135
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+L29:
+L25:
+L21:
+L17:
+L13:
+L11:
+la $t9, opcion
+lw $t0, 0($t9)
+la $t9, __t136
+sw $t0, 0($t9)
+li $t0, 0
+la $t9, __t137
+sw $t0, 0($t9)
+la $t9, __t136
+lw $t1, 0($t9)
+la $t9, __t137
+lw $t2, 0($t9)
+sne $t0, $t1, $t2
+la $t9, __t138
+sw $t0, 0($t9)
+la $t9, __t138
+lw $t0, 0($t9)
+bne $t0, $zero, _dowhile1_start
+_dowhile1_end:
+la $t0, str1
+la $t9, __t139
+sw $t0, 0($t9)
+la $t9, __t139
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str31
+la $t9, __t140
+sw $t0, 0($t9)
+la $t9, __t140
+lw $a0, 0($t9)
+li $v0, 4
+syscall
+la $t0, str1
+la $t9, __t141
+sw $t0, 0($t9)
+la $t9, __t141
 lw $a0, 0($t9)
 li $v0, 4
 syscall

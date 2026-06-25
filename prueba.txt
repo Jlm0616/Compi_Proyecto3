@@ -1,7 +1,6 @@
 ¡¡ ============================================================
-¡¡  SISTEMA DE GESTIÓN DE ESTUDIANTES
-¡¡  Prueba: múltiples funciones, cálculos de notas
-¡¡  SIN string (usa int para estados)
+¡¡  SISTEMA DE GESTIÓN DE ESTUDIANTES CON ++ Y --
+¡¡  Prueba: incremento y decremento en contadores
 ¡¡ ============================================================
 
 float ~ calcularPromedio <| float ~ nota1, float ~ nota2, float ~ nota3 |> |:
@@ -42,13 +41,14 @@ float ~ notaMinima <| float ~ a, float ~ b, float ~ c |> |:
     return ~ min!
 :|
 
-int ~ mostrarMenu <| |> |:
+int ~ mostrarMenu <| int ~ contador |> |:
     cout ~ <| "========================================" |>!
     cout ~ <| "\n" |>!
     cout ~ <| "   SISTEMA DE GESTION DE ESTUDIANTES  " |>!
     cout ~ <| "\n" |>!
     cout ~ <| "========================================" |>!
     cout ~ <| "\n" |>!
+    cout ~ <| "Visitas al menu: " |>! cout ~ <| contador |>! cout ~ <| "\n" |>!
     cout ~ <| "1. Ingresar notas" |>!
     cout ~ <| "\n" |>!
     cout ~ <| "2. Ver promedio" |>!
@@ -96,13 +96,15 @@ empty ~ __main__ ~ <| |> |:
     int ~ estado <- 0!
     int ~ opcion <- 0!
     int ~ datosIngresados <- 0!
+    int ~ contadorMenu <- 0!    ¡¡ Contador de veces que se muestra el menu
 
     cout ~ <| "BIENVENIDO AL SISTEMA DE GESTION" |>!
     cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
 
     do |:
-        mostrarMenu<||>!          ¡¡ CORREGIDO: antes era mostrarMenu<||>!
+        contadorMenu <- contadorMenu + 1!    ¡¡ INCREMENTO (++)
+        mostrarMenu <| contadorMenu |>!
 
         cout ~ <| "Elija una opcion: " |>!
         cin ~ opcion!
@@ -110,6 +112,9 @@ empty ~ __main__ ~ <| |> |:
 
         if <| equal <| opcion, 0 |> |> |:
             cout ~ <| "Saliendo del sistema..." |>!
+            cout ~ <| "\n" |>!
+            contadorMenu <- contadorMenu - 1!    ¡¡ DECREMENTO (--)
+            cout ~ <| "El menu se mostro " |>! cout ~ <| contadorMenu |>! cout ~ <| " veces" |>!
             cout ~ <| "\n" |>!
         :|
         else |:
