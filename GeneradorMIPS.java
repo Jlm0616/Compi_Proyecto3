@@ -21,6 +21,8 @@ public class GeneradorMIPS {
     static String funcionActual = null;
     static boolean dentroDeFuncion = false;
     static List<String> parametrosPendientes = new ArrayList<>();
+    static Set<String> punterosArregloParam = new HashSet<>();
+    static LinkedHashMap<Integer, Integer> columnasArgsPendientes = new LinkedHashMap<>();
 
     // ===============================================================
     // ACCESO A MEMORIA 
@@ -111,6 +113,13 @@ public class GeneradorMIPS {
         return simbolosGlobales.containsKey(var) && simbolosGlobales.get(var).endsWith("[]");
     }
 
+    static String direccionBase(String reg, String arr) {
+        if (punterosArregloParam.contains(arr)) {
+            return load(reg, arr);
+        }
+        return "la " + reg + ", " + arr + "\n";
+    }
+
     // ===============================================================
     // RENOMBRADO
     // ===============================================================
@@ -182,6 +191,9 @@ public class GeneradorMIPS {
         simbolosGlobales.clear(); arreglos.clear(); arregloColumnas.clear();
         stringsLiterales.clear(); lineas3D.clear(); renombrados.clear();
         localesPorFuncion.clear(); frameSizePorFuncion.clear(); frameTotalPorFuncion.clear();
+        punterosArregloParam.clear();
+        columnasArgsPendientes.clear();
+        columnasParamPorFuncion.clear();
         contadorStrings=0; contadorCmp=0; contadorPow=0;
         funcionActual=null; dentroDeFuncion=false; parametrosPendientes.clear();
 
@@ -239,7 +251,13 @@ public class GeneradorMIPS {
             if (linea.startsWith("param ")) {
                 String[] p = linea.substring("param ".length()).split(",",2);
                 String nombre = p[0].trim(), tipo = p[1].trim();
-                if (!simbolosGlobales.containsKey(nombre)) simbolosGlobales.put(nombre, tipo);
+                if (tipo.contains("[")) {
+                    String tipoBase = tipo.substring(0, tipo.indexOf('['));
+                    simbolosGlobales.put(nombre, tipoBase + "[]");
+                    punterosArregloParam.add(nombre);
+                } else {
+                    if (!simbolosGlobales.containsKey(nombre)) simbolosGlobales.put(nombre, tipo);
+                }
                 agregarLocal(funcActual, nombre);
                 continue;
             }
@@ -275,7 +293,91 @@ public class GeneradorMIPS {
             if (total % 8 != 0) total += 4;
             frameTotalPorFuncion.put(e.getKey(), total);
         }
+
+        // -----------------------------------------------------------
+        // ESCANEO DE LLAMADAS: para cada "call funcion, N", localizar
+        // los N "arg" inmediatamente anteriores y resolver, siguiendo
+        // la cadena de copias simples (__tN = X) hacia atras, el
+        // nombre real del arreglo para conocer sus columnas reales.
+        // Esto permite que un parametro-arreglo (que llega sin tamano,
+        // ej. "param arr, float[][]") herede el numero de columnas
+        // correcto del arreglo real con el que fue invocada la funcion.
+        // -----------------------------------------------------------
+        Map<String,String> nombresParamPorFuncion = nombresParametrosPorFuncion();
+
+        List<String> argsAcumulados = new ArrayList<>();
+        for (String linea : lineas3D) {
+            Matcher mArgScan = Pattern.compile("^arg\\s+(\\S+),\\s*(\\S+)$").matcher(linea);
+            if (mArgScan.matches()) {
+                argsAcumulados.add(mArgScan.group(1));
+                continue;
+            }
+            Matcher mCallScan = Pattern.compile("^\\w*\\s*=\\s*call\\s+(\\w+),\\s*(\\d+)$").matcher(linea);
+            if (mCallScan.matches()) {
+                String funcLlamada = mCallScan.group(1);
+                int n = Integer.parseInt(mCallScan.group(2));
+                int desde = Math.max(0, argsAcumulados.size() - n);
+                List<String> argsDeEstaLlamada = new ArrayList<>(argsAcumulados.subList(desde, argsAcumulados.size()));
+                List<String> nombresParams = nombresParametrosPorFuncionLista.getOrDefault(funcLlamada, new ArrayList<>());
+                for (int i = 0; i < argsDeEstaLlamada.size() && i < nombresParams.size(); i++) {
+                    String nombreReal = resolverOrigen(argsDeEstaLlamada.get(i));
+                    if (arregloColumnas.containsKey(nombreReal)) {
+                        columnasParamPorFuncion
+                            .computeIfAbsent(funcLlamada, k -> new LinkedHashMap<>())
+                            .put(nombresParams.get(i), arregloColumnas.get(nombreReal));
+                    }
+                }
+                argsAcumulados.clear();
+            } else if (!linea.startsWith("arg ")) {
+                argsAcumulados.clear();
+            }
+        }
     }
+
+    // Mapa funcion -> lista ordenada de nombres de sus parametros (en orden de declaracion)
+    static LinkedHashMap<String, List<String>> nombresParametrosPorFuncionLista = new LinkedHashMap<>();
+
+    static Map<String,String> nombresParametrosPorFuncion() {
+        nombresParametrosPorFuncionLista.clear();
+        String func = null;
+        for (String linea : lineas3D) {
+            if (linea.endsWith(":") && !linea.contains(" ") && !linea.contains("=")) {
+                String etq = linea.substring(0, linea.length()-1);
+                if (!etq.equals("main") && !etq.startsWith("_") && !etq.startsWith("L")) {
+                    func = etq;
+                    nombresParametrosPorFuncionLista.put(func, new ArrayList<>());
+                } else if (etq.equals("main")) {
+                    func = "main";
+                }
+                continue;
+            }
+            if (linea.startsWith("param ") && func != null && !func.equals("main")) {
+                String nombre = linea.substring("param ".length()).split(",",2)[0].trim();
+                nombresParametrosPorFuncionLista.get(func).add(nombre);
+            }
+        }
+        return new HashMap<>();
+    }
+
+    // Sigue la cadena de copias simples "__tN = X" hacia atras en lineas3D
+    // hasta encontrar el nombre original (no temporal-copiado-de-otro-temporal).
+    static String resolverOrigen(String nombre) {
+        String actual = nombre;
+        Set<String> visitados = new HashSet<>();
+        for (int vueltas = 0; vueltas < 50; vueltas++) {
+            if (!visitados.add(actual)) break;
+            String origen = null;
+            for (String linea : lineas3D) {
+                Matcher m = Pattern.compile("^" + Pattern.quote(actual) + "\\s*=\\s*(\\w+)$").matcher(linea);
+                if (m.matches()) { origen = m.group(1); break; }
+            }
+            if (origen == null || origen.equals(actual)) break;
+            actual = origen;
+        }
+        return actual;
+    }
+
+    static LinkedHashMap<String, LinkedHashMap<String, Integer>> columnasParamPorFuncion = new LinkedHashMap<>();
 
     static void agregarLocal(String func, String nombre) {
         if (func == null || func.equals("main")) return;
@@ -339,7 +441,17 @@ public class GeneradorMIPS {
             Matcher mParam = Pattern.compile("^param\\s+(\\S+),\\s*(\\S+)$").matcher(linea);
             if (mParam.matches()) {
                 String nombre = mParam.group(1), tipo = mParam.group(2);
-                simbolosGlobales.put(nombre, tipo);
+                if (tipo.contains("[")) {
+                    String tipoBase = tipo.substring(0, tipo.indexOf('['));
+                    simbolosGlobales.put(nombre, tipoBase + "[]");
+                    punterosArregloParam.add(nombre);
+                    LinkedHashMap<String,Integer> colsFunc = columnasParamPorFuncion.get(funcionActual);
+                    if (colsFunc != null && colsFunc.containsKey(nombre)) {
+                        arregloColumnas.put(nombre, colsFunc.get(nombre));
+                    }
+                } else {
+                    simbolosGlobales.put(nombre, tipo);
+                }
                 if (tipo.equals("float")) {
                     String rf;
                     if (paramIdx == 0) rf = "$f12";
@@ -367,8 +479,11 @@ public class GeneradorMIPS {
                     else if (idx == 2) reg = "$f16";
                     else reg = "$f18";
                     sb.append(loadF(reg, arg));
-                } else if (simbolosGlobales.getOrDefault(arg,"").contains("[]")) {
-                    if (idx <= 3) sb.append("la $a"+idx+", "+arg+"\n");
+                } else if (simbolosGlobales.getOrDefault(arg,"").contains("[]") || punterosArregloParam.contains(arg)) {
+                    if (idx <= 3) sb.append(direccionBase("$a"+idx, arg));
+                    if (arregloColumnas.containsKey(arg)) {
+                        columnasArgsPendientes.put(idx, arregloColumnas.get(arg));
+                    }
                 } else if (idx <= 3) {
                     sb.append(load("$a"+idx, arg));
                 }
@@ -386,9 +501,8 @@ public class GeneradorMIPS {
                 sb.append(esLitInt(i1)?"li $t8, "+i1+"\n":load("$t8",i1));
                 sb.append("li $t9, ").append(cols).append("\nmul $t8, $t8, $t9\n");
                 sb.append(esLitInt(i2)?"li $t9, "+i2+"\n":load("$t9",i2));
-                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t8, $t9, $t8\n");
-                
-              
+                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\n").append(direccionBase("$t9", arr)).append("add $t8, $t9, $t8\n");
+
                 if (esFloatArr || esFloat(val)) {
                     sb.append(loadF("$f0",val));
                     sb.append("s.s $f0, 0($t8)\n");
@@ -411,7 +525,7 @@ public class GeneradorMIPS {
                 sb.append(esLitInt(i1)?"li $t8, "+i1+"\n":load("$t8",i1));
                 sb.append("li $t9, ").append(cols).append("\nmul $t8, $t8, $t9\n");
                 sb.append(esLitInt(i2)?"li $t9, "+i2+"\n":load("$t9",i2));
-                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t8, $t9, $t8\n");
+                sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\n").append(direccionBase("$t9", arr)).append("add $t8, $t9, $t8\n");
                 
                
                 if (esFloatArr) {
@@ -493,9 +607,21 @@ public class GeneradorMIPS {
                 String dest=mCop.group(1), src=mCop.group(2);
                 String tipoDest = tipoDe(dest);
                 String tipoSrc = tipoDe(src);
-                
+
+                // Si el origen es un arreglo (o un puntero a arreglo recibido como parametro),
+                // la "copia" es de DIRECCION, no de un valor float/int. Esto cubre el caso
+                // de pasar un arreglo completo como argumento: __tN = arr; arg __tN, float[][]
+                if (esArreglo(src) || punterosArregloParam.contains(src)) {
+                    punterosArregloParam.add(dest);
+                    simbolosGlobales.put(dest, simbolosGlobales.getOrDefault(src, "int[]"));
+                    if (arregloColumnas.containsKey(src)) {
+                        arregloColumnas.put(dest, arregloColumnas.get(src));
+                    }
+                    sb.append(direccionBase("$t0", src));
+                    sb.append(store("$t0", dest));
+                }
                 // Si ambos son float, copia float
-                if (esFloat(dest) && esFloat(src)) {
+                else if (esFloat(dest) && esFloat(src)) {
                     sb.append(loadF("$f0",src));
                     sb.append(storeF("$f0",dest));
                 }

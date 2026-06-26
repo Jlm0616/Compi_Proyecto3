@@ -4355,6 +4355,7 @@ class CUP$parser$actions {
                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
 
+                        // Verificar que los indices sean ENTEROS
                        if (!tipo1.equals("int") && !tipo1.equals("error")) {
                            errorSemantico("Linea " + idleft 
                                + ": Indice de arreglo debe ser int, se encontro '" + tipo1 + "'");
@@ -4364,6 +4365,7 @@ class CUP$parser$actions {
                                + ": Indice de arreglo debe ser int, se encontro '" + tipo2 + "'");
                        }
                        
+                       // Extraer tipo base (quitar "[][]")
                        String tipoBase = tipoLimpio.endsWith("[][]") ? 
                            tipoLimpio.substring(0, tipoLimpio.length() - 4) : tipoLimpio;
 

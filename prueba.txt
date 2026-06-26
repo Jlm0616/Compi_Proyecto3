@@ -1,108 +1,334 @@
 ¡¡ ============================================================
-¡¡  PRUEBA DE TODO LO PENDIENTE (CORREGIDO - ARREGLO FLOAT)
-¡¡  Usando sintaxis que funciona en tu compilador
+¡¡  EJEMPLO COMPLETO - CUBRE TODA LA GRAMÁTICA
+¡¡  Tipos, estructuras, funciones, expresiones, arreglos
 ¡¡ ============================================================
 
-int ~ evaluarChar <| char ~ c |> |:
-    int ~ r <- 0!
-    switch ~ <| c |> |:
-        case ~ 'A' : r <- 1! break!
-        case ~ 'B' : r <- 2! break!
-        default: r <- 0!
+{-
+   Ejemplo que cubre:
+   - Todos los tipos: int, float, bool, char, string, arreglos, exponencial, fraccionario
+   - Estructuras de control: if-else, do-while, switch
+   - Funciones con parámetros y retorno
+   - Expresiones: aritméticas, relacionales, lógicas
+   - cin, cout
+   - Comentarios de una y múltiples líneas
+-}
+
+¡¡ ---------- FUNCIÓN CON INT Y OPERACIONES ARITMÉTICAS ----------
+int ~ calcularPotencia <| int ~ base, int ~ exp |> |:
+    int ~ resultado <- 1!
+    int ~ contador <- 0!
+
+    do |:
+        int ~ temp <- resultado * base!
+        resultado <- temp!
+        contador <- contador + 1!
+    :| while <| less_t <| contador, exp |> |>!
+
+    return ~ resultado!
+:|
+
+¡¡ ---------- FUNCIÓN CON FLOAT Y ARREGLO 2D ----------
+float ~ calcularPromedio <| float ~ arr<<3>><<3>>, int ~ tam |> |:
+    float ~ suma <- 0.0!
+    int ~ i <- 0!
+
+    do |:
+        int ~ j <- 0!
+        do |:
+            float ~ temp <- suma + arr<<i>><<j>>!
+            suma <- temp!
+            j <- j + 1!
+        :| while <| less_t <| j, tam |> |>!
+        i <- i + 1!
+    :| while <| less_t <| i, tam |> |>!
+
+    float ~ total <- suma / 9.0!
+    return ~ total!
+:|
+
+¡¡ ---------- FUNCIÓN CON BOOL, CHAR Y LÓGICA ----------
+bool ~ validarCaracter <| char ~ c, int ~ limite |> |:
+    bool ~ cond1 <- greather_te <| limite, 0 |>!
+    bool ~ cond2 <- less_t <| limite, 100 |>!
+    bool ~ cond3 <- n_equal <| limite, 50 |>!
+
+    bool ~ r <- cond1 @ cond2!
+    r <- r @ cond3!
+
+    return ~ r!
+:|
+
+¡¡ ---------- FUNCIÓN CON SWITCH ----------
+int ~ clasificarNota <| int ~ nota |> |:
+    int ~ resultado <- 0!
+
+    switch ~ <| nota |> |:
+        case ~ 10:
+            resultado <- 4!
+            break!
+        case ~ 9:
+            resultado <- 3!
+            break!
+        case ~ 8:
+            resultado <- 2!
+            break!
+        case ~ 7:
+            resultado <- 1!
+            break!
+        default:
+            resultado <- 0!
     :|
-    return ~ r!
+
+    return ~ resultado!
 :|
 
-bool ~ verificar <| int ~ a, float ~ b |> |:
-    bool ~ eq <- equal <| a, 10 |>!
-    bool ~ lt <- less_t <| b, 5.0 |>!
-    bool ~ gt <- greather_t <| b, 1.0 |>!
-    bool ~ ge <- greather_te <| b, 2.0 |>!
-    bool ~ ne <- n_equal <| a, 0 |>!
-    bool ~ r <- eq @ lt!
-    r <- r # gt!
-    r <- r @ ge!
-    return ~ r!
+¡¡ ---------- FUNCIÓN CON ARREGLO 2D ----------
+float ~ sumarDiagonal <| float ~ mat<<3>><<3>> |> |:
+    float ~ suma <- 0.0!
+    int ~ i <- 0!
+
+    do |:
+        float ~ temp <- suma + mat<<i>><<i>>!
+        suma <- temp!
+        i <- i + 1!
+    :| while <| less_t <| i, 3 |> |>!
+
+    return ~ suma!
 :|
 
-float ~ exponencial <| float ~ base |> |:
-    float ~ temp <- base * 2000.0!
-    float ~ r <- temp + 1.0!
-    return ~ r!
+¡¡ ---------- FUNCIÓN CON NEGACIÓN Y EXPRESIONES COMPLEJAS ----------
+bool ~ evaluarRango <| int ~ valor, int ~ min, int ~ max |> |:
+    bool ~ dentroMin <- greather_te <| valor, min |>!
+    bool ~ dentroMax <- less_te <| valor, max |>!
+    bool ~ noEsCero <- n_equal <| valor, 0 |>!
+    bool ~ noEsNegativo <- greather_t <| valor, 0 |>!
+
+    bool ~ enRango <- dentroMin @ dentroMax!
+    enRango <- enRango @ noEsCero!
+    enRango <- enRango @ noEsNegativo!
+
+    bool ~ fuera <- $ enRango!
+
+    if <| fuera |> |:
+        cout ~ <| "Valor fuera de rango" |>! cout ~ <| "\n" |>!
+        return ~ false!
+    :|
+    else |:
+        cout ~ <| "Valor dentro de rango" |>! cout ~ <| "\n" |>!
+        return ~ true!
+    :|
 :|
 
+¡¡ ---------- MAIN ----------
 empty ~ __main__ ~ <| |> |:
-    bool ~ b <- true!
-    bool ~ nb <- false!
-    char ~ c <- 'A'!
-    float ~ f <- 3.5!
-    int ~ i <- 10!
-    float ~ arrF<<2>><<2>> <- |:0.0, 0.0, 0.0, 0.0:|!
-    int ~ swR <- 0!
 
-    cout ~ <| "=== BOOL ===" |>! cout ~ <| "\n" |>!
-    cout ~ <| "b = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
-    nb <- $b!
-    cout ~ <| "!b = " |>! cout ~ <| nb |>! cout ~ <| "\n" |>!
+    ¡¡ --- Declaración de todos los tipos ---
+    int ~ entero <- 42!
+    float ~ flotante <- 3.14!
+    bool ~ booleano <- true!
+    char ~ caracter <- 'A'!
+    string ~ cadena <- "Hola Mundo"!
 
+    ¡¡ --- Notación exponencial (dentro de rango 32 bits) ---
+    int ~ exponencial <- 2e3!
+
+    ¡¡ --- Fraccionario (float con float) ---
+    float ~ fraccion <- 5.0/6.0!
+
+    ¡¡ --- Arreglo 2D de floats (todos los arreglos son 2D) ---
+    float ~ valores<<3>><<3>> <- |: 2.0, 4.0, 6.0, 8.0, 2.0, 3.0, 1.0, 5.0, 9.0 :|!
+
+    ¡¡ --- Arreglo 2D de floats identidad ---
+    float ~ matriz<<3>><<3>> <- |: 1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 3.0 :|!
+
+    ¡¡ --- Arreglo 2D de enteros ---
+    int ~ enteros<<2>><<2>> <- |: 10, 20, 30, 40 :|!
+
+    cout ~ <| "========================================" |>! cout ~ <| "\n" |>!
+    cout ~ <| "       EJEMPLO COMPLETO DE GRAMATICA    " |>! cout ~ <| "\n" |>!
+    cout ~ <| "========================================" |>! cout ~ <| "\n" |>!
+
+    {-
+       PRUEBA 1: Operaciones aritméticas básicas
+       suma, resta, multiplicación, división, módulo, potencia
+    -}
+    cout ~ <| "=== PRUEBA 1: ARITMETICAS ===" |>! cout ~ <| "\n" |>!
+
+    int ~ suma <- entero + 8!
+    int ~ resta <- entero - 12!
+    int ~ mult <- entero * 2!
+    int ~ divEnt <- entero / 5!
+    int ~ modulo <- entero % 5!
+    int ~ potencia <- calcularPotencia <| 2, 8 |>!
+
+    float ~ sumaF <- flotante + 1.86!
+    float ~ restaF <- flotante - 1.14!
+    float ~ multF <- flotante * 2.0!
+    float ~ divF <- flotante / 1.5!
+
+    cout ~ <| "entero + 8 = " |>! cout ~ <| suma |>! cout ~ <| "\n" |>!
+    cout ~ <| "entero - 12 = " |>! cout ~ <| resta |>! cout ~ <| "\n" |>!
+    cout ~ <| "entero * 2 = " |>! cout ~ <| mult |>! cout ~ <| "\n" |>!
+    cout ~ <| "entero / 5 = " |>! cout ~ <| divEnt |>! cout ~ <| "\n" |>!
+    cout ~ <| "entero % 5 = " |>! cout ~ <| modulo |>! cout ~ <| "\n" |>!
+    cout ~ <| "2 ^ 8 = " |>! cout ~ <| potencia |>! cout ~ <| "\n" |>!
+    cout ~ <| "3.14 + 1.86 = " |>! cout ~ <| sumaF |>! cout ~ <| "\n" |>!
+    cout ~ <| "3.14 / 1.5 = " |>! cout ~ <| divF |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
-    cout ~ <| "=== LOGICOS @ # ===" |>! cout ~ <| "\n" |>!
-    b <- true @ true!
-    cout ~ <| "true @ true = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
-    b <- true # false!
-    cout ~ <| "true # false = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "\n" |>!
-    cout ~ <| "=== RELACIONALES ===" |>! cout ~ <| "\n" |>!
-    bool ~ r1 <- greather_t <| 10, 5 |>!
-    bool ~ r2 <- greather_te <| 5, 5 |>!
-    bool ~ r3 <- n_equal <| 10, 20 |>!
-    cout ~ <| "greather_t(10,5) = " |>! cout ~ <| r1 |>! cout ~ <| "\n" |>!
-    cout ~ <| "greather_te(5,5) = " |>! cout ~ <| r2 |>! cout ~ <| "\n" |>!
-    cout ~ <| "n_equal(10,20) = " |>! cout ~ <| r3 |>! cout ~ <| "\n" |>!
+    ¡¡ --- PRUEBA 2: Operadores unarios ---
+    cout ~ <| "=== PRUEBA 2: UNARIOS ===" |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "\n" |>!
-    cout ~ <| "=== NEGATIVO UNARIO ===" |>! cout ~ <| "\n" |>!
-    int ~ neg <- i * -1!
-    cout ~ <| "-10 = " |>! cout ~ <| neg |>! cout ~ <| "\n" |>!
-    float ~ negF <- f * -1.0!
-    cout ~ <| "-3.5 = " |>! cout ~ <| negF |>! cout ~ <| "\n" |>!
+    int ~ negativo <- -10!
+    float ~ negativoF <- -3.14!
+    ++entero!
+    --entero!
+    ++flotante!
+    --flotante!
 
+    cout ~ <| "negativo int = " |>! cout ~ <| negativo |>! cout ~ <| "\n" |>!
+    cout ~ <| "negativo float = " |>! cout ~ <| negativoF |>! cout ~ <| "\n" |>!
+    cout ~ <| "entero tras ++ y -- = " |>! cout ~ <| entero |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
-    cout ~ <| "=== EXPONENCIAL ===" |>! cout ~ <| "\n" |>!
-    float ~ expR <- exponencial <| 5.0 |>!
-    cout ~ <| "5.0 * 2000 + 1.0 = " |>! cout ~ <| expR |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "\n" |>!
-    cout ~ <| "=== CIN FLOAT ===" |>! cout ~ <| "\n" |>!
-    float ~ entradaF <- 0.0!
-    cout ~ <| "Ingrese un float: " |>!
-    cin ~ entradaF!
-    cout ~ <| "Leiste: " |>! cout ~ <| entradaF |>! cout ~ <| "\n" |>!
+    ¡¡ --- PRUEBA 3: Expresiones relacionales ---
+    cout ~ <| "=== PRUEBA 3: RELACIONALES ===" |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "\n" |>!
-    cout ~ <| "=== ARREGLO FLOAT ===" |>! cout ~ <| "\n" |>!
-    arrF<<0>><<0>> <- 1.5!
-    arrF<<0>><<1>> <- 2.5!
-    arrF<<1>><<0>> <- 3.5!
-    arrF<<1>><<1>> <- 4.5!
-    cout ~ <| "arrF[0][0] = " |>! cout ~ <| arrF<<0>><<0>> |>! cout ~ <| "\n" |>!
-    cout ~ <| "arrF[1][1] = " |>! cout ~ <| arrF<<1>><<1>> |>! cout ~ <| "\n" |>!
+    bool ~ esIgual <- equal <| entero, 42 |>!
+    bool ~ esDif <- n_equal <| entero, 0 |>!
+    bool ~ esMenor <- less_t <| entero, 100 |>!
+    bool ~ esMenorIg <- less_te <| entero, 42 |>!
+    bool ~ esMayor <- greather_t <| entero, 10 |>!
+    bool ~ esMayorIg <- greather_te <| entero, 42 |>!
+    bool ~ boolIgual <- equal <| booleano, true |>!
 
+    cout ~ <| "42 == 42: " |>! cout ~ <| esIgual |>! cout ~ <| "\n" |>!
+    cout ~ <| "42 != 0: " |>! cout ~ <| esDif |>! cout ~ <| "\n" |>!
+    cout ~ <| "42 < 100: " |>! cout ~ <| esMenor |>! cout ~ <| "\n" |>!
+    cout ~ <| "42 <= 42: " |>! cout ~ <| esMenorIg |>! cout ~ <| "\n" |>!
+    cout ~ <| "42 > 10: " |>! cout ~ <| esMayor |>! cout ~ <| "\n" |>!
+    cout ~ <| "42 >= 42: " |>! cout ~ <| esMayorIg |>! cout ~ <| "\n" |>!
+    cout ~ <| "bool == true: " |>! cout ~ <| boolIgual |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
-    cout ~ <| "=== RETURN CHAR (via switch) ===" |>! cout ~ <| "\n" |>!
-    swR <- evaluarChar <| 'A' |>!
-    cout ~ <| "evaluarChar('A') = " |>! cout ~ <| swR |>! cout ~ <| "\n" |>!
-    swR <- evaluarChar <| 'X' |>!
-    cout ~ <| "evaluarChar('X') = " |>! cout ~ <| swR |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "\n" |>!
-    cout ~ <| "=== RETURN BOOL ===" |>! cout ~ <| "\n" |>!
-    bool ~ v <- verificar <| 10, 3.5 |>!
-    cout ~ <| "verificar(10,3.5) = " |>! cout ~ <| v |>! cout ~ <| "\n" |>!
-    v <- verificar <| 0, 0.5 |>!
-    cout ~ <| "verificar(0,0.5) = " |>! cout ~ <| v |>! cout ~ <| "\n" |>!
+    ¡¡ --- PRUEBA 4: Expresiones lógicas ---
+    cout ~ <| "=== PRUEBA 4: LOGICAS ===" |>! cout ~ <| "\n" |>!
 
+    bool ~ conjuncion <- esIgual @ esMenor!
+    bool ~ disyuncion <- esIgual # esDif!
+    bool ~ negacion <- $ esIgual!
+    bool ~ compleja <- <| esIgual @ esMenor |> # <| esDif @ esMayor |>!
+
+    cout ~ <| "true AND true: " |>! cout ~ <| conjuncion |>! cout ~ <| "\n" |>!
+    cout ~ <| "true OR true: " |>! cout ~ <| disyuncion |>! cout ~ <| "\n" |>!
+    cout ~ <| "NOT true: " |>! cout ~ <| negacion |>! cout ~ <| "\n" |>!
+    cout ~ <| "expresion compleja: " |>! cout ~ <| compleja |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
-    cout ~ <| "=== FIN PRUEBAS ===" |>! cout ~ <| "\n" |>!
+
+    ¡¡ --- PRUEBA 5: if-else anidado ---
+    cout ~ <| "=== PRUEBA 5: IF-ELSE ===" |>! cout ~ <| "\n" |>!
+
+    if <| esIgual @ esMenor |> |:
+        cout ~ <| "entero es 42 y menor que 100" |>! cout ~ <| "\n" |>!
+        if <| esMayorIg |> |:
+            cout ~ <| "ademas es mayor o igual a 42" |>! cout ~ <| "\n" |>!
+        :|
+        else |:
+            cout ~ <| "no llega a 42" |>! cout ~ <| "\n" |>!
+        :|
+    :|
+    else |:
+        cout ~ <| "condicion falsa" |>! cout ~ <| "\n" |>!
+    :|
+    cout ~ <| "\n" |>!
+
+    ¡¡ --- PRUEBA 6: do-while con arreglo 2D ---
+    cout ~ <| "=== PRUEBA 6: DO-WHILE + ARREGLO 2D ===" |>! cout ~ <| "\n" |>!
+
+    int ~ fi <- 0!
+    do |:
+        int ~ fj <- 0!
+        do |:
+            cout ~ <| "valores[" |>!
+            cout ~ <| fi |>!
+            cout ~ <| "][" |>!
+            cout ~ <| fj |>!
+            cout ~ <| "] = " |>!
+            cout ~ <| valores<<fi>><<fj>> |>!
+            cout ~ <| "\n" |>!
+            fj <- fj + 1!
+        :| while <| less_t <| fj, 3 |> |>!
+        fi <- fi + 1!
+    :| while <| less_t <| fi, 3 |> |>!
+
+    float ~ promedio <- calcularPromedio <| valores, 3 |>!
+    cout ~ <| "promedio = " |>! cout ~ <| promedio |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    ¡¡ --- PRUEBA 7: switch ---
+    cout ~ <| "=== PRUEBA 7: SWITCH ===" |>! cout ~ <| "\n" |>!
+
+    int ~ nota1 <- 10!
+    int ~ nota2 <- 7!
+    int ~ nota3 <- 5!
+
+    int ~ clasif1 <- clasificarNota <| nota1 |>!
+    int ~ clasif2 <- clasificarNota <| nota2 |>!
+    int ~ clasif3 <- clasificarNota <| nota3 |>!
+
+    cout ~ <| "Nota 10 -> codigo: " |>! cout ~ <| clasif1 |>! cout ~ <| "\n" |>!
+    cout ~ <| "Nota 7  -> codigo: " |>! cout ~ <| clasif2 |>! cout ~ <| "\n" |>!
+    cout ~ <| "Nota 5  -> codigo: " |>! cout ~ <| clasif3 |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    ¡¡ --- PRUEBA 8: arreglo 2D diagonal ---
+    cout ~ <| "=== PRUEBA 8: ARREGLO 2D DIAGONAL ===" |>! cout ~ <| "\n" |>!
+
+    float ~ diagonal <- sumarDiagonal <| matriz |>!
+    cout ~ <| "suma diagonal = " |>! cout ~ <| diagonal |>! cout ~ <| "\n" |>!
+
+    int ~ mi <- 0!
+    do |:
+        int ~ mj <- 0!
+        do |:
+            cout ~ <| "mat[" |>!
+            cout ~ <| mi |>!
+            cout ~ <| "][" |>!
+            cout ~ <| mj |>!
+            cout ~ <| "] = " |>!
+            cout ~ <| matriz<<mi>><<mj>> |>!
+            cout ~ <| "\n" |>!
+            mj <- mj + 1!
+        :| while <| less_t <| mj, 3 |> |>!
+        mi <- mi + 1!
+    :| while <| less_t <| mi, 3 |> |>!
+    cout ~ <| "\n" |>!
+
+    ¡¡ --- PRUEBA 9: validarCaracter y evaluarRango ---
+    cout ~ <| "=== PRUEBA 9: CHAR + RANGO ===" |>! cout ~ <| "\n" |>!
+
+    bool ~ validChar <- validarCaracter <| caracter, 45 |>!
+    cout ~ <| "validarCaracter(A, 45) = " |>! cout ~ <| validChar |>! cout ~ <| "\n" |>!
+
+    bool ~ rango1 <- evaluarRango <| 50, 1, 100 |>!
+    bool ~ rango2 <- evaluarRango <| 150, 1, 100 |>!
+    cout ~ <| "evaluarRango(50, 1, 100) = " |>! cout ~ <| rango1 |>! cout ~ <| "\n" |>!
+    cout ~ <| "evaluarRango(150, 1, 100) = " |>! cout ~ <| rango2 |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    ¡¡ --- PRUEBA 10: cin ---
+    cout ~ <| "=== PRUEBA 10: CIN ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "Ingrese un entero: " |>! cout ~ <| "\n" |>!
+    int ~ leido <- 0!
+    cin ~ leido!
+    cout ~ <| "Ingrese un flotante: " |>! cout ~ <| "\n" |>!
+    float ~ leidoF <- 0.0!
+    cin ~ leidoF!
+    cout ~ <| "Leido int: " |>! cout ~ <| leido |>! cout ~ <| "\n" |>!
+    cout ~ <| "Leido float: " |>! cout ~ <| leidoF |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+
+    cout ~ <| "========================================" |>! cout ~ <| "\n" |>!
+    cout ~ <| "         EJEMPLO COMPLETADO             " |>! cout ~ <| "\n" |>!
+    cout ~ <| "========================================" |>! cout ~ <| "\n" |>!
 :|
