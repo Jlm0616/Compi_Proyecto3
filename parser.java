@@ -2377,6 +2377,8 @@ class CUP$parser$actions {
                             GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual 
                                 + ", " + tipoDeclaracionActual + "[" + filas + "][" + cols + "]");
 
+                            marcarInicializada(nombreDeclaracionActual);
+
                             RESULT = "[][]"; 
                         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("declaracion_resto",13, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

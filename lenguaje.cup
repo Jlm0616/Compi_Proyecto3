@@ -955,6 +955,8 @@ declaracion_resto ::= declaracion_variable_resto
                             GeneradorCodigo.emitir("    declare " + nombreDeclaracionActual 
                                 + ", " + tipoDeclaracionActual + "[" + filas + "][" + cols + "]");
 
+                            marcarInicializada(nombreDeclaracionActual);
+
                             RESULT = "[][]"; 
                         :}
                     | array:dim ASIGNACION 
