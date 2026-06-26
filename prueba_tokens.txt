@@ -2,237 +2,268 @@
 
 Token                     Lexema               Linea
 -----                     ------               -----
-INT                       int                  12
-SEPARADOR                 ~                    12
-IDENTIFICADOR             probarDecremento     12
-INICIO_PARENTESIS         <|                   12
-INT                       int                  12
-SEPARADOR                 ~                    12
-IDENTIFICADOR             inicio               12
-COMA                      ,                    12
-INT                       int                  12
-SEPARADOR                 ~                    12
-IDENTIFICADOR             veces                12
-FIN_PARENTESIS            |>                   12
-INICIO_BLOQUE             |:                   12
-INT                       int                  13
+INT                       int                  6
+SEPARADOR                 ~                    6
+IDENTIFICADOR             evaluarChar          6
+INICIO_PARENTESIS         <|                   6
+CHAR                      char                 6
+SEPARADOR                 ~                    6
+IDENTIFICADOR             c                    6
+FIN_PARENTESIS            |>                   6
+INICIO_BLOQUE             |:                   6
+INT                       int                  7
+SEPARADOR                 ~                    7
+IDENTIFICADOR             r                    7
+ASIGNACION                <-                   7
+NUMERO_ENTERO             0                    7
+DELIMITADOR_EXP           !                    7
+SWITCH                    switch               8
+SEPARADOR                 ~                    8
+INICIO_PARENTESIS         <|                   8
+IDENTIFICADOR             c                    8
+FIN_PARENTESIS            |>                   8
+INICIO_BLOQUE             |:                   8
+CASE                      case                 9
+SEPARADOR                 ~                    9
+CARACTER                  A                    9
+DOS_PUNTOS                :                    9
+IDENTIFICADOR             r                    9
+ASIGNACION                <-                   9
+NUMERO_ENTERO             1                    9
+DELIMITADOR_EXP           !                    9
+BREAK                     break                9
+DELIMITADOR_EXP           !                    9
+CASE                      case                 10
+SEPARADOR                 ~                    10
+CARACTER                  B                    10
+DOS_PUNTOS                :                    10
+IDENTIFICADOR             r                    10
+ASIGNACION                <-                   10
+NUMERO_ENTERO             2                    10
+DELIMITADOR_EXP           !                    10
+BREAK                     break                10
+DELIMITADOR_EXP           !                    10
+DEFAULT                   default              11
+DOS_PUNTOS                :                    11
+IDENTIFICADOR             r                    11
+ASIGNACION                <-                   11
+NUMERO_ENTERO             0                    11
+DELIMITADOR_EXP           !                    11
+FIN_BLOQUE                :|                   12
+RETURN                    return               13
 SEPARADOR                 ~                    13
-IDENTIFICADOR             contador             13
-ASIGNACION                <-                   13
-IDENTIFICADOR             inicio               13
+IDENTIFICADOR             r                    13
 DELIMITADOR_EXP           !                    13
-INT                       int                  14
-SEPARADOR                 ~                    14
-IDENTIFICADOR             i                    14
-ASIGNACION                <-                   14
-NUMERO_ENTERO             0                    14
-DELIMITADOR_EXP           !                    14
-DO                        do                   16
+FIN_BLOQUE                :|                   14
+BOOL                      bool                 16
+SEPARADOR                 ~                    16
+IDENTIFICADOR             verificar            16
+INICIO_PARENTESIS         <|                   16
+INT                       int                  16
+SEPARADOR                 ~                    16
+IDENTIFICADOR             a                    16
+COMA                      ,                    16
+FLOAT                     float                16
+SEPARADOR                 ~                    16
+IDENTIFICADOR             b                    16
+FIN_PARENTESIS            |>                   16
 INICIO_BLOQUE             |:                   16
-DECREMENTO                --                   17
-IDENTIFICADOR             contador             17
+BOOL                      bool                 17
+SEPARADOR                 ~                    17
+IDENTIFICADOR             eq                   17
+ASIGNACION                <-                   17
+EQUAL                     equal                17
+INICIO_PARENTESIS         <|                   17
+IDENTIFICADOR             a                    17
+COMA                      ,                    17
+NUMERO_ENTERO             10                   17
+FIN_PARENTESIS            |>                   17
 DELIMITADOR_EXP           !                    17
-IDENTIFICADOR             i                    18
+BOOL                      bool                 18
+SEPARADOR                 ~                    18
+IDENTIFICADOR             lt                   18
 ASIGNACION                <-                   18
-IDENTIFICADOR             i                    18
-MAS                       +                    18
-NUMERO_ENTERO             1                    18
+LESS_T                    less_t               18
+INICIO_PARENTESIS         <|                   18
+IDENTIFICADOR             b                    18
+COMA                      ,                    18
+NUMERO_FLOTANTE           5.0                  18
+FIN_PARENTESIS            |>                   18
 DELIMITADOR_EXP           !                    18
-FIN_BLOQUE                :|                   19
-WHILE                     while                19
+BOOL                      bool                 19
+SEPARADOR                 ~                    19
+IDENTIFICADOR             gt                   19
+ASIGNACION                <-                   19
+GREATER_T                 greather_t           19
 INICIO_PARENTESIS         <|                   19
-LESS_T                    less_t               19
-INICIO_PARENTESIS         <|                   19
-IDENTIFICADOR             i                    19
+IDENTIFICADOR             b                    19
 COMA                      ,                    19
-IDENTIFICADOR             veces                19
-FIN_PARENTESIS            |>                   19
+NUMERO_FLOTANTE           1.0                  19
 FIN_PARENTESIS            |>                   19
 DELIMITADOR_EXP           !                    19
-RETURN                    return               21
+BOOL                      bool                 20
+SEPARADOR                 ~                    20
+IDENTIFICADOR             ge                   20
+ASIGNACION                <-                   20
+GREATER_TE                greather_te          20
+INICIO_PARENTESIS         <|                   20
+IDENTIFICADOR             b                    20
+COMA                      ,                    20
+NUMERO_FLOTANTE           2.0                  20
+FIN_PARENTESIS            |>                   20
+DELIMITADOR_EXP           !                    20
+BOOL                      bool                 21
 SEPARADOR                 ~                    21
-IDENTIFICADOR             contador             21
+IDENTIFICADOR             ne                   21
+ASIGNACION                <-                   21
+N_EQUAL                   n_equal              21
+INICIO_PARENTESIS         <|                   21
+IDENTIFICADOR             a                    21
+COMA                      ,                    21
+NUMERO_ENTERO             0                    21
+FIN_PARENTESIS            |>                   21
 DELIMITADOR_EXP           !                    21
-FIN_BLOQUE                :|                   22
-EMPTY                     empty                24
-SEPARADOR                 ~                    24
-PALABRA_MAIN              __main__             24
-SEPARADOR                 ~                    24
-INICIO_PARENTESIS         <|                   24
-FIN_PARENTESIS            |>                   24
-INICIO_BLOQUE             |:                   24
-CHAR                      char                 26
-SEPARADOR                 ~                    26
-IDENTIFICADOR             letra                26
-ASIGNACION                <-                   26
-CARACTER                  A                    26
-DELIMITADOR_EXP           !                    26
-COUT                      cout                 27
-SEPARADOR                 ~                    27
-INICIO_PARENTESIS         <|                   27
-CADENA                    === PRUEBA CHAR ===  27
-FIN_PARENTESIS            |>                   27
-DELIMITADOR_EXP           !                    27
-COUT                      cout                 27
-SEPARADOR                 ~                    27
-INICIO_PARENTESIS         <|                   27
-CADENA                    
-                    27
-FIN_PARENTESIS            |>                   27
-DELIMITADOR_EXP           !                    27
-COUT                      cout                 28
+BOOL                      bool                 22
+SEPARADOR                 ~                    22
+IDENTIFICADOR             r                    22
+ASIGNACION                <-                   22
+IDENTIFICADOR             eq                   22
+OPERADOR_LOGICO_BINARIO   @                    22
+IDENTIFICADOR             lt                   22
+DELIMITADOR_EXP           !                    22
+IDENTIFICADOR             r                    23
+ASIGNACION                <-                   23
+IDENTIFICADOR             r                    23
+OPERADOR_LOGICO_BINARIO   #                    23
+IDENTIFICADOR             gt                   23
+DELIMITADOR_EXP           !                    23
+IDENTIFICADOR             r                    24
+ASIGNACION                <-                   24
+IDENTIFICADOR             r                    24
+OPERADOR_LOGICO_BINARIO   @                    24
+IDENTIFICADOR             ge                   24
+DELIMITADOR_EXP           !                    24
+RETURN                    return               25
+SEPARADOR                 ~                    25
+IDENTIFICADOR             r                    25
+DELIMITADOR_EXP           !                    25
+FIN_BLOQUE                :|                   26
+FLOAT                     float                28
 SEPARADOR                 ~                    28
+IDENTIFICADOR             exponencial          28
 INICIO_PARENTESIS         <|                   28
-CADENA                    letra =              28
-FIN_PARENTESIS            |>                   28
-DELIMITADOR_EXP           !                    28
-COUT                      cout                 28
+FLOAT                     float                28
 SEPARADOR                 ~                    28
-INICIO_PARENTESIS         <|                   28
-IDENTIFICADOR             letra                28
+IDENTIFICADOR             base                 28
 FIN_PARENTESIS            |>                   28
-DELIMITADOR_EXP           !                    28
-COUT                      cout                 28
-SEPARADOR                 ~                    28
-INICIO_PARENTESIS         <|                   28
-CADENA                    
-                    28
-FIN_PARENTESIS            |>                   28
-DELIMITADOR_EXP           !                    28
-COUT                      cout                 29
+INICIO_BLOQUE             |:                   28
+FLOAT                     float                29
 SEPARADOR                 ~                    29
-INICIO_PARENTESIS         <|                   29
-CADENA                    
-                    29
-FIN_PARENTESIS            |>                   29
+IDENTIFICADOR             temp                 29
+ASIGNACION                <-                   29
+IDENTIFICADOR             base                 29
+MULTIPLICACION            *                    29
+NUMERO_FLOTANTE           2000.0               29
 DELIMITADOR_EXP           !                    29
-STRING                    string               32
-SEPARADOR                 ~                    32
-IDENTIFICADOR             saludo               32
-ASIGNACION                <-                   32
-CADENA                    Hola desde variable string 32
-DELIMITADOR_EXP           !                    32
-COUT                      cout                 33
-SEPARADOR                 ~                    33
-INICIO_PARENTESIS         <|                   33
-CADENA                    === PRUEBA STRING VARIABLE === 33
-FIN_PARENTESIS            |>                   33
-DELIMITADOR_EXP           !                    33
-COUT                      cout                 33
-SEPARADOR                 ~                    33
-INICIO_PARENTESIS         <|                   33
-CADENA                    
-                    33
-FIN_PARENTESIS            |>                   33
-DELIMITADOR_EXP           !                    33
-COUT                      cout                 34
+FLOAT                     float                30
+SEPARADOR                 ~                    30
+IDENTIFICADOR             r                    30
+ASIGNACION                <-                   30
+IDENTIFICADOR             temp                 30
+MAS                       +                    30
+NUMERO_FLOTANTE           1.0                  30
+DELIMITADOR_EXP           !                    30
+RETURN                    return               31
+SEPARADOR                 ~                    31
+IDENTIFICADOR             r                    31
+DELIMITADOR_EXP           !                    31
+FIN_BLOQUE                :|                   32
+EMPTY                     empty                34
+SEPARADOR                 ~                    34
+PALABRA_MAIN              __main__             34
 SEPARADOR                 ~                    34
 INICIO_PARENTESIS         <|                   34
-IDENTIFICADOR             saludo               34
 FIN_PARENTESIS            |>                   34
-DELIMITADOR_EXP           !                    34
-COUT                      cout                 34
-SEPARADOR                 ~                    34
-INICIO_PARENTESIS         <|                   34
-CADENA                    
-                    34
-FIN_PARENTESIS            |>                   34
-DELIMITADOR_EXP           !                    34
-COUT                      cout                 35
+INICIO_BLOQUE             |:                   34
+BOOL                      bool                 35
 SEPARADOR                 ~                    35
-INICIO_PARENTESIS         <|                   35
-CADENA                    
-                    35
-FIN_PARENTESIS            |>                   35
+IDENTIFICADOR             b                    35
+ASIGNACION                <-                   35
+BOOLEANO                  true                 35
 DELIMITADOR_EXP           !                    35
-INT                       int                  38
+BOOL                      bool                 36
+SEPARADOR                 ~                    36
+IDENTIFICADOR             nb                   36
+ASIGNACION                <-                   36
+BOOLEANO                  false                36
+DELIMITADOR_EXP           !                    36
+CHAR                      char                 37
+SEPARADOR                 ~                    37
+IDENTIFICADOR             c                    37
+ASIGNACION                <-                   37
+CARACTER                  A                    37
+DELIMITADOR_EXP           !                    37
+FLOAT                     float                38
 SEPARADOR                 ~                    38
-IDENTIFICADOR             numeros              38
-INICIO_INDICE             <<                   38
-NUMERO_ENTERO             2                    38
-FIN_INDICE                >>                   38
-INICIO_INDICE             <<                   38
-NUMERO_ENTERO             2                    38
-FIN_INDICE                >>                   38
+IDENTIFICADOR             f                    38
 ASIGNACION                <-                   38
-INICIO_BLOQUE             |:                   38
-NUMERO_ENTERO             1                    38
-COMA                      ,                    38
-NUMERO_ENTERO             2                    38
-COMA                      ,                    38
-NUMERO_ENTERO             3                    38
-COMA                      ,                    38
-NUMERO_ENTERO             4                    38
-FIN_BLOQUE                :|                   38
+NUMERO_FLOTANTE           3.5                  38
 DELIMITADOR_EXP           !                    38
 INT                       int                  39
 SEPARADOR                 ~                    39
-IDENTIFICADOR             valorLeido           39
+IDENTIFICADOR             i                    39
 ASIGNACION                <-                   39
-NUMERO_ENTERO             0                    39
+NUMERO_ENTERO             10                   39
 DELIMITADOR_EXP           !                    39
-COUT                      cout                 40
+FLOAT                     float                40
 SEPARADOR                 ~                    40
-INICIO_PARENTESIS         <|                   40
-CADENA                    === PRUEBA ARREGLO ENTERO === 40
-FIN_PARENTESIS            |>                   40
+IDENTIFICADOR             arrF                 40
+INICIO_INDICE             <<                   40
+NUMERO_ENTERO             2                    40
+FIN_INDICE                >>                   40
+INICIO_INDICE             <<                   40
+NUMERO_ENTERO             2                    40
+FIN_INDICE                >>                   40
+ASIGNACION                <-                   40
+INICIO_BLOQUE             |:                   40
+NUMERO_FLOTANTE           0.0                  40
+COMA                      ,                    40
+NUMERO_FLOTANTE           0.0                  40
+COMA                      ,                    40
+NUMERO_FLOTANTE           0.0                  40
+COMA                      ,                    40
+NUMERO_FLOTANTE           0.0                  40
+FIN_BLOQUE                :|                   40
 DELIMITADOR_EXP           !                    40
-COUT                      cout                 40
-SEPARADOR                 ~                    40
-INICIO_PARENTESIS         <|                   40
-CADENA                    
-                    40
-FIN_PARENTESIS            |>                   40
-DELIMITADOR_EXP           !                    40
-IDENTIFICADOR             valorLeido           41
+INT                       int                  41
+SEPARADOR                 ~                    41
+IDENTIFICADOR             swR                  41
 ASIGNACION                <-                   41
-IDENTIFICADOR             numeros              41
-INICIO_INDICE             <<                   41
 NUMERO_ENTERO             0                    41
-FIN_INDICE                >>                   41
-INICIO_INDICE             <<                   41
-NUMERO_ENTERO             0                    41
-FIN_INDICE                >>                   41
 DELIMITADOR_EXP           !                    41
-COUT                      cout                 42
-SEPARADOR                 ~                    42
-INICIO_PARENTESIS         <|                   42
-CADENA                    numeros[0][0] =      42
-FIN_PARENTESIS            |>                   42
-DELIMITADOR_EXP           !                    42
-COUT                      cout                 42
-SEPARADOR                 ~                    42
-INICIO_PARENTESIS         <|                   42
-IDENTIFICADOR             valorLeido           42
-FIN_PARENTESIS            |>                   42
-DELIMITADOR_EXP           !                    42
-COUT                      cout                 42
-SEPARADOR                 ~                    42
-INICIO_PARENTESIS         <|                   42
+COUT                      cout                 43
+SEPARADOR                 ~                    43
+INICIO_PARENTESIS         <|                   43
+CADENA                    === BOOL ===         43
+FIN_PARENTESIS            |>                   43
+DELIMITADOR_EXP           !                    43
+COUT                      cout                 43
+SEPARADOR                 ~                    43
+INICIO_PARENTESIS         <|                   43
 CADENA                    
-                    42
-FIN_PARENTESIS            |>                   42
-DELIMITADOR_EXP           !                    42
-IDENTIFICADOR             valorLeido           43
-ASIGNACION                <-                   43
-IDENTIFICADOR             numeros              43
-INICIO_INDICE             <<                   43
-NUMERO_ENTERO             1                    43
-FIN_INDICE                >>                   43
-INICIO_INDICE             <<                   43
-NUMERO_ENTERO             1                    43
-FIN_INDICE                >>                   43
+                    43
+FIN_PARENTESIS            |>                   43
 DELIMITADOR_EXP           !                    43
 COUT                      cout                 44
 SEPARADOR                 ~                    44
 INICIO_PARENTESIS         <|                   44
-CADENA                    numeros[1][1] =      44
+CADENA                    b =                  44
 FIN_PARENTESIS            |>                   44
 DELIMITADOR_EXP           !                    44
 COUT                      cout                 44
 SEPARADOR                 ~                    44
 INICIO_PARENTESIS         <|                   44
-IDENTIFICADOR             valorLeido           44
+IDENTIFICADOR             b                    44
 FIN_PARENTESIS            |>                   44
 DELIMITADOR_EXP           !                    44
 COUT                      cout                 44
@@ -242,45 +273,30 @@ CADENA
                     44
 FIN_PARENTESIS            |>                   44
 DELIMITADOR_EXP           !                    44
-IDENTIFICADOR             numeros              45
-INICIO_INDICE             <<                   45
-NUMERO_ENTERO             0                    45
-FIN_INDICE                >>                   45
-INICIO_INDICE             <<                   45
-NUMERO_ENTERO             1                    45
-FIN_INDICE                >>                   45
+IDENTIFICADOR             nb                   45
 ASIGNACION                <-                   45
-NUMERO_ENTERO             99                   45
+OPERADOR_LOGICO_UNARIO    $                    45
+IDENTIFICADOR             b                    45
 DELIMITADOR_EXP           !                    45
-IDENTIFICADOR             valorLeido           46
-ASIGNACION                <-                   46
-IDENTIFICADOR             numeros              46
-INICIO_INDICE             <<                   46
-NUMERO_ENTERO             0                    46
-FIN_INDICE                >>                   46
-INICIO_INDICE             <<                   46
-NUMERO_ENTERO             1                    46
-FIN_INDICE                >>                   46
+COUT                      cout                 46
+SEPARADOR                 ~                    46
+INICIO_PARENTESIS         <|                   46
+CADENA                    !b =                 46
+FIN_PARENTESIS            |>                   46
 DELIMITADOR_EXP           !                    46
-COUT                      cout                 47
-SEPARADOR                 ~                    47
-INICIO_PARENTESIS         <|                   47
-CADENA                    numeros[0][1] tras escribir 99 =  47
-FIN_PARENTESIS            |>                   47
-DELIMITADOR_EXP           !                    47
-COUT                      cout                 47
-SEPARADOR                 ~                    47
-INICIO_PARENTESIS         <|                   47
-IDENTIFICADOR             valorLeido           47
-FIN_PARENTESIS            |>                   47
-DELIMITADOR_EXP           !                    47
-COUT                      cout                 47
-SEPARADOR                 ~                    47
-INICIO_PARENTESIS         <|                   47
+COUT                      cout                 46
+SEPARADOR                 ~                    46
+INICIO_PARENTESIS         <|                   46
+IDENTIFICADOR             nb                   46
+FIN_PARENTESIS            |>                   46
+DELIMITADOR_EXP           !                    46
+COUT                      cout                 46
+SEPARADOR                 ~                    46
+INICIO_PARENTESIS         <|                   46
 CADENA                    
-                    47
-FIN_PARENTESIS            |>                   47
-DELIMITADOR_EXP           !                    47
+                    46
+FIN_PARENTESIS            |>                   46
+DELIMITADOR_EXP           !                    46
 COUT                      cout                 48
 SEPARADOR                 ~                    48
 INICIO_PARENTESIS         <|                   48
@@ -288,35 +304,60 @@ CADENA
                     48
 FIN_PARENTESIS            |>                   48
 DELIMITADOR_EXP           !                    48
-FLOAT                     float                51
-SEPARADOR                 ~                    51
-IDENTIFICADOR             fraccion             51
-ASIGNACION                <-                   51
-FRACCIONARIO              5//6                 51
-DELIMITADOR_EXP           !                    51
-COUT                      cout                 52
-SEPARADOR                 ~                    52
-INICIO_PARENTESIS         <|                   52
-CADENA                    === PRUEBA FRACCIONARIO === 52
-FIN_PARENTESIS            |>                   52
-DELIMITADOR_EXP           !                    52
-COUT                      cout                 52
-SEPARADOR                 ~                    52
-INICIO_PARENTESIS         <|                   52
+COUT                      cout                 49
+SEPARADOR                 ~                    49
+INICIO_PARENTESIS         <|                   49
+CADENA                    === LOGICOS @ # ===  49
+FIN_PARENTESIS            |>                   49
+DELIMITADOR_EXP           !                    49
+COUT                      cout                 49
+SEPARADOR                 ~                    49
+INICIO_PARENTESIS         <|                   49
 CADENA                    
-                    52
-FIN_PARENTESIS            |>                   52
+                    49
+FIN_PARENTESIS            |>                   49
+DELIMITADOR_EXP           !                    49
+IDENTIFICADOR             b                    50
+ASIGNACION                <-                   50
+BOOLEANO                  true                 50
+OPERADOR_LOGICO_BINARIO   @                    50
+BOOLEANO                  true                 50
+DELIMITADOR_EXP           !                    50
+COUT                      cout                 51
+SEPARADOR                 ~                    51
+INICIO_PARENTESIS         <|                   51
+CADENA                    true @ true =        51
+FIN_PARENTESIS            |>                   51
+DELIMITADOR_EXP           !                    51
+COUT                      cout                 51
+SEPARADOR                 ~                    51
+INICIO_PARENTESIS         <|                   51
+IDENTIFICADOR             b                    51
+FIN_PARENTESIS            |>                   51
+DELIMITADOR_EXP           !                    51
+COUT                      cout                 51
+SEPARADOR                 ~                    51
+INICIO_PARENTESIS         <|                   51
+CADENA                    
+                    51
+FIN_PARENTESIS            |>                   51
+DELIMITADOR_EXP           !                    51
+IDENTIFICADOR             b                    52
+ASIGNACION                <-                   52
+BOOLEANO                  true                 52
+OPERADOR_LOGICO_BINARIO   #                    52
+BOOLEANO                  false                52
 DELIMITADOR_EXP           !                    52
 COUT                      cout                 53
 SEPARADOR                 ~                    53
 INICIO_PARENTESIS         <|                   53
-CADENA                    fraccion (5/6) =     53
+CADENA                    true # false =       53
 FIN_PARENTESIS            |>                   53
 DELIMITADOR_EXP           !                    53
 COUT                      cout                 53
 SEPARADOR                 ~                    53
 INICIO_PARENTESIS         <|                   53
-IDENTIFICADOR             fraccion             53
+IDENTIFICADOR             b                    53
 FIN_PARENTESIS            |>                   53
 DELIMITADOR_EXP           !                    53
 COUT                      cout                 53
@@ -326,42 +367,90 @@ CADENA
                     53
 FIN_PARENTESIS            |>                   53
 DELIMITADOR_EXP           !                    53
-COUT                      cout                 54
-SEPARADOR                 ~                    54
-INICIO_PARENTESIS         <|                   54
+COUT                      cout                 55
+SEPARADOR                 ~                    55
+INICIO_PARENTESIS         <|                   55
 CADENA                    
-                    54
-FIN_PARENTESIS            |>                   54
-DELIMITADOR_EXP           !                    54
-INT                       int                  57
+                    55
+FIN_PARENTESIS            |>                   55
+DELIMITADOR_EXP           !                    55
+COUT                      cout                 56
+SEPARADOR                 ~                    56
+INICIO_PARENTESIS         <|                   56
+CADENA                    === RELACIONALES === 56
+FIN_PARENTESIS            |>                   56
+DELIMITADOR_EXP           !                    56
+COUT                      cout                 56
+SEPARADOR                 ~                    56
+INICIO_PARENTESIS         <|                   56
+CADENA                    
+                    56
+FIN_PARENTESIS            |>                   56
+DELIMITADOR_EXP           !                    56
+BOOL                      bool                 57
 SEPARADOR                 ~                    57
-IDENTIFICADOR             edad                 57
+IDENTIFICADOR             r1                   57
 ASIGNACION                <-                   57
-NUMERO_ENTERO             0                    57
+GREATER_T                 greather_t           57
+INICIO_PARENTESIS         <|                   57
+NUMERO_ENTERO             10                   57
+COMA                      ,                    57
+NUMERO_ENTERO             5                    57
+FIN_PARENTESIS            |>                   57
 DELIMITADOR_EXP           !                    57
-COUT                      cout                 58
+BOOL                      bool                 58
 SEPARADOR                 ~                    58
+IDENTIFICADOR             r2                   58
+ASIGNACION                <-                   58
+GREATER_TE                greather_te          58
 INICIO_PARENTESIS         <|                   58
-CADENA                    === PRUEBA CIN ENTERO === 58
+NUMERO_ENTERO             5                    58
+COMA                      ,                    58
+NUMERO_ENTERO             5                    58
 FIN_PARENTESIS            |>                   58
 DELIMITADOR_EXP           !                    58
-COUT                      cout                 58
-SEPARADOR                 ~                    58
-INICIO_PARENTESIS         <|                   58
-CADENA                    
-                    58
-FIN_PARENTESIS            |>                   58
-DELIMITADOR_EXP           !                    58
-COUT                      cout                 59
+BOOL                      bool                 59
 SEPARADOR                 ~                    59
+IDENTIFICADOR             r3                   59
+ASIGNACION                <-                   59
+N_EQUAL                   n_equal              59
 INICIO_PARENTESIS         <|                   59
-CADENA                    Ingrese un numero entero:  59
+NUMERO_ENTERO             10                   59
+COMA                      ,                    59
+NUMERO_ENTERO             20                   59
 FIN_PARENTESIS            |>                   59
 DELIMITADOR_EXP           !                    59
-CIN                       cin                  60
+COUT                      cout                 60
 SEPARADOR                 ~                    60
-IDENTIFICADOR             edad                 60
+INICIO_PARENTESIS         <|                   60
+CADENA                    greather_t(10,5) =   60
+FIN_PARENTESIS            |>                   60
 DELIMITADOR_EXP           !                    60
+COUT                      cout                 60
+SEPARADOR                 ~                    60
+INICIO_PARENTESIS         <|                   60
+IDENTIFICADOR             r1                   60
+FIN_PARENTESIS            |>                   60
+DELIMITADOR_EXP           !                    60
+COUT                      cout                 60
+SEPARADOR                 ~                    60
+INICIO_PARENTESIS         <|                   60
+CADENA                    
+                    60
+FIN_PARENTESIS            |>                   60
+DELIMITADOR_EXP           !                    60
+COUT                      cout                 61
+SEPARADOR                 ~                    61
+INICIO_PARENTESIS         <|                   61
+CADENA                    greather_te(5,5) =   61
+FIN_PARENTESIS            |>                   61
+DELIMITADOR_EXP           !                    61
+COUT                      cout                 61
+SEPARADOR                 ~                    61
+INICIO_PARENTESIS         <|                   61
+IDENTIFICADOR             r2                   61
+FIN_PARENTESIS            |>                   61
+DELIMITADOR_EXP           !                    61
 COUT                      cout                 61
 SEPARADOR                 ~                    61
 INICIO_PARENTESIS         <|                   61
@@ -372,13 +461,13 @@ DELIMITADOR_EXP           !                    61
 COUT                      cout                 62
 SEPARADOR                 ~                    62
 INICIO_PARENTESIS         <|                   62
-CADENA                    edad leida =         62
+CADENA                    n_equal(10,20) =     62
 FIN_PARENTESIS            |>                   62
 DELIMITADOR_EXP           !                    62
 COUT                      cout                 62
 SEPARADOR                 ~                    62
 INICIO_PARENTESIS         <|                   62
-IDENTIFICADOR             edad                 62
+IDENTIFICADOR             r3                   62
 FIN_PARENTESIS            |>                   62
 DELIMITADOR_EXP           !                    62
 COUT                      cout                 62
@@ -388,23 +477,45 @@ CADENA
                     62
 FIN_PARENTESIS            |>                   62
 DELIMITADOR_EXP           !                    62
-COUT                      cout                 63
-SEPARADOR                 ~                    63
-INICIO_PARENTESIS         <|                   63
+COUT                      cout                 64
+SEPARADOR                 ~                    64
+INICIO_PARENTESIS         <|                   64
 CADENA                    
-                    63
-FIN_PARENTESIS            |>                   63
-DELIMITADOR_EXP           !                    63
+                    64
+FIN_PARENTESIS            |>                   64
+DELIMITADOR_EXP           !                    64
+COUT                      cout                 65
+SEPARADOR                 ~                    65
+INICIO_PARENTESIS         <|                   65
+CADENA                    === NEGATIVO UNARIO === 65
+FIN_PARENTESIS            |>                   65
+DELIMITADOR_EXP           !                    65
+COUT                      cout                 65
+SEPARADOR                 ~                    65
+INICIO_PARENTESIS         <|                   65
+CADENA                    
+                    65
+FIN_PARENTESIS            |>                   65
+DELIMITADOR_EXP           !                    65
 INT                       int                  66
 SEPARADOR                 ~                    66
-IDENTIFICADOR             resultadoDecremento  66
+IDENTIFICADOR             neg                  66
 ASIGNACION                <-                   66
-NUMERO_ENTERO             0                    66
+IDENTIFICADOR             i                    66
+MULTIPLICACION            *                    66
+MENOS                     -                    66
+NUMERO_ENTERO             1                    66
 DELIMITADOR_EXP           !                    66
 COUT                      cout                 67
 SEPARADOR                 ~                    67
 INICIO_PARENTESIS         <|                   67
-CADENA                    === PRUEBA DECREMENTO (--) === 67
+CADENA                    -10 =                67
+FIN_PARENTESIS            |>                   67
+DELIMITADOR_EXP           !                    67
+COUT                      cout                 67
+SEPARADOR                 ~                    67
+INICIO_PARENTESIS         <|                   67
+IDENTIFICADOR             neg                  67
 FIN_PARENTESIS            |>                   67
 DELIMITADOR_EXP           !                    67
 COUT                      cout                 67
@@ -414,25 +525,25 @@ CADENA
                     67
 FIN_PARENTESIS            |>                   67
 DELIMITADOR_EXP           !                    67
-IDENTIFICADOR             resultadoDecremento  68
+FLOAT                     float                68
+SEPARADOR                 ~                    68
+IDENTIFICADOR             negF                 68
 ASIGNACION                <-                   68
-IDENTIFICADOR             probarDecremento     68
-INICIO_PARENTESIS         <|                   68
-NUMERO_ENTERO             10                   68
-COMA                      ,                    68
-NUMERO_ENTERO             3                    68
-FIN_PARENTESIS            |>                   68
+IDENTIFICADOR             f                    68
+MULTIPLICACION            *                    68
+MENOS                     -                    68
+NUMERO_FLOTANTE           1.0                  68
 DELIMITADOR_EXP           !                    68
 COUT                      cout                 69
 SEPARADOR                 ~                    69
 INICIO_PARENTESIS         <|                   69
-CADENA                    probarDecremento(10, 3) =  69
+CADENA                    -3.5 =               69
 FIN_PARENTESIS            |>                   69
 DELIMITADOR_EXP           !                    69
 COUT                      cout                 69
 SEPARADOR                 ~                    69
 INICIO_PARENTESIS         <|                   69
-IDENTIFICADOR             resultadoDecremento  69
+IDENTIFICADOR             negF                 69
 FIN_PARENTESIS            |>                   69
 DELIMITADOR_EXP           !                    69
 COUT                      cout                 69
@@ -442,17 +553,17 @@ CADENA
                     69
 FIN_PARENTESIS            |>                   69
 DELIMITADOR_EXP           !                    69
-COUT                      cout                 70
-SEPARADOR                 ~                    70
-INICIO_PARENTESIS         <|                   70
+COUT                      cout                 71
+SEPARADOR                 ~                    71
+INICIO_PARENTESIS         <|                   71
 CADENA                    
-                    70
-FIN_PARENTESIS            |>                   70
-DELIMITADOR_EXP           !                    70
+                    71
+FIN_PARENTESIS            |>                   71
+DELIMITADOR_EXP           !                    71
 COUT                      cout                 72
 SEPARADOR                 ~                    72
 INICIO_PARENTESIS         <|                   72
-CADENA                    === FIN DE PRUEBA DE COBERTURA === 72
+CADENA                    === EXPONENCIAL ===  72
 FIN_PARENTESIS            |>                   72
 DELIMITADOR_EXP           !                    72
 COUT                      cout                 72
@@ -462,6 +573,369 @@ CADENA
                     72
 FIN_PARENTESIS            |>                   72
 DELIMITADOR_EXP           !                    72
-FIN_BLOQUE                :|                   73
+FLOAT                     float                73
+SEPARADOR                 ~                    73
+IDENTIFICADOR             expR                 73
+ASIGNACION                <-                   73
+IDENTIFICADOR             exponencial          73
+INICIO_PARENTESIS         <|                   73
+NUMERO_FLOTANTE           5.0                  73
+FIN_PARENTESIS            |>                   73
+DELIMITADOR_EXP           !                    73
+COUT                      cout                 74
+SEPARADOR                 ~                    74
+INICIO_PARENTESIS         <|                   74
+CADENA                    5.0 * 2000 + 1.0 =   74
+FIN_PARENTESIS            |>                   74
+DELIMITADOR_EXP           !                    74
+COUT                      cout                 74
+SEPARADOR                 ~                    74
+INICIO_PARENTESIS         <|                   74
+IDENTIFICADOR             expR                 74
+FIN_PARENTESIS            |>                   74
+DELIMITADOR_EXP           !                    74
+COUT                      cout                 74
+SEPARADOR                 ~                    74
+INICIO_PARENTESIS         <|                   74
+CADENA                    
+                    74
+FIN_PARENTESIS            |>                   74
+DELIMITADOR_EXP           !                    74
+COUT                      cout                 76
+SEPARADOR                 ~                    76
+INICIO_PARENTESIS         <|                   76
+CADENA                    
+                    76
+FIN_PARENTESIS            |>                   76
+DELIMITADOR_EXP           !                    76
+COUT                      cout                 77
+SEPARADOR                 ~                    77
+INICIO_PARENTESIS         <|                   77
+CADENA                    === CIN FLOAT ===    77
+FIN_PARENTESIS            |>                   77
+DELIMITADOR_EXP           !                    77
+COUT                      cout                 77
+SEPARADOR                 ~                    77
+INICIO_PARENTESIS         <|                   77
+CADENA                    
+                    77
+FIN_PARENTESIS            |>                   77
+DELIMITADOR_EXP           !                    77
+FLOAT                     float                78
+SEPARADOR                 ~                    78
+IDENTIFICADOR             entradaF             78
+ASIGNACION                <-                   78
+NUMERO_FLOTANTE           0.0                  78
+DELIMITADOR_EXP           !                    78
+COUT                      cout                 79
+SEPARADOR                 ~                    79
+INICIO_PARENTESIS         <|                   79
+CADENA                    Ingrese un float:    79
+FIN_PARENTESIS            |>                   79
+DELIMITADOR_EXP           !                    79
+CIN                       cin                  80
+SEPARADOR                 ~                    80
+IDENTIFICADOR             entradaF             80
+DELIMITADOR_EXP           !                    80
+COUT                      cout                 81
+SEPARADOR                 ~                    81
+INICIO_PARENTESIS         <|                   81
+CADENA                    Leiste:              81
+FIN_PARENTESIS            |>                   81
+DELIMITADOR_EXP           !                    81
+COUT                      cout                 81
+SEPARADOR                 ~                    81
+INICIO_PARENTESIS         <|                   81
+IDENTIFICADOR             entradaF             81
+FIN_PARENTESIS            |>                   81
+DELIMITADOR_EXP           !                    81
+COUT                      cout                 81
+SEPARADOR                 ~                    81
+INICIO_PARENTESIS         <|                   81
+CADENA                    
+                    81
+FIN_PARENTESIS            |>                   81
+DELIMITADOR_EXP           !                    81
+COUT                      cout                 83
+SEPARADOR                 ~                    83
+INICIO_PARENTESIS         <|                   83
+CADENA                    
+                    83
+FIN_PARENTESIS            |>                   83
+DELIMITADOR_EXP           !                    83
+COUT                      cout                 84
+SEPARADOR                 ~                    84
+INICIO_PARENTESIS         <|                   84
+CADENA                    === ARREGLO FLOAT === 84
+FIN_PARENTESIS            |>                   84
+DELIMITADOR_EXP           !                    84
+COUT                      cout                 84
+SEPARADOR                 ~                    84
+INICIO_PARENTESIS         <|                   84
+CADENA                    
+                    84
+FIN_PARENTESIS            |>                   84
+DELIMITADOR_EXP           !                    84
+IDENTIFICADOR             arrF                 85
+INICIO_INDICE             <<                   85
+NUMERO_ENTERO             0                    85
+FIN_INDICE                >>                   85
+INICIO_INDICE             <<                   85
+NUMERO_ENTERO             0                    85
+FIN_INDICE                >>                   85
+ASIGNACION                <-                   85
+NUMERO_FLOTANTE           1.5                  85
+DELIMITADOR_EXP           !                    85
+IDENTIFICADOR             arrF                 86
+INICIO_INDICE             <<                   86
+NUMERO_ENTERO             0                    86
+FIN_INDICE                >>                   86
+INICIO_INDICE             <<                   86
+NUMERO_ENTERO             1                    86
+FIN_INDICE                >>                   86
+ASIGNACION                <-                   86
+NUMERO_FLOTANTE           2.5                  86
+DELIMITADOR_EXP           !                    86
+IDENTIFICADOR             arrF                 87
+INICIO_INDICE             <<                   87
+NUMERO_ENTERO             1                    87
+FIN_INDICE                >>                   87
+INICIO_INDICE             <<                   87
+NUMERO_ENTERO             0                    87
+FIN_INDICE                >>                   87
+ASIGNACION                <-                   87
+NUMERO_FLOTANTE           3.5                  87
+DELIMITADOR_EXP           !                    87
+IDENTIFICADOR             arrF                 88
+INICIO_INDICE             <<                   88
+NUMERO_ENTERO             1                    88
+FIN_INDICE                >>                   88
+INICIO_INDICE             <<                   88
+NUMERO_ENTERO             1                    88
+FIN_INDICE                >>                   88
+ASIGNACION                <-                   88
+NUMERO_FLOTANTE           4.5                  88
+DELIMITADOR_EXP           !                    88
+COUT                      cout                 89
+SEPARADOR                 ~                    89
+INICIO_PARENTESIS         <|                   89
+CADENA                    arrF[0][0] =         89
+FIN_PARENTESIS            |>                   89
+DELIMITADOR_EXP           !                    89
+COUT                      cout                 89
+SEPARADOR                 ~                    89
+INICIO_PARENTESIS         <|                   89
+IDENTIFICADOR             arrF                 89
+INICIO_INDICE             <<                   89
+NUMERO_ENTERO             0                    89
+FIN_INDICE                >>                   89
+INICIO_INDICE             <<                   89
+NUMERO_ENTERO             0                    89
+FIN_INDICE                >>                   89
+FIN_PARENTESIS            |>                   89
+DELIMITADOR_EXP           !                    89
+COUT                      cout                 89
+SEPARADOR                 ~                    89
+INICIO_PARENTESIS         <|                   89
+CADENA                    
+                    89
+FIN_PARENTESIS            |>                   89
+DELIMITADOR_EXP           !                    89
+COUT                      cout                 90
+SEPARADOR                 ~                    90
+INICIO_PARENTESIS         <|                   90
+CADENA                    arrF[1][1] =         90
+FIN_PARENTESIS            |>                   90
+DELIMITADOR_EXP           !                    90
+COUT                      cout                 90
+SEPARADOR                 ~                    90
+INICIO_PARENTESIS         <|                   90
+IDENTIFICADOR             arrF                 90
+INICIO_INDICE             <<                   90
+NUMERO_ENTERO             1                    90
+FIN_INDICE                >>                   90
+INICIO_INDICE             <<                   90
+NUMERO_ENTERO             1                    90
+FIN_INDICE                >>                   90
+FIN_PARENTESIS            |>                   90
+DELIMITADOR_EXP           !                    90
+COUT                      cout                 90
+SEPARADOR                 ~                    90
+INICIO_PARENTESIS         <|                   90
+CADENA                    
+                    90
+FIN_PARENTESIS            |>                   90
+DELIMITADOR_EXP           !                    90
+COUT                      cout                 92
+SEPARADOR                 ~                    92
+INICIO_PARENTESIS         <|                   92
+CADENA                    
+                    92
+FIN_PARENTESIS            |>                   92
+DELIMITADOR_EXP           !                    92
+COUT                      cout                 93
+SEPARADOR                 ~                    93
+INICIO_PARENTESIS         <|                   93
+CADENA                    === RETURN CHAR (via switch) === 93
+FIN_PARENTESIS            |>                   93
+DELIMITADOR_EXP           !                    93
+COUT                      cout                 93
+SEPARADOR                 ~                    93
+INICIO_PARENTESIS         <|                   93
+CADENA                    
+                    93
+FIN_PARENTESIS            |>                   93
+DELIMITADOR_EXP           !                    93
+IDENTIFICADOR             swR                  94
+ASIGNACION                <-                   94
+IDENTIFICADOR             evaluarChar          94
+INICIO_PARENTESIS         <|                   94
+CARACTER                  A                    94
+FIN_PARENTESIS            |>                   94
+DELIMITADOR_EXP           !                    94
+COUT                      cout                 95
+SEPARADOR                 ~                    95
+INICIO_PARENTESIS         <|                   95
+CADENA                    evaluarChar('A') =   95
+FIN_PARENTESIS            |>                   95
+DELIMITADOR_EXP           !                    95
+COUT                      cout                 95
+SEPARADOR                 ~                    95
+INICIO_PARENTESIS         <|                   95
+IDENTIFICADOR             swR                  95
+FIN_PARENTESIS            |>                   95
+DELIMITADOR_EXP           !                    95
+COUT                      cout                 95
+SEPARADOR                 ~                    95
+INICIO_PARENTESIS         <|                   95
+CADENA                    
+                    95
+FIN_PARENTESIS            |>                   95
+DELIMITADOR_EXP           !                    95
+IDENTIFICADOR             swR                  96
+ASIGNACION                <-                   96
+IDENTIFICADOR             evaluarChar          96
+INICIO_PARENTESIS         <|                   96
+CARACTER                  X                    96
+FIN_PARENTESIS            |>                   96
+DELIMITADOR_EXP           !                    96
+COUT                      cout                 97
+SEPARADOR                 ~                    97
+INICIO_PARENTESIS         <|                   97
+CADENA                    evaluarChar('X') =   97
+FIN_PARENTESIS            |>                   97
+DELIMITADOR_EXP           !                    97
+COUT                      cout                 97
+SEPARADOR                 ~                    97
+INICIO_PARENTESIS         <|                   97
+IDENTIFICADOR             swR                  97
+FIN_PARENTESIS            |>                   97
+DELIMITADOR_EXP           !                    97
+COUT                      cout                 97
+SEPARADOR                 ~                    97
+INICIO_PARENTESIS         <|                   97
+CADENA                    
+                    97
+FIN_PARENTESIS            |>                   97
+DELIMITADOR_EXP           !                    97
+COUT                      cout                 99
+SEPARADOR                 ~                    99
+INICIO_PARENTESIS         <|                   99
+CADENA                    
+                    99
+FIN_PARENTESIS            |>                   99
+DELIMITADOR_EXP           !                    99
+COUT                      cout                 100
+SEPARADOR                 ~                    100
+INICIO_PARENTESIS         <|                   100
+CADENA                    === RETURN BOOL ===  100
+FIN_PARENTESIS            |>                   100
+DELIMITADOR_EXP           !                    100
+COUT                      cout                 100
+SEPARADOR                 ~                    100
+INICIO_PARENTESIS         <|                   100
+CADENA                    
+                    100
+FIN_PARENTESIS            |>                   100
+DELIMITADOR_EXP           !                    100
+BOOL                      bool                 101
+SEPARADOR                 ~                    101
+IDENTIFICADOR             v                    101
+ASIGNACION                <-                   101
+IDENTIFICADOR             verificar            101
+INICIO_PARENTESIS         <|                   101
+NUMERO_ENTERO             10                   101
+COMA                      ,                    101
+NUMERO_FLOTANTE           3.5                  101
+FIN_PARENTESIS            |>                   101
+DELIMITADOR_EXP           !                    101
+COUT                      cout                 102
+SEPARADOR                 ~                    102
+INICIO_PARENTESIS         <|                   102
+CADENA                    verificar(10,3.5) =  102
+FIN_PARENTESIS            |>                   102
+DELIMITADOR_EXP           !                    102
+COUT                      cout                 102
+SEPARADOR                 ~                    102
+INICIO_PARENTESIS         <|                   102
+IDENTIFICADOR             v                    102
+FIN_PARENTESIS            |>                   102
+DELIMITADOR_EXP           !                    102
+COUT                      cout                 102
+SEPARADOR                 ~                    102
+INICIO_PARENTESIS         <|                   102
+CADENA                    
+                    102
+FIN_PARENTESIS            |>                   102
+DELIMITADOR_EXP           !                    102
+IDENTIFICADOR             v                    103
+ASIGNACION                <-                   103
+IDENTIFICADOR             verificar            103
+INICIO_PARENTESIS         <|                   103
+NUMERO_ENTERO             0                    103
+COMA                      ,                    103
+NUMERO_FLOTANTE           0.5                  103
+FIN_PARENTESIS            |>                   103
+DELIMITADOR_EXP           !                    103
+COUT                      cout                 104
+SEPARADOR                 ~                    104
+INICIO_PARENTESIS         <|                   104
+CADENA                    verificar(0,0.5) =   104
+FIN_PARENTESIS            |>                   104
+DELIMITADOR_EXP           !                    104
+COUT                      cout                 104
+SEPARADOR                 ~                    104
+INICIO_PARENTESIS         <|                   104
+IDENTIFICADOR             v                    104
+FIN_PARENTESIS            |>                   104
+DELIMITADOR_EXP           !                    104
+COUT                      cout                 104
+SEPARADOR                 ~                    104
+INICIO_PARENTESIS         <|                   104
+CADENA                    
+                    104
+FIN_PARENTESIS            |>                   104
+DELIMITADOR_EXP           !                    104
+COUT                      cout                 106
+SEPARADOR                 ~                    106
+INICIO_PARENTESIS         <|                   106
+CADENA                    
+                    106
+FIN_PARENTESIS            |>                   106
+DELIMITADOR_EXP           !                    106
+COUT                      cout                 107
+SEPARADOR                 ~                    107
+INICIO_PARENTESIS         <|                   107
+CADENA                    === FIN PRUEBAS ===  107
+FIN_PARENTESIS            |>                   107
+DELIMITADOR_EXP           !                    107
+COUT                      cout                 107
+SEPARADOR                 ~                    107
+INICIO_PARENTESIS         <|                   107
+CADENA                    
+                    107
+FIN_PARENTESIS            |>                   107
+DELIMITADOR_EXP           !                    107
+FIN_BLOQUE                :|                   108
 
 === FIN DEL ANALISIS ===

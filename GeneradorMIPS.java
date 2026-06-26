@@ -81,14 +81,34 @@ public class GeneradorMIPS {
     static boolean esLit(String s) { return esLitInt(s) || esLitFloat(s); }
 
     static boolean esFloat(String op) {
-        if (simbolosGlobales.containsKey(op)) return simbolosGlobales.get(op).equals("float");
+        if (simbolosGlobales.containsKey(op)) {
+            String tipo = simbolosGlobales.get(op);
+            return tipo.equals("float") || tipo.equals("float[]");
+        }
         return esLitFloat(op);
     }
 
+    static boolean esBool(String op) {
+        if (simbolosGlobales.containsKey(op)) {
+            return simbolosGlobales.get(op).equals("bool");
+        }
+        return false;
+    }
+
     static String tipoDe(String op) {
-        if (simbolosGlobales.containsKey(op)) return simbolosGlobales.get(op);
+        if (simbolosGlobales.containsKey(op)) {
+            String tipo = simbolosGlobales.get(op);
+            if (tipo.endsWith("[]")) return tipo.substring(0, tipo.length() - 2);
+            return tipo;
+        }
         if (esLitFloat(op)) return "float";
+        if (esLitInt(op)) return "int";
+        if (op.matches("(true|false)")) return "bool";
         return "int";
+    }
+
+    static boolean esArreglo(String var) {
+        return simbolosGlobales.containsKey(var) && simbolosGlobales.get(var).endsWith("[]");
     }
 
     // ===============================================================
@@ -269,7 +289,7 @@ public class GeneradorMIPS {
     }
 
     // ===============================================================
-    // SEGUNDA PASADA
+    // SEGUNDA PASADA 
     // ===============================================================
 
     static String segundaPasada() {
@@ -360,52 +380,96 @@ public class GeneradorMIPS {
             if (mAS.matches()) {
                 String arr=mAS.group(1), i1=mAS.group(2), i2=mAS.group(3), val=mAS.group(4);
                 int cols = arregloColumnas.getOrDefault(arr,1);
+                String tipoArr = simbolosGlobales.getOrDefault(arr, "int[]");
+                boolean esFloatArr = tipoArr.startsWith("float");
+                
                 sb.append(esLitInt(i1)?"li $t8, "+i1+"\n":load("$t8",i1));
                 sb.append("li $t9, ").append(cols).append("\nmul $t8, $t8, $t9\n");
                 sb.append(esLitInt(i2)?"li $t9, "+i2+"\n":load("$t9",i2));
                 sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t8, $t9, $t8\n");
-                if (simbolosGlobales.getOrDefault(arr,"").startsWith("float") || esFloat(val)) {
+                
+              
+                if (esFloatArr || esFloat(val)) {
                     sb.append(loadF("$f0",val));
-                    sb.append("s.s $f0, 0($t8)\n");  // ← usa $t8 en vez de $t9
+                    sb.append("s.s $f0, 0($t8)\n");
                 } else {
                     sb.append(esLitInt(val)?"li $t0, "+val+"\n":load("$t0",val));
-                    sb.append("sw $t0, 0($t8)\n");   // ← usa $t8 en vez de $t9
+                    sb.append("sw $t0, 0($t8)\n");
                 }
                 continue;
             }
 
-            // ARREGLO LECTURA
+            // ARREGLO LECTURA 
             Matcher mAG = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)\\[(.+)\\]\\[(.+)\\]$").matcher(linea);
             if (mAG.matches()) {
                 String dest=mAG.group(1), arr=mAG.group(2), i1=mAG.group(3), i2=mAG.group(4);
                 int cols = arregloColumnas.getOrDefault(arr,1);
+                String tipoArr = simbolosGlobales.getOrDefault(arr, "int[]");
+                boolean esFloatArr = tipoArr.startsWith("float");
+                boolean destEsFloat = esFloat(dest);
+                
                 sb.append(esLitInt(i1)?"li $t8, "+i1+"\n":load("$t8",i1));
                 sb.append("li $t9, ").append(cols).append("\nmul $t8, $t8, $t9\n");
                 sb.append(esLitInt(i2)?"li $t9, "+i2+"\n":load("$t9",i2));
                 sb.append("add $t8, $t8, $t9\nsll $t8, $t8, 2\nla $t9, ").append(arr).append("\nadd $t8, $t9, $t8\n");
-                if (simbolosGlobales.getOrDefault(arr,"").startsWith("float") || esFloat(dest)) {
-                    sb.append("l.s $f0, 0($t8)\n");  // ← usa $t8
-                    sb.append(storeF("$f0",dest));
+                
+               
+                if (esFloatArr) {
+                    sb.append("l.s $f0, 0($t8)\n");
+                    if (destEsFloat) {
+                        sb.append(storeF("$f0",dest));
+                    } else {
+                        // Convertir float a int para destino entero
+                        sb.append("cvt.w.s $f0, $f0\n");
+                        sb.append("mfc1 $t0, $f0\n");
+                        sb.append(store("$t0",dest));
+                    }
                 } else {
-                    sb.append("lw $t0, 0($t8)\n");   // ← usa $t8
-                    sb.append(store("$t0",dest));
+                    sb.append("lw $t0, 0($t8)\n");
+                    if (destEsFloat) {
+                        // Convertir int a float para destino float
+                        sb.append("mtc1 $t0, $f0\n");
+                        sb.append("cvt.s.w $f0, $f0\n");
+                        sb.append(storeF("$f0",dest));
+                    } else {
+                        sb.append(store("$t0",dest));
+                    }
                 }
                 continue;
             }
+            
             // LITERAL NUMERICO
             Matcher mLit = Pattern.compile("^([\\w_]+)\\s*=\\s*(-?\\d+(\\.\\d+)?)$").matcher(linea);
             if (mLit.matches()) {
                 String dest=mLit.group(1), val=mLit.group(2);
-                if (val.contains(".")||esFloat(dest)) { sb.append("li.s $f0, ").append(val).append("\n"); sb.append(storeF("$f0",dest)); }
-                else { sb.append("li $t0, ").append(val).append("\n"); sb.append(store("$t0",dest)); }
+                if (val.contains(".")||esFloat(dest)) { 
+                    sb.append("li.s $f0, ").append(val).append("\n"); 
+                    sb.append(storeF("$f0",dest)); 
+                } else { 
+                    sb.append("li $t0, ").append(val).append("\n"); 
+                    sb.append(store("$t0",dest)); 
+                }
                 continue;
             }
 
             // BOOLEANO
             Matcher mB = Pattern.compile("^(\\w+)\\s*=\\s*(true|false)$").matcher(linea);
             if (mB.matches()) {
-                sb.append("li $t0, ").append(mB.group(2).equals("true")?"1":"0").append("\n");
-                sb.append(store("$t0",mB.group(1))); continue;
+                String dest = mB.group(1);
+                String tipoDest = tipoDe(dest);
+                int valor = mB.group(2).equals("true") ? 1 : 0;
+                
+                //Guardar bool como int (0/1), no como float
+                sb.append("li $t0, ").append(valor).append("\n");
+                // Si el destino es float por error, convertir
+                if (tipoDest.equals("float")) {
+                    sb.append("mtc1 $t0, $f0\n");
+                    sb.append("cvt.s.w $f0, $f0\n");
+                    sb.append(storeF("$f0",dest));
+                } else {
+                    sb.append(store("$t0",dest));
+                }
+                continue;
             }
 
             // CARACTER
@@ -423,12 +487,37 @@ public class GeneradorMIPS {
                 sb.append(store("$t0",mS.group(1))); continue;
             }
 
-            // COPIA
+            
             Matcher mCop = Pattern.compile("^(\\w+)\\s*=\\s*(\\w+)$").matcher(linea);
             if (mCop.matches()) {
                 String dest=mCop.group(1), src=mCop.group(2);
-                if (esFloat(dest)||esFloat(src)) { sb.append(loadF("$f0",src)); sb.append(storeF("$f0",dest)); }
-                else { sb.append(load("$t0",src)); sb.append(store("$t0",dest)); }
+                String tipoDest = tipoDe(dest);
+                String tipoSrc = tipoDe(src);
+                
+                // Si ambos son float, copia float
+                if (esFloat(dest) && esFloat(src)) {
+                    sb.append(loadF("$f0",src));
+                    sb.append(storeF("$f0",dest));
+                }
+                // Si destino es float y origen es int/bool, convertir
+                else if (esFloat(dest) && !esFloat(src)) {
+                    sb.append(load("$t0",src));
+                    sb.append("mtc1 $t0, $f0\n");
+                    sb.append("cvt.s.w $f0, $f0\n");
+                    sb.append(storeF("$f0",dest));
+                }
+                // Si destino es int y origen es float, convertir
+                else if (!esFloat(dest) && esFloat(src)) {
+                    sb.append(loadF("$f0",src));
+                    sb.append("cvt.w.s $f0, $f0\n");
+                    sb.append("mfc1 $t0, $f0\n");
+                    sb.append(store("$t0",dest));
+                }
+                // Ambos enteros
+                else {
+                    sb.append(load("$t0",src));
+                    sb.append(store("$t0",dest));
+                }
                 continue;
             }
 
@@ -478,13 +567,25 @@ public class GeneradorMIPS {
 
             // IF FALSE GOTO
             Matcher mIF = Pattern.compile("^ifFalse\\s+(\\S+)\\s+goto\\s+(\\S+)$").matcher(linea);
-            if (mIF.matches()) { sb.append(load("$t0",mIF.group(1))); sb.append("beq $t0, $zero, ").append(mIF.group(2)).append("\n"); continue; }
+            if (mIF.matches()) { 
+                String cond = mIF.group(1);
+                //  Cargar bool como int
+                sb.append(load("$t0",cond)); 
+                sb.append("beq $t0, $zero, ").append(mIF.group(2)).append("\n"); 
+                continue; 
+            }
 
             // IF TRUE GOTO
             Matcher mIT = Pattern.compile("^if\\s+(\\S+)\\s+goto\\s+(\\S+)$").matcher(linea);
-            if (mIT.matches()) { sb.append(load("$t0",mIT.group(1))); sb.append("bne $t0, $zero, ").append(mIT.group(2)).append("\n"); continue; }
+            if (mIT.matches()) { 
+                String cond = mIT.group(1);
+                // Cargar bool como int
+                sb.append(load("$t0",cond)); 
+                sb.append("bne $t0, $zero, ").append(mIT.group(2)).append("\n"); 
+                continue; 
+            }
 
-            // RELACIONALES
+            // RELACIONALES -  resultado siempre int (0/1)
             Matcher mR = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*(<=|>=|==|!=|<|>)\\s*(\\S+)$").matcher(linea);
             if (mR.matches()) {
                 String dest=mR.group(1), op1=mR.group(2), oper=mR.group(3), op2=mR.group(4);
@@ -502,6 +603,7 @@ public class GeneradorMIPS {
                     sb.append("li $t0, 0\n");
                     sb.append(oper.equals("!=")?"bc1t ":"bc1f ").append(ef).append("\n");
                     sb.append("li $t0, 1\n").append(ef).append(":\n");
+                    // Guardar como int siempre
                     sb.append(store("$t0",dest));
                 } else {
                     sb.append(esLitInt(op1)?"li $t1, "+op1+"\n":load("$t1",op1));
@@ -519,27 +621,42 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // LOGICOS BINARIOS
+            // LOGICOS BINARIOS -  resultado int (0/1)
             Matcher mL = Pattern.compile("^(\\w+)\\s*=\\s*(\\S+)\\s*([@#])\\s*(\\S+)$").matcher(linea);
             if (mL.matches()) {
-                sb.append(load("$t1",mL.group(2))); sb.append(load("$t2",mL.group(4)));
+                String dest = mL.group(1);
+                // Cargar como int (0/1)
+                sb.append(load("$t1",mL.group(2))); 
+                sb.append(load("$t2",mL.group(4)));
                 sb.append(mL.group(3).equals("@")?"and $t0, $t1, $t2\n":"or $t0, $t1, $t2\n");
-                sb.append(store("$t0",mL.group(1))); continue;
+                // Guardar como int
+                sb.append(store("$t0",dest)); 
+                continue;
             }
 
-            // NOT
+            // NOT -  resultado int (0/1)
             Matcher mN = Pattern.compile("^(\\w+)\\s*=\\s*\\$(\\S+)$").matcher(linea);
             if (mN.matches()) {
-                sb.append(load("$t1",mN.group(2))); sb.append("xori $t0, $t1, 1\n");
-                sb.append(store("$t0",mN.group(1))); continue;
+                String dest = mN.group(1);
+                sb.append(load("$t1",mN.group(2))); 
+                sb.append("xori $t0, $t1, 1\n");
+                sb.append(store("$t0",dest)); 
+                continue;
             }
 
             // NEGACION ARITMETICA
             Matcher mNeg = Pattern.compile("^(\\w+)\\s*=\\s*-\\s*(\\S+)$").matcher(linea);
             if (mNeg.matches()) {
                 String dest=mNeg.group(1), op=mNeg.group(2);
-                if (esFloat(dest)||esFloat(op)) { sb.append(loadF("$f1",op)); sb.append("neg.s $f0, $f1\n"); sb.append(storeF("$f0",dest)); }
-                else { sb.append(esLitInt(op)?"li $t1, "+op+"\n":load("$t1",op)); sb.append("sub $t0, $zero, $t1\n"); sb.append(store("$t0",dest)); }
+                if (esFloat(dest)||esFloat(op)) { 
+                    sb.append(loadF("$f1",op)); 
+                    sb.append("neg.s $f0, $f1\n"); 
+                    sb.append(storeF("$f0",dest)); 
+                } else { 
+                    sb.append(esLitInt(op)?"li $t1, "+op+"\n":load("$t1",op)); 
+                    sb.append("sub $t0, $zero, $t1\n"); 
+                    sb.append(store("$t0",dest)); 
+                }
                 continue;
             }
 
@@ -554,6 +671,42 @@ public class GeneradorMIPS {
                         case "-": sb.append("sub.s $f0, $f1, $f2\n"); break;
                         case "*": sb.append("mul.s $f0, $f1, $f2\n"); break;
                         case "/": sb.append("div.s $f0, $f1, $f2\n"); break;
+                        case "%": 
+                            // Módulo con floats
+                            sb.append("div.s $f3, $f1, $f2\n");
+                            sb.append("floor.w.s $f3, $f3\n");
+                            sb.append("cvt.s.w $f3, $f3\n");
+                            sb.append("mul.s $f3, $f3, $f2\n");
+                            sb.append("sub.s $f0, $f1, $f3\n");
+                            break;
+                        case "^":
+                            // Potencia con floats
+                            sb.append("cvt.w.s $f3, $f2\n");
+                            sb.append("mfc1 $t2, $f3\n");
+                            sb.append("li.s $f0, 1.0\n");
+                            String pf1 = "_powf" + (contadorPow++) + "_s";
+                            String pf2 = "_powf" + (contadorPow++) + "_e";
+                            sb.append("blt $t2, $zero, ").append(pf1).append("_neg\n");
+                            sb.append(pf1).append(":\n");
+                            sb.append("blez $t2, ").append(pf2).append("\n");
+                            sb.append("mul.s $f0, $f0, $f1\n");
+                            sb.append("addi $t2, $t2, -1\n");
+                            sb.append("j ").append(pf1).append("\n");
+                            sb.append(pf2).append(":\n");
+                            sb.append("j ").append(pf2).append("_end\n");
+                            sb.append(pf1).append("_neg:\n");
+                            sb.append("neg $t2, $t2\n");
+                            sb.append("li.s $f3, 1.0\n");
+                            sb.append(pf1).append("_neg_loop:\n");
+                            sb.append("blez $t2, ").append(pf2).append("_neg_end\n");
+                            sb.append("mul.s $f3, $f3, $f1\n");
+                            sb.append("addi $t2, $t2, -1\n");
+                            sb.append("j ").append(pf1).append("_neg_loop\n");
+                            sb.append(pf2).append("_neg_end:\n");
+                            sb.append("li.s $f1, 1.0\n");
+                            sb.append("div.s $f0, $f1, $f3\n");
+                            sb.append(pf2).append("_end:\n");
+                            break;
                     }
                     sb.append(storeF("$f0",dest));
                 } else {
@@ -609,15 +762,33 @@ public class GeneradorMIPS {
                 continue;
             }
 
-            // WRITE
+            // WRITE - bool imprime como 0/1, float como float
             Matcher mW = Pattern.compile("^write\\s+(\\S+)$").matcher(linea);
             if (mW.matches()) {
                 String op = mW.group(1);
-                switch(tipoDe(op)) {
-                    case "float":  sb.append(loadF("$f12",op)); sb.append("li $v0, 2\nsyscall\n"); break;
-                    case "string": sb.append(load("$a0",op));  sb.append("li $v0, 4\nsyscall\n"); break;
-                    case "char":   sb.append(load("$a0",op));  sb.append("li $v0, 11\nsyscall\n"); break;
-                    default:       sb.append(load("$a0",op));  sb.append("li $v0, 1\nsyscall\n"); break;
+                String tipo = tipoDe(op);
+                switch(tipo) {
+                    case "float":  
+                        sb.append(loadF("$f12",op)); 
+                        sb.append("li $v0, 2\nsyscall\n"); 
+                        break;
+                    case "bool":
+                        //  bool se imprime como entero (0/1)
+                        sb.append(load("$a0",op));  
+                        sb.append("li $v0, 1\nsyscall\n"); 
+                        break;
+                    case "string": 
+                        sb.append(load("$a0",op));  
+                        sb.append("li $v0, 4\nsyscall\n"); 
+                        break;
+                    case "char":   
+                        sb.append(load("$a0",op));  
+                        sb.append("li $v0, 11\nsyscall\n"); 
+                        break;
+                    default:       
+                        sb.append(load("$a0",op));  
+                        sb.append("li $v0, 1\nsyscall\n"); 
+                        break;
                 }
                 continue;
             }
@@ -626,8 +797,13 @@ public class GeneradorMIPS {
             Matcher mRd = Pattern.compile("^read\\s+(\\S+)$").matcher(linea);
             if (mRd.matches()) {
                 String var = mRd.group(1);
-                if (tipoDe(var).equals("float")) { sb.append("li $v0, 6\nsyscall\n"); sb.append(storeF("$f0",var)); }
-                else { sb.append("li $v0, 5\nsyscall\n"); sb.append(store("$v0",var)); }
+                if (tipoDe(var).equals("float")) { 
+                    sb.append("li $v0, 6\nsyscall\n"); 
+                    sb.append(storeF("$f0",var)); 
+                } else { 
+                    sb.append("li $v0, 5\nsyscall\n"); 
+                    sb.append(store("$v0",var)); 
+                }
                 continue;
             }
 

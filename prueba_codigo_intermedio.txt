@@ -1,162 +1,369 @@
 # ===== CODIGO INTERMEDIO =====
 
-probarDecremento:
-    param inicio, int
-    param veces, int
-    declare contador, int
-    __t0 = inicio
-    contador = __t0
-    declare i, int
-    __t1 = 0
-    i = __t1
-_dowhile1_start:
-    __t2 = contador
-    __t3 = __t2 - 1
-    contador = __t3
-    __t4 = i
+evaluarChar:
+    param c, char
+    declare r, int
+    __t0 = 0
+    r = __t0
+    __t1 = c
+_switch1:
+    declare tsw1, int
+    tsw1 = 1
+    __t2 = 'A'
+_case1_1:
+    __t3 = tsw1 == 0
+    if __t3 goto _case1_1_b
+    __t4 = __t1 == __t2
+    if __t4 goto _case1_1_b
+    goto _case1_1_e
+_case1_1_b:
+    tsw1 = 0
     __t5 = 1
-    __t6 = __t4 + __t5
-    i = __t6
-    __t7 = i
-    __t8 = veces
-    __t9 = __t7 < __t8
-    if __t9 goto _dowhile1_start
-_dowhile1_end:
-    __t10 = contador
-    return __t10
+    r = __t5
+    goto _sw1_end
+_case1_1_e:
+    __t6 = 'B'
+_case1_2:
+    __t7 = tsw1 == 0
+    if __t7 goto _case1_2_b
+    __t8 = __t1 == __t6
+    if __t8 goto _case1_2_b
+    goto _case1_2_e
+_case1_2_b:
+    tsw1 = 0
+    __t9 = 2
+    r = __t9
+    goto _sw1_end
+_case1_2_e:
+_default1:
+    __t10 = 0
+    r = __t10
+_sw1_end:
+    __t11 = r
+    return __t11
+
+verificar:
+    param a, int
+    param b, float
+    declare eq, bool
+    __t12 = a
+    __t13 = 10
+    __t14 = __t12 == __t13
+    eq = __t14
+    declare lt, bool
+    __f0 = b
+    __f1 = 5.0
+    __t15 = __f0 < __f1
+    lt = __t15
+    declare gt, bool
+    __f2 = b
+    __f3 = 1.0
+    __t16 = __f2 > __f3
+    gt = __t16
+    declare ge, bool
+    __f4 = b
+    __f5 = 2.0
+    __t17 = __f4 >= __f5
+    ge = __t17
+    declare ne, bool
+    __t18 = a
+    __t19 = 0
+    __t20 = __t18 != __t19
+    ne = __t20
+    declare r, bool
+    __t21 = eq
+    __t22 = lt
+    __t23 = __t21 @ __t22
+    r = __t23
+    __t24 = r
+    __t25 = gt
+    __t26 = __t24 # __t25
+    r = __t26
+    __t27 = r
+    __t28 = ge
+    __t29 = __t27 @ __t28
+    r = __t29
+    __t30 = r
+    return __t30
+
+exponencial:
+    param base, float
+    declare temp, float
+    __f6 = base
+    __f7 = 2000.0
+    __f8 = __f6 * __f7
+    temp = __f8
+    declare r, float
+    __f9 = temp
+    __f10 = 1.0
+    __f11 = __f9 + __f10
+    r = __f11
+    __f12 = r
+    return __f12
 
 main:
-    declare letra, char
-    __t11 = 'A'
-    letra = __t11
-    __t12 = "=== PRUEBA CHAR ==="
-    write __t12
-    __t13 = "\n"
-    write __t13
-    __t14 = "letra = "
-    write __t14
-    write letra
-    __t15 = "\n"
-    write __t15
-    __t16 = "\n"
-    write __t16
-    declare saludo, string
-    __t17 = "Hola desde variable string"
-    saludo = __t17
-    __t18 = "=== PRUEBA STRING VARIABLE ==="
-    write __t18
-    __t19 = "\n"
-    write __t19
-    write saludo
-    __t20 = "\n"
-    write __t20
-    __t21 = "\n"
-    write __t21
-    declare numeros, int[2][2]
-    __t22 = 1
-    __t23 = 2
-    __t24 = 3
-    __t25 = 4
-    numeros[0][0] = __t22
-    numeros[0][1] = __t23
-    numeros[1][0] = __t24
-    numeros[1][1] = __t25
-    declare valorLeido, int
-    __t26 = 0
-    valorLeido = __t26
-    __t27 = "=== PRUEBA ARREGLO ENTERO ==="
-    write __t27
-    __t28 = "\n"
-    write __t28
-    __t29 = 0
-    __t30 = 0
-    __t31 = numeros[__t29][__t30]
-    valorLeido = __t31
-    __t32 = "numeros[0][0] = "
-    write __t32
-    write valorLeido
-    __t33 = "\n"
-    write __t33
-    __t34 = 1
-    __t35 = 1
-    __t36 = numeros[__t34][__t35]
-    valorLeido = __t36
-    __t37 = "numeros[1][1] = "
+    declare b, bool
+    __t31 = true
+    b = __t31
+    declare nb, bool
+    __t32 = false
+    nb = __t32
+    declare c, char
+    __t33 = 'A'
+    c = __t33
+    declare f, float
+    __f13 = 3.5
+    f = __f13
+    declare i, int
+    __t34 = 10
+    i = __t34
+    declare arrF, float[2][2]
+    __f14 = 0.0
+    __f15 = 0.0
+    __f16 = 0.0
+    __f17 = 0.0
+    arrF[0][0] = __f14
+    arrF[0][1] = __f15
+    arrF[1][0] = __f16
+    arrF[1][1] = __f17
+    declare swR, int
+    __t35 = 0
+    swR = __t35
+    __t36 = "=== BOOL ==="
+    write __t36
+    __t37 = "\n"
     write __t37
-    write valorLeido
-    __t38 = "\n"
+    __t38 = "b = "
     write __t38
-    __t39 = 0
-    __t40 = 1
-    __t41 = numeros[__t39][__t40]
-    __t42 = 99
-    numeros[__t39][__t40] = __t42
-    __t43 = 0
-    __t44 = 1
-    __t45 = numeros[__t43][__t44]
-    valorLeido = __t45
-    __t46 = "numeros[0][1] tras escribir 99 = "
+    write b
+    __t39 = "\n"
+    write __t39
+    __t40 = b
+    __t41 = $__t40
+    nb = __t41
+    __t42 = "!b = "
+    write __t42
+    write nb
+    __t43 = "\n"
+    write __t43
+    __t44 = "\n"
+    write __t44
+    __t45 = "=== LOGICOS @ # ==="
+    write __t45
+    __t46 = "\n"
     write __t46
-    write valorLeido
-    __t47 = "\n"
-    write __t47
-    __t48 = "\n"
-    write __t48
-    declare fraccion, float
-    __f0 = 0.8333333333333334
-    fraccion = __f0
-    __t49 = "=== PRUEBA FRACCIONARIO ==="
-    write __t49
-    __t50 = "\n"
+    __t47 = true
+    __t48 = true
+    __t49 = __t47 @ __t48
+    b = __t49
+    __t50 = "true @ true = "
     write __t50
-    __t51 = "fraccion (5/6) = "
+    write b
+    __t51 = "\n"
     write __t51
-    write fraccion
-    __t52 = "\n"
-    write __t52
-    __t53 = "\n"
-    write __t53
-    declare edad, int
-    __t54 = 0
-    edad = __t54
-    __t55 = "=== PRUEBA CIN ENTERO ==="
+    __t52 = true
+    __t53 = false
+    __t54 = __t52 # __t53
+    b = __t54
+    __t55 = "true # false = "
     write __t55
+    write b
     __t56 = "\n"
     write __t56
-    __t57 = "Ingrese un numero entero: "
+    __t57 = "\n"
     write __t57
-    read edad
-    __t58 = "\n"
+    __t58 = "=== RELACIONALES ==="
     write __t58
-    __t59 = "edad leida = "
+    __t59 = "\n"
     write __t59
-    write edad
-    __t60 = "\n"
-    write __t60
-    __t61 = "\n"
-    write __t61
-    declare resultadoDecremento, int
-    __t62 = 0
-    resultadoDecremento = __t62
-    __t63 = "=== PRUEBA DECREMENTO (--) ==="
-    write __t63
-    __t64 = "\n"
-    write __t64
-    __t65 = 10
-    __t66 = 3
-    arg __t65, int
-    arg __t66, int
-    __t67 = call probarDecremento, 2
-    resultadoDecremento = __t67
-    __t68 = "probarDecremento(10, 3) = "
-    write __t68
-    write resultadoDecremento
-    __t69 = "\n"
+    declare r1, bool
+    __t60 = 10
+    __t61 = 5
+    __t62 = __t60 > __t61
+    r1 = __t62
+    declare r2, bool
+    __t63 = 5
+    __t64 = 5
+    __t65 = __t63 >= __t64
+    r2 = __t65
+    declare r3, bool
+    __t66 = 10
+    __t67 = 20
+    __t68 = __t66 != __t67
+    r3 = __t68
+    __t69 = "greather_t(10,5) = "
     write __t69
+    write r1
     __t70 = "\n"
     write __t70
-    __t71 = "=== FIN DE PRUEBA DE COBERTURA ==="
+    __t71 = "greather_te(5,5) = "
     write __t71
+    write r2
     __t72 = "\n"
     write __t72
+    __t73 = "n_equal(10,20) = "
+    write __t73
+    write r3
+    __t74 = "\n"
+    write __t74
+    __t75 = "\n"
+    write __t75
+    __t76 = "=== NEGATIVO UNARIO ==="
+    write __t76
+    __t77 = "\n"
+    write __t77
+    declare neg, int
+    __t78 = i
+    __t79 = -1
+    __t80 = __t78 * __t79
+    neg = __t80
+    __t81 = "-10 = "
+    write __t81
+    write neg
+    __t82 = "\n"
+    write __t82
+    declare negF, float
+    __f18 = f
+    __f19 = -1.0
+    __f20 = __f18 * __f19
+    negF = __f20
+    __t83 = "-3.5 = "
+    write __t83
+    write negF
+    __t84 = "\n"
+    write __t84
+    __t85 = "\n"
+    write __t85
+    __t86 = "=== EXPONENCIAL ==="
+    write __t86
+    __t87 = "\n"
+    write __t87
+    declare expR, float
+    __f21 = 5.0
+    arg __f21, float
+    __f22 = call exponencial, 1
+    expR = __f22
+    __t88 = "5.0 * 2000 + 1.0 = "
+    write __t88
+    write expR
+    __t89 = "\n"
+    write __t89
+    __t90 = "\n"
+    write __t90
+    __t91 = "=== CIN FLOAT ==="
+    write __t91
+    __t92 = "\n"
+    write __t92
+    declare entradaF, float
+    __f23 = 0.0
+    entradaF = __f23
+    __t93 = "Ingrese un float: "
+    write __t93
+    read entradaF
+    __t94 = "Leiste: "
+    write __t94
+    write entradaF
+    __t95 = "\n"
+    write __t95
+    __t96 = "\n"
+    write __t96
+    __t97 = "=== ARREGLO FLOAT ==="
+    write __t97
+    __t98 = "\n"
+    write __t98
+    __t99 = 0
+    __t100 = 0
+    __f24 = arrF[__t99][__t100]
+    __f25 = 1.5
+    arrF[__t99][__t100] = __f25
+    __t101 = 0
+    __t102 = 1
+    __f26 = arrF[__t101][__t102]
+    __f27 = 2.5
+    arrF[__t101][__t102] = __f27
+    __t103 = 1
+    __t104 = 0
+    __f28 = arrF[__t103][__t104]
+    __f29 = 3.5
+    arrF[__t103][__t104] = __f29
+    __t105 = 1
+    __t106 = 1
+    __f30 = arrF[__t105][__t106]
+    __f31 = 4.5
+    arrF[__t105][__t106] = __f31
+    __t107 = "arrF[0][0] = "
+    write __t107
+    __t108 = 0
+    __t109 = 0
+    __f32 = arrF[__t108][__t109]
+    write __f32
+    __t110 = "\n"
+    write __t110
+    __t111 = "arrF[1][1] = "
+    write __t111
+    __t112 = 1
+    __t113 = 1
+    __f33 = arrF[__t112][__t113]
+    write __f33
+    __t114 = "\n"
+    write __t114
+    __t115 = "\n"
+    write __t115
+    __t116 = "=== RETURN CHAR (via switch) ==="
+    write __t116
+    __t117 = "\n"
+    write __t117
+    __t118 = 'A'
+    arg __t118, char
+    __t119 = call evaluarChar, 1
+    swR = __t119
+    __t120 = "evaluarChar('A') = "
+    write __t120
+    write swR
+    __t121 = "\n"
+    write __t121
+    __t122 = 'X'
+    arg __t122, char
+    __t123 = call evaluarChar, 1
+    swR = __t123
+    __t124 = "evaluarChar('X') = "
+    write __t124
+    write swR
+    __t125 = "\n"
+    write __t125
+    __t126 = "\n"
+    write __t126
+    __t127 = "=== RETURN BOOL ==="
+    write __t127
+    __t128 = "\n"
+    write __t128
+    declare v, bool
+    __t129 = 10
+    __f34 = 3.5
+    arg __t129, int
+    arg __f34, float
+    __t130 = call verificar, 2
+    v = __t130
+    __t131 = "verificar(10,3.5) = "
+    write __t131
+    write v
+    __t132 = "\n"
+    write __t132
+    __t133 = 0
+    __f35 = 0.5
+    arg __t133, int
+    arg __f35, float
+    __t134 = call verificar, 2
+    v = __t134
+    __t135 = "verificar(0,0.5) = "
+    write __t135
+    write v
+    __t136 = "\n"
+    write __t136
+    __t137 = "\n"
+    write __t137
+    __t138 = "=== FIN PRUEBAS ==="
+    write __t138
+    __t139 = "\n"
+    write __t139
 # ===== FIN DEL CODIGO INTERMEDIO =====

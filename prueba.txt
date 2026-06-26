@@ -1,73 +1,108 @@
 ¡¡ ============================================================
-¡¡  PRUEBA DE COBERTURA: char, string, arreglo entero, fraccionario,
-¡¡  cin entero, comentario multilinea, decremento (--)
+¡¡  PRUEBA DE TODO LO PENDIENTE (CORREGIDO - ARREGLO FLOAT)
+¡¡  Usando sintaxis que funciona en tu compilador
 ¡¡ ============================================================
 
-{- 
-   Este es un comentario multilinea de prueba.
-   Deberia ser ignorado por completo por el analizador lexico,
-   sin importar cuantas lineas ocupe ni que simbolos contenga: !@#$%^&*()
--}
+int ~ evaluarChar <| char ~ c |> |:
+    int ~ r <- 0!
+    switch ~ <| c |> |:
+        case ~ 'A' : r <- 1! break!
+        case ~ 'B' : r <- 2! break!
+        default: r <- 0!
+    :|
+    return ~ r!
+:|
 
-int ~ probarDecremento <| int ~ inicio, int ~ veces |> |:
-    int ~ contador <- inicio!
-    int ~ i <- 0!
+bool ~ verificar <| int ~ a, float ~ b |> |:
+    bool ~ eq <- equal <| a, 10 |>!
+    bool ~ lt <- less_t <| b, 5.0 |>!
+    bool ~ gt <- greather_t <| b, 1.0 |>!
+    bool ~ ge <- greather_te <| b, 2.0 |>!
+    bool ~ ne <- n_equal <| a, 0 |>!
+    bool ~ r <- eq @ lt!
+    r <- r # gt!
+    r <- r @ ge!
+    return ~ r!
+:|
 
-    do |:
-        --contador!
-        i <- i + 1!
-    :| while <| less_t <| i, veces |> |>!
-
-    return ~ contador!
+float ~ exponencial <| float ~ base |> |:
+    float ~ temp <- base * 2000.0!
+    float ~ r <- temp + 1.0!
+    return ~ r!
 :|
 
 empty ~ __main__ ~ <| |> |:
-    ¡¡ ---------- 1. CHAR ----------
-    char ~ letra <- 'A'!
-    cout ~ <| "=== PRUEBA CHAR ===" |>! cout ~ <| "\n" |>!
-    cout ~ <| "letra = " |>! cout ~ <| letra |>! cout ~ <| "\n" |>!
-    cout ~ <| "\n" |>!
+    bool ~ b <- true!
+    bool ~ nb <- false!
+    char ~ c <- 'A'!
+    float ~ f <- 3.5!
+    int ~ i <- 10!
+    float ~ arrF<<2>><<2>> <- |:0.0, 0.0, 0.0, 0.0:|!
+    int ~ swR <- 0!
 
-    ¡¡ ---------- 2. STRING COMO VARIABLE ----------
-    string ~ saludo <- "Hola desde variable string"!
-    cout ~ <| "=== PRUEBA STRING VARIABLE ===" |>! cout ~ <| "\n" |>!
-    cout ~ <| saludo |>! cout ~ <| "\n" |>!
-    cout ~ <| "\n" |>!
+    cout ~ <| "=== BOOL ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "b = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
+    nb <- $b!
+    cout ~ <| "!b = " |>! cout ~ <| nb |>! cout ~ <| "\n" |>!
 
-    ¡¡ ---------- 3. ARREGLO DE ENTEROS ----------
-    int ~ numeros<<2>><<2>> <- |:1, 2, 3, 4:|!
-    int ~ valorLeido <- 0!
-    cout ~ <| "=== PRUEBA ARREGLO ENTERO ===" |>! cout ~ <| "\n" |>!
-    valorLeido <- numeros<<0>><<0>>!
-    cout ~ <| "numeros[0][0] = " |>! cout ~ <| valorLeido |>! cout ~ <| "\n" |>!
-    valorLeido <- numeros<<1>><<1>>!
-    cout ~ <| "numeros[1][1] = " |>! cout ~ <| valorLeido |>! cout ~ <| "\n" |>!
-    numeros<<0>><<1>> <- 99!
-    valorLeido <- numeros<<0>><<1>>!
-    cout ~ <| "numeros[0][1] tras escribir 99 = " |>! cout ~ <| valorLeido |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
+    cout ~ <| "=== LOGICOS @ # ===" |>! cout ~ <| "\n" |>!
+    b <- true @ true!
+    cout ~ <| "true @ true = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
+    b <- true # false!
+    cout ~ <| "true # false = " |>! cout ~ <| b |>! cout ~ <| "\n" |>!
 
-    ¡¡ ---------- 4. FRACCIONARIO SIMPLE ----------
-    float ~ fraccion <- 5//6!
-    cout ~ <| "=== PRUEBA FRACCIONARIO ===" |>! cout ~ <| "\n" |>!
-    cout ~ <| "fraccion (5/6) = " |>! cout ~ <| fraccion |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
+    cout ~ <| "=== RELACIONALES ===" |>! cout ~ <| "\n" |>!
+    bool ~ r1 <- greather_t <| 10, 5 |>!
+    bool ~ r2 <- greather_te <| 5, 5 |>!
+    bool ~ r3 <- n_equal <| 10, 20 |>!
+    cout ~ <| "greather_t(10,5) = " |>! cout ~ <| r1 |>! cout ~ <| "\n" |>!
+    cout ~ <| "greather_te(5,5) = " |>! cout ~ <| r2 |>! cout ~ <| "\n" |>!
+    cout ~ <| "n_equal(10,20) = " |>! cout ~ <| r3 |>! cout ~ <| "\n" |>!
 
-    ¡¡ ---------- 5. CIN CON ENTERO ----------
-    int ~ edad <- 0!
-    cout ~ <| "=== PRUEBA CIN ENTERO ===" |>! cout ~ <| "\n" |>!
-    cout ~ <| "Ingrese un numero entero: " |>!
-    cin ~ edad!
     cout ~ <| "\n" |>!
-    cout ~ <| "edad leida = " |>! cout ~ <| edad |>! cout ~ <| "\n" |>!
-    cout ~ <| "\n" |>!
+    cout ~ <| "=== NEGATIVO UNARIO ===" |>! cout ~ <| "\n" |>!
+    int ~ neg <- i * -1!
+    cout ~ <| "-10 = " |>! cout ~ <| neg |>! cout ~ <| "\n" |>!
+    float ~ negF <- f * -1.0!
+    cout ~ <| "-3.5 = " |>! cout ~ <| negF |>! cout ~ <| "\n" |>!
 
-    ¡¡ ---------- 6. DECREMENTO (--) ----------
-    int ~ resultadoDecremento <- 0!
-    cout ~ <| "=== PRUEBA DECREMENTO (--) ===" |>! cout ~ <| "\n" |>!
-    resultadoDecremento <- probarDecremento <| 10, 3 |>!
-    cout ~ <| "probarDecremento(10, 3) = " |>! cout ~ <| resultadoDecremento |>! cout ~ <| "\n" |>!
     cout ~ <| "\n" |>!
+    cout ~ <| "=== EXPONENCIAL ===" |>! cout ~ <| "\n" |>!
+    float ~ expR <- exponencial <| 5.0 |>!
+    cout ~ <| "5.0 * 2000 + 1.0 = " |>! cout ~ <| expR |>! cout ~ <| "\n" |>!
 
-    cout ~ <| "=== FIN DE PRUEBA DE COBERTURA ===" |>! cout ~ <| "\n" |>!
+    cout ~ <| "\n" |>!
+    cout ~ <| "=== CIN FLOAT ===" |>! cout ~ <| "\n" |>!
+    float ~ entradaF <- 0.0!
+    cout ~ <| "Ingrese un float: " |>!
+    cin ~ entradaF!
+    cout ~ <| "Leiste: " |>! cout ~ <| entradaF |>! cout ~ <| "\n" |>!
+
+    cout ~ <| "\n" |>!
+    cout ~ <| "=== ARREGLO FLOAT ===" |>! cout ~ <| "\n" |>!
+    arrF<<0>><<0>> <- 1.5!
+    arrF<<0>><<1>> <- 2.5!
+    arrF<<1>><<0>> <- 3.5!
+    arrF<<1>><<1>> <- 4.5!
+    cout ~ <| "arrF[0][0] = " |>! cout ~ <| arrF<<0>><<0>> |>! cout ~ <| "\n" |>!
+    cout ~ <| "arrF[1][1] = " |>! cout ~ <| arrF<<1>><<1>> |>! cout ~ <| "\n" |>!
+
+    cout ~ <| "\n" |>!
+    cout ~ <| "=== RETURN CHAR (via switch) ===" |>! cout ~ <| "\n" |>!
+    swR <- evaluarChar <| 'A' |>!
+    cout ~ <| "evaluarChar('A') = " |>! cout ~ <| swR |>! cout ~ <| "\n" |>!
+    swR <- evaluarChar <| 'X' |>!
+    cout ~ <| "evaluarChar('X') = " |>! cout ~ <| swR |>! cout ~ <| "\n" |>!
+
+    cout ~ <| "\n" |>!
+    cout ~ <| "=== RETURN BOOL ===" |>! cout ~ <| "\n" |>!
+    bool ~ v <- verificar <| 10, 3.5 |>!
+    cout ~ <| "verificar(10,3.5) = " |>! cout ~ <| v |>! cout ~ <| "\n" |>!
+    v <- verificar <| 0, 0.5 |>!
+    cout ~ <| "verificar(0,0.5) = " |>! cout ~ <| v |>! cout ~ <| "\n" |>!
+
+    cout ~ <| "\n" |>!
+    cout ~ <| "=== FIN PRUEBAS ===" |>! cout ~ <| "\n" |>!
 :|

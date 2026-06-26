@@ -4342,24 +4342,19 @@ class CUP$parser$actions {
 		int e2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		String e2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 
-                       // Verificar que la variable del arreglo exista
                        String tipoArreglo = verificarUso((String)id, idleft);
-                       // Limpiar tipo (quitar |nombre)
                        String tipoLimpio = tipoArreglo.contains("|") ? tipoArreglo.split("\\|")[0] : tipoArreglo;
                        
-                       // VERIFICAR QUE SEA UN ARREGLO BIDIMENSIONAL
                        if (!tipoLimpio.endsWith("[][]")) {
                            errorSemantico("Linea " + idleft 
                                + ": La variable '" + id + "' no es un arreglo bidimensional, es de tipo '" + tipoLimpio + "'");
                        }
                        
-                       // Limpiar tipos de indices
                        String tipo1 = e1.contains("|") ? e1.split("\\|")[0] : e1;
                        String tipo2 = e2.contains("|") ? e2.split("\\|")[0] : e2;
                        String lugar1 = e1.contains("|") ? e1.split("\\|")[1] : e1;
                        String lugar2 = e2.contains("|") ? e2.split("\\|")[1] : e2;
 
-                       // Verificar que los indices sean ENTEROS
                        if (!tipo1.equals("int") && !tipo1.equals("error")) {
                            errorSemantico("Linea " + idleft 
                                + ": Indice de arreglo debe ser int, se encontro '" + tipo1 + "'");
@@ -4369,12 +4364,13 @@ class CUP$parser$actions {
                                + ": Indice de arreglo debe ser int, se encontro '" + tipo2 + "'");
                        }
                        
-                       // Extraer tipo base (quitar "[][]")
                        String tipoBase = tipoLimpio.endsWith("[][]") ? 
                            tipoLimpio.substring(0, tipoLimpio.length() - 4) : tipoLimpio;
 
-                       // Generar codigo intermedio
-                       String t = GeneradorCodigo.nuevoTemp();
+                       // ===========================================================
+                       // USAR nuevoTemp CON EL TIPO BASE
+                       // ===========================================================
+                       String t = GeneradorCodigo.nuevoTemp(tipoBase);
                        GeneradorCodigo.emitir("    " + t + " = " + id + "[" + lugar1 + "][" + lugar2 + "]");
                        RESULT = tipoBase + "|" + t + "|" + id + "[" + lugar1 + "][" + lugar2 + "]";
                    
