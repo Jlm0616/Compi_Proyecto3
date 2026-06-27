@@ -1,7 +1,7 @@
 # Proyecto #3 - Generación Código Destino (MIPS)
 
 ## Descripción
-
+Este proyecto implementa la fase de generación de código destino MIPS para un compilador de un lenguaje imperativo. El sistema toma un archivo fuente escrito en el lenguaje definido, realiza análisis léxico, sintáctico y semántico, genera código intermedio de tres direcciones y finalmente produce código ensamblador MIPS ejecutable en el simulador QtSpim.
 
 ## Tecnologías
 | Tecnología | Versión |
@@ -22,7 +22,8 @@
 | `lib/jflex-full-1.9.1.jar` | Herramienta | Generador de lexers JFlex |
 | `java-cup-11b-runtime.jar` | Librería | Runtime de CUP |
 | `java-cup-11b.jar` | Herramienta | Generador de parser CUP |
-
+| `GeneradorCodigo.java` | Fuente	| Generador de código intermedio de tres direcciones |
+| `GeneradorMIPS.java` | Fuente	| Generador de código destino MIPS |
 ## Cómo ejecutar
 
 1. Generar el lexer
